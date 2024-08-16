@@ -13,7 +13,7 @@ function PurchaseItem() {
   });
   const [openMap,setOpenMap]=useState(false);
   const [location,setLocation]=useState(null);
-  const handleMarkerPositionChange = (position) => {
+  const handleMarkerPositionChange =  (position) => {
     console.log(position)
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}`)
   .then(response => response.json())

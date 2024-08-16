@@ -5,6 +5,7 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -13,15 +14,24 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { Box, Button, Flex, Group, Tooltip } from "@mantine/core";
 import { TbCurrentLocation } from "react-icons/tb";
 
-const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
-  // console.log('destinaion on map')
-  // console.log(destinationCoordinates);
-  // const position = destinationCoordinates
-  //   ? destinationCoordinates
-  //   : [27.6969, 85.3638]; // specify latitude and longitude coordinates
+
+const MapCenter = ({ markerPosition, zoomLevel}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (markerPosition) {
+      map.flyTo(markerPosition, zoomLevel);
+    }
+  }, [markerPosition, zoomLevel, map]);
+
+  return null;
+};
+
+const Map = ({ onMarkerPositionChange }) => {
   const [markerPosition, setMarkerPosition] = useState([27.6969, 85.3638]);
 
-  // create a custom marker icon
+
+  // Custom marker icon
   const customMarkerIcon = new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
     iconSize: [30, 45],
@@ -29,24 +39,23 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
     popupAnchor: [0, -46],
   });
 
+  // Handle map clicks
   const MapClickHandler = () => {
     useMapEvents({
       click: (e) => {
-        // console.log(e.latlng);
         const { lat, lng } = e.latlng;
         setMarkerPosition([lat, lng]);
-        
         onMarkerPositionChange([lat, lng]);
       },
     });
     return null;
   };
 
+  // Get current location
   const handleGetLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        console.log(position);
         setMarkerPosition([latitude, longitude]);
         onMarkerPositionChange([latitude, longitude]);
       },
@@ -55,6 +64,10 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
       }
     );
   };
+
+  useEffect(()=>{
+    handleGetLocation();
+  },[]);
 
   return (
     <Flex direction={"column"} gap={10}>
@@ -68,30 +81,24 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <MapClickHandler />
+        <MapCenter markerPosition={markerPosition} zoomLevel={17} /> 
+       
         {markerPosition && (
           <Marker position={markerPosition} icon={customMarkerIcon}>
             <Popup>Your location or mark location</Popup>
           </Marker>
         )}
-        {destinationCoordinates && (
-          <Marker
-            position={destinationCoordinates}
-            icon={customMarkerIcon}
-            style={{ filter: "hue-rotate(0deg)" }}
-          >
-            <Popup>
-              <p>Customer destination Location</p>
-            </Popup>
-          </Marker>
-        )}
       </MapContainer>
       <Group justify="center" mb={10}>
-      <Tooltip label="Current Location" color="grey"  position="right-end" offset={5}>
+        <Tooltip label="Current Location" color="grey" position="right-end" offset={5}>
           <Button onClick={handleGetLocation} variant="transparent">
             <TbCurrentLocation size={35} color="#414B80" />
           </Button>
         </Tooltip>
       </Group>
+      {
+        console.log(markerPosition)
+      }
     </Flex>
   );
 };
