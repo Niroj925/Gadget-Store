@@ -12,6 +12,17 @@ function PurchaseItem() {
     TotalAmount: "Rs.745",
   });
   const [openMap,setOpenMap]=useState(false);
+  const [location,setLocation]=useState(null);
+  const handleMarkerPositionChange = (position) => {
+    console.log(position)
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Address:', data.display_name);
+    setLocation(data.display_name)
+  })
+  .catch(error => console.error('Error:', error));
+  };
 
   const {hovered,ref}=useHover()
   return (
@@ -57,11 +68,16 @@ function PurchaseItem() {
               > 
            <IoLocation size={20} color={hovered?"white":"#414B80"} /> Choose Location
           </Button>
+          {
+            location&&(
+              <Text>{location}</Text>
+            )
+          }
           <Paper withBorder>
             {
               openMap&&(
-
-                <Map/>
+               
+                <Map onMarkerPositionChange={handleMarkerPositionChange}/>
               )
             }
           </Paper>

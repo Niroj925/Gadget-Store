@@ -16,10 +16,10 @@ import { TbCurrentLocation } from "react-icons/tb";
 const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
   // console.log('destinaion on map')
   // console.log(destinationCoordinates);
-  const position = destinationCoordinates
-    ? destinationCoordinates
-    : [27.6969, 85.3638]; // specify latitude and longitude coordinates
-  const [markerPosition, setMarkerPosition] = useState(position);
+  // const position = destinationCoordinates
+  //   ? destinationCoordinates
+  //   : [27.6969, 85.3638]; // specify latitude and longitude coordinates
+  const [markerPosition, setMarkerPosition] = useState([27.6969, 85.3638]);
 
   // create a custom marker icon
   const customMarkerIcon = new L.Icon({
@@ -32,10 +32,11 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
   const MapClickHandler = () => {
     useMapEvents({
       click: (e) => {
-        console.log(e.latlng);
+        // console.log(e.latlng);
         const { lat, lng } = e.latlng;
         setMarkerPosition([lat, lng]);
-        // onMarkerPositionChange([lat, lng]);
+        
+        onMarkerPositionChange([lat, lng]);
       },
     });
     return null;
@@ -47,7 +48,7 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
         const { latitude, longitude } = position.coords;
         console.log(position);
         setMarkerPosition([latitude, longitude]);
-        // onMarkerPositionChange([latitude, longitude]);
+        onMarkerPositionChange([latitude, longitude]);
       },
       (error) => {
         console.error("Error getting location:", error);
@@ -58,7 +59,7 @@ const Map = ({ onMarkerPositionChange, destinationCoordinates }) => {
   return (
     <Flex direction={"column"} gap={10}>
       <MapContainer
-        center={position}
+        center={markerPosition}
         zoom={11}
         style={{ width: "100%", height: "auto", minHeight: "70vh" }}
       >
