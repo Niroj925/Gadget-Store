@@ -4,6 +4,7 @@ import Category from "./components/category/Category";
 import Product from "./components/product/Product";
 import PurchaseItem from "./components/purchaseItem/PurchaseItem";
 import Map from "./components/map/Map";
+import Products from "./components/products/Products";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
     <Route path="/product" element={<Product/>} />
     <Route path="/purchase" element={<PurchaseItem/>} />
     <Route path="/map" element={<Map/>} />
+    <Route path="/products" element={<Products/>} />
 
   </Routes>
     </BrowserRouter>

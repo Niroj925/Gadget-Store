@@ -2,10 +2,12 @@ import {
   Anchor,
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Group,
   Image,
+  Modal,
   Paper,
   Radio,
   Rating,
@@ -15,9 +17,15 @@ import React, { useState } from "react";
 import { TbTruckDelivery } from "react-icons/tb";
 import { TbTruckReturn } from "react-icons/tb";
 import SimilarItem from "../similarItem/SimilarItem";
+import { useDisclosure } from "@mantine/hooks";
+import { BsGoogle } from "react-icons/bs";
+import {useNavigate} from 'react-router-dom';
+import { RxCross2 } from "react-icons/rx";
 
 function Product() {
+ const navigate=useNavigate();
   const [count, setCount] = useState(1);
+  const [opened, { open: modelOpen, close }] = useDisclosure(false);
 
   const [gs, setGs] = useState({
     brand: "Apple",
@@ -34,7 +42,6 @@ function Product() {
     waterResistance: "no",
   });
 
-  // Step 2: Increment and Decrement functions
   const increment = () => {
     count <= 10 && setCount(count + 1);
   };
@@ -161,7 +168,13 @@ function Product() {
             </Paper>
           </Flex>
           <Flex justify={"space-around"}>
-            <Button variant="fill" bg={"#414B80"} c={"white"} radius={75}>
+            <Button
+              variant="fill"
+              bg={"#414B80"}
+              c={"white"}
+              radius={75}
+              onClick={() => modelOpen(true)}
+            >
               Buy Now
             </Button>
             <Button
@@ -205,47 +218,84 @@ function Product() {
           Airpods Pro Max Full Specifications
         </Text>
         <Flex direction={"row"} gap={20} w={"100%"} mt={20}>
-          <Paper withBorder w={"45%"} >
-            <Text p={10} >General</Text>
-            <Divider  />
+          <Paper withBorder w={"45%"}>
+            <Text p={10}>General</Text>
+            <Divider />
             {Object.entries(gs).map(([key, value], index) => (
-              <Group key={key} noWrap align="center" bg={ 
-                 index % 2 === 0 ? "#EEEEFF" : "transparent"  
-              } pl={20}>
-                <Text
-                  weight={500}
-                  w={"25%"}
-                >
+              <Group
+                key={key}
+                noWrap
+                align="center"
+                bg={index % 2 === 0 ? "#EEEEFF" : "transparent"}
+                pl={20}
+              >
+                <Text weight={500} w={"25%"}>
                   {key}
                 </Text>
                 <Text ml="xs">: {value}</Text>
               </Group>
             ))}
-           
           </Paper>
           <Paper withBorder w={"45%"}>
             <Text p={10}>Product Details</Text>
             <Divider />
             {Object.entries(productDetail).map(([key, value], index) => (
-              <Group key={key} noWrap align="center" bg={ 
-                 index % 2 === 0 ? "#EEEEFF" : "transparent"  
-              } pl={20}>
-                <Text
-                  weight={500}
-                  w={"25%"}
-                >
+              <Group
+                key={key}
+                noWrap
+                align="center"
+                bg={index % 2 === 0 ? "#EEEEFF" : "transparent"}
+                pl={20}
+              >
+                <Text weight={500} w={"25%"}>
                   {key}
                 </Text>
                 <Text ml="xs">: {value}</Text>
               </Group>
             ))}
-           
           </Paper>
         </Flex>
         <Group mt={45}>
-        <SimilarItem/>
+          <SimilarItem />
         </Group>
       </Flex>
+      {opened && (
+        <Modal 
+        opened={opened} 
+        onClose={close} 
+        withCloseButton={false} 
+        centered 
+        radius="md"
+      >
+        <Flex direction="column" spacing="md" >
+          <Flex justify="flex-end " align={"flex-end"}>
+             <RxCross2 size={20} onClick={()=>close()}/>
+          </Flex>
+          <Text align="center" size="xl" weight={500} c="dark" fw={"bold"}>
+            Sign in to Continue 
+          <Divider/>
+          </Text>
+          <Group   justify="center"
+           align="center">
+          <Button
+            leftSection={<BsGoogle size={20} />}
+            color="red" 
+            radius="xl"
+            size="md"
+            mt={20}
+            w={"75%"}
+            onClick={() => navigate(`/purchase`)}
+          >
+            <Text fw="bold" c="white">Continue with Google</Text>
+          </Button>
+          </Group>
+          <Text c="dimmed" size="sm" mt={20}>
+            By continuing, you agree to our Terms and Conditions.
+          </Text>
+        </Flex>
+      </Modal>
+      
+      )}
     </Box>
   );
 }
