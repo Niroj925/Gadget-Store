@@ -6,6 +6,7 @@ import Popular from '../../components/popular/Popular'
 import Services from '../../components/services/Services'
 import NewProduct from '../../components/newProduct/NewProduct'
 import { FooterLinks } from '../../components/layout/Footer'
+import Navbar from '../../components/layout/Navbar'
 
 function Home() {
   return (

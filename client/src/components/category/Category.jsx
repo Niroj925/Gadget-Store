@@ -21,8 +21,10 @@ import {
 import { IoSearchSharp } from "react-icons/io5";
 import { MdFavorite } from "react-icons/md";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 function Category() {
+  const navigate=useNavigate();
   const [favIndex, setFavIndex] = useState({ name: null });
   const [clickedItem,setClickedItem]=useState({name:null});
   const [activePage, setPage] = useState(1);
@@ -143,7 +145,7 @@ function Category() {
                       )}
                     </Button>
                   </Flex>
-                  <Group justify="center" p={10}>
+                  <Group justify="center" p={10} onClick={()=>navigate('/product')}>
                     <Image src="/image/imgrm.png" w={150} />
                   </Group>
                 </Paper>

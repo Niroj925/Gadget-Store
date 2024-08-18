@@ -30,7 +30,6 @@ const MapCenter = ({ markerPosition, zoomLevel}) => {
 const Map = ({ onMarkerPositionChange }) => {
   const [markerPosition, setMarkerPosition] = useState([27.6969, 85.3638]);
 
-
   // Custom marker icon
   const customMarkerIcon = new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
@@ -96,9 +95,6 @@ const Map = ({ onMarkerPositionChange }) => {
           </Button>
         </Tooltip>
       </Group>
-      {
-        console.log(markerPosition)
-      }
     </Flex>
   );
 };

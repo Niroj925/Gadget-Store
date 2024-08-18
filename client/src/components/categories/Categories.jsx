@@ -1,7 +1,9 @@
 import { Flex, Group, Image, Paper, Text } from '@mantine/core';
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function Categories() {
+  const navigate=useNavigate();
   const namesArray = [
     { name: 'Alice' },
     { name: 'Bob' },
@@ -14,7 +16,7 @@ function Categories() {
       <Flex gap={20} wrap={'wrap'} >
       {namesArray&&namesArray.map((item)=>{
         return(
-          <Paper withBorder mt={10} radius={10} >
+          <Paper withBorder mt={10} radius={10} onClick={()=>navigate("/category")}>
             <Group justify='center'>
 
             <Text>{item.name}</Text>

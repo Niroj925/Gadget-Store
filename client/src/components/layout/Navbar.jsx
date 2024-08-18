@@ -1,8 +1,26 @@
-import React from 'react';
-import { Flex, Button, Group, Box, TextInput, Text, Menu } from '@mantine/core';
+import React, { useRef, useState } from 'react';
+import { Flex, Anchor, Group, Box, TextInput, Text, Menu } from '@mantine/core';
 import { IconSearch, IconChevronDown, IconShoppingCart } from '@tabler/icons-react';
 
+
 const Navbar = () => {
+  // const searchRef=useRef();
+  const [search,setSearch]=useState("");
+  console.log(search);
+  const categories=[
+    {
+      id:"dghjwriey",
+      name:"Mobile"
+    },
+    {
+      id:"dghjwriey",
+      name:"Headphone"
+    },
+    {
+      id:"dghjwriey",
+      name:"Earphone"
+    },
+  ]
   return (
     <Flex
       bg="#EEEEFF"
@@ -24,25 +42,33 @@ const Navbar = () => {
       <Group gap={15}>
         <Menu shadow="md" width={200}>
           <Menu.Target>
-            <Button variant='transparent' rightSection={<IconChevronDown />} c="black">Category</Button>
+            <Anchor fw={500} rightSection={<IconChevronDown />} c="black">Category</Anchor>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>Mobile</Menu.Item>
+            {/* <Menu.Item >Mobile</Menu.Item>
             <Menu.Item>Headphone</Menu.Item>
-            <Menu.Item>Earphone</Menu.Item>
+            <Menu.Item>Earphone</Menu.Item> */}
+            {
+              categories.map((item)=>{
+                return(
+                  <Menu.Item key={item.id} onClick={()=>window.location.href = `/category?search=${item.name}`}>{item.name}</Menu.Item>
+                )
+              })
+            }
           </Menu.Dropdown>
         </Menu>
-        <Button variant='transparent' c="black">Deals</Button>
-        <Button variant='transparent' c="black">What's new</Button>
-        <Button variant='transparent' c="black">Delivery</Button>
+        <Anchor href='/deals' c="black" fw={500}>Deals</Anchor>
+        <Anchor href='/new' c="black" fw={500}>What's new</Anchor>
+        <Anchor href='/delivery' c="black" fw={500}>Delivery</Anchor>
       </Group>
       <Group>
         <TextInput
           placeholder="Search Product"
-          rightSection={<IconSearch />}
+          onChange={(e)=>setSearch(e.target.value)}
+          rightSection={<IconSearch onClick={()=>window.location.href = `/products?search=${search}`}/>}
         />
         <Box>
-          <Button variant='transparent' c="black" rightSection={<IconShoppingCart />}>Cart</Button>
+          <Anchor variant='transparent' c="black" rightSection={<IconShoppingCart />}>Cart</Anchor>
         </Box>
       </Group>
     </Flex>
