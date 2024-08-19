@@ -1,31 +1,34 @@
-.control {
-    font-weight: 500;
-    display: block;
-    width: 100%;
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-    color: var(--mantine-color-text);
-    font-size: var(--mantine-font-size-sm);
-  }
-  
-  .control:hover{
-    background-color: #e2e2e2;
-  }
-  .link {
-    font-weight: 500;
-    display: block;
-    text-decoration: none;
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-    padding-left: var(--mantine-spacing-md);
-    margin-left: var(--mantine-spacing-xl);
-    font-size: var(--mantine-font-size-sm);
-    color: var(--mantine-color-text);
-    border-left: 1px solid var(--mantine-color-gray-3);
-  }
+/* LinkGroup.css */
 
-  .link:hover{
-    background-color: #e2e2e2;
-  }
-  
-  .chevron {
-    transition: transform 200ms ease;
-  }
+.control {
+  font-weight: 500;
+  display: block;
+  width: 100%;
+  padding: 10px 16px; /* Use fixed values or adjust according to your design */
+  color: #000; /* Use the color you want */
+  font-size: 14px; /* Adjust the size as needed */
+}
+
+.control:hover {
+  background-color: #e2e2e2;
+}
+
+.link {
+  font-weight: 500;
+  display: block;
+  text-decoration: none;
+  /* padding: 10px 16px;
+  padding-left: 24px; 
+  margin-left: 32px; 
+  font-size: 14px;  */
+  color: #000; 
+  border-left: 1px solid #d1d1d1; 
+}
+
+.link:hover {
+  background-color: #e2e2e2;
+}
+
+.chevron {
+  transition: transform 200ms ease;
+}

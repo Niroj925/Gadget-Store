@@ -1,66 +1,70 @@
 import { Group, Code, ScrollArea, rem } from '@mantine/core';
 import {
-  IconNotes,
   IconCalendarStats,
-  IconGauge,
-  IconPresentationAnalytics,
-  IconFileAnalytics,
-  IconAdjustments,
-  IconLock,
+  IconAssembly,
+  IconLayoutDashboard,
+  IconUsers,
+  IconDeviceAnalytics,
+  IconSettings,
+  IconBell,
+  IconFlag3,
+  IconTruckDelivery,
+  IconReorder
 } from '@tabler/icons-react';
 import classes from './sidebar.module.css';
 import { LinksGroup } from '../linksGroup/LinkGroup';
 
 const mockdata = [
-  { label: 'Dashboard', icon: IconGauge },
+  { label: 'Dashboard', icon: IconLayoutDashboard },
   {
-    label: 'Market news',
-    icon: IconNotes,
+    label: 'Product',
+    icon: IconAssembly,
     initiallyOpened: true,
     links: [
-      { label: 'Overview', link: '/' },
-      { label: 'Forecasts', link: '/' },
-      { label: 'Outlook', link: '/' },
-      { label: 'Real time', link: '/' },
+      { label: 'Product List', link: '/' },
+      { label: 'Category', link: '/' },
     ],
   },
   {
-    label: 'Releases',
+    label: 'Sales',
     icon: IconCalendarStats,
     links: [
       { label: 'Upcoming releases', link: '/' },
       { label: 'Previous releases', link: '/' },
-      { label: 'Releases schedule', link: '/' },
+      { label: 'Sales Report', link: '/' },
     ],
   },
-  { label: 'Analytics', icon: IconPresentationAnalytics },
-  { label: 'Contracts', icon: IconFileAnalytics },
-  { label: 'Settings', icon: IconAdjustments },
+  { label: 'Orders', icon: IconReorder },
+  { label: 'Customers', icon: IconUsers },
+  { label: 'Analytics', icon: IconDeviceAnalytics },
   {
-    label: 'Security',
-    icon: IconLock,
-    links: [
-      { label: 'Enable 2FA', link: '/' },
-      { label: 'Change password', link: '/' },
-      { label: 'Recovery codes', link: '/' },
-    ],
+    label: 'Banner',
+    icon: IconFlag3,
+  },
+  {
+    label:'Delivery',
+    icon:IconTruckDelivery
+  },
+  { label: 'Notification', icon: IconBell },
+  {
+    label: 'Setting',
+    icon: IconSettings,
   },
 ];
 
 export function SideBar() {
-    console.log(mockdata)
   const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
   return (
-    <nav className={classes.navbar}>
-      <div className={classes.header}>
+    <nav className={classes.navbar} >
+      {/* <div className={classes.header}> */}
         {/* <Group justify="space-between">
           <Logo style={{ width: rem(120) }} />
           <Code fw={700}>v3.1.2</Code>
         </Group> */}
-      </div>
+      {/* </div> */}
 
-      <ScrollArea className={classes.links}>
-        <div className={classes.linksInner}>{links}</div>
+      <ScrollArea >
+        <div >{links}</div>
       </ScrollArea>
 
       <div className={classes.footer}>
