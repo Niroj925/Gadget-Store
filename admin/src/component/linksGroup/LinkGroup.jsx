@@ -1,39 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, Flex } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './LinkGroup.module.css';
+import { useNavigate } from 'react-router-dom';
 
-export function LinksGroup({ icon: Icon, label, initiallyOpened, links }) {
-  const [opened, setOpened] = useState(initiallyOpened || false);
+export function LinksGroup({ icon: Icon, label, links, link, isOpened, toggle }) {
   const hasLinks = Array.isArray(links);
   const ChevronIcon = IconChevronRight;
+  const navigate = useNavigate();
 
-  const item=(<Flex direction={"column"}>
-    { 
-      (hasLinks?links:[]).map((link)=>{
-        return(
-        <Flex ml={45} >
-           <Text
-           w={"90%"}
-      component="a"
-      className={classes.link}
-      href={link.link}
-      key={link.label}
-      onClick={(event) => event.preventDefault()}
-      p={5}
-    >
-      {link.label}
-    </Text>
+  const item = (
+    <Flex direction="column">
+      {(hasLinks ? links : []).map((link) => (
+        <Flex ml={45} key={link.label}>
+          <Text
+            w="90%"
+            component="a"
+            className={classes.link}
+            onClick={(event) => navigate(link.link)}
+            p={5}
+          >
+            {link.label}
+          </Text>
         </Flex>
-        )
-      })
-    }
-  </Flex>)
+      ))}
+    </Flex>
+  );
 
   return (
     <>
-      <UnstyledButton onClick={() => setOpened((o) => !o)}  className={classes.control}>
-        <Group justify="space-between" gap={0} style={{padding:"10px"}}>
+      <UnstyledButton onClick={toggle} className={classes.control}>
+        <Group justify="space-between" gap={0} style={{padding:"10px"}} onClick={() => link && navigate(link)}>
           <Box style={{ display: 'flex', alignItems: 'center' }}>
             <ThemeIcon variant="light" size={30}>
               <Icon size="1.1rem" />
@@ -46,13 +43,13 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }) {
               size="1rem"
               stroke={1.5}
               style={{
-                transform: opened ? `rotate(90deg)` : 'none',
+                transform: isOpened ? `rotate(90deg)` : 'none',
               }}
             />
           )}
         </Group>
       </UnstyledButton>
-      {hasLinks ? <Collapse in={opened}>{item}</Collapse> : null}
+      {hasLinks ? <Collapse in={isOpened}>{item}</Collapse> : null}
     </>
   );
 }

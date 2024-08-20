@@ -1,20 +1,19 @@
-import AddProduct from "../../../client/src/pages/dashboard/AddProduct";
 import DashboardLayout from "../layout/DashboardLayout";
-
+import AddProduct from "../pages/dashboard/product/AddProduct";
+import Category from "../pages/dashboard/product/Category";
 
 
 const DashboardRoutes = {
     path: "/dashboard",
     element: <DashboardLayout />,
-  
     children: [
       {
-        path: "add-product",
+        path: "product",
         element: <AddProduct />,
       },
       {
-        path: "register",
-        // element: <AuthRegister />
+        path: "category",
+        element: <Category />
       },
     ]
 }

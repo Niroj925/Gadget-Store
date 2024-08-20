@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { SideBar } from "../component/sidebar/Sidebar";
+import Header from "../component/header/Header";
 
 const DashboardLayout = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -20,6 +21,7 @@ const DashboardLayout = () => {
       >
         <AppShell.Header>
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+           <Header/>
         </AppShell.Header>
 
         <AppShell.Navbar>
