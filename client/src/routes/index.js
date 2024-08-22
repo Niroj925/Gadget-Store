@@ -1,11 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ErrorRoutes } from "./ErrorRoute";
-import MainRoutes from "./mainRoute";
-import DashboardRoutes from "./DashboardRoute";
+import MainRoutes from "./mainRoute";   
 
 const router = createBrowserRouter([
     MainRoutes,
-    DashboardRoutes,
     ErrorRoutes
     ]);
 export default router;

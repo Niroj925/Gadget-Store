@@ -5,8 +5,10 @@ import {
   Center,
   Divider,
   Flex,
+  Grid,
   Group,
   Image,
+  List,
   Modal,
   Paper,
   Radio,
@@ -17,13 +19,13 @@ import React, { useState } from "react";
 import { TbTruckDelivery } from "react-icons/tb";
 import { TbTruckReturn } from "react-icons/tb";
 import SimilarItem from "../similarItem/SimilarItem";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { BsGoogle } from "react-icons/bs";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 
 function Product() {
- const navigate=useNavigate();
+  const navigate = useNavigate();
   const [count, setCount] = useState(1);
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
 
@@ -41,6 +43,45 @@ function Product() {
     battery: "1800mAh",
     waterResistance: "no",
   });
+
+  const [specs, setSpecs] = useState([
+    "ipX4 Water and Sweat Resistant",
+    "Punchy Heavy Bass",
+    "Immersive Sound Quality",
+    "TPE Strong and Flexible Wire",
+    "Oxidation Resistant Tip",
+    "Anti Winding Wire",
+    "Can Pick And Cut Calls",
+    "Pin: 3.5mm",
+    "Driver: 11mm",
+    "Speaker Impedance: 16 ohms",
+    "Frequency Response: 20Hz-20kHz",
+    "Water Resistance: ipx4",
+    "HD Stereo Sound",
+    "Super Tough Wire",
+    "Support High Quality Clear Call",
+  ]);
+
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+
+  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
+
+  const chunkedSpecs = [];
+  for (let i = 0; i < specs.length; i += 5) {
+    chunkedSpecs.push(specs.slice(i, i + 5));
+  }
+
+  const tabletSpecs = [];
+  if (columns === 2) {
+    const half = Math.ceil(specs.length / 2);
+    tabletSpecs.push(specs.slice(0, half));
+    tabletSpecs.push(specs.slice(half));
+  }
+
+  // Determine which specs to display based on screen size
+  const displayedSpecs =
+    columns === 1 ? [specs] : columns === 2 ? tabletSpecs : chunkedSpecs;
 
   const increment = () => {
     count <= 10 && setCount(count + 1);
@@ -218,41 +259,33 @@ function Product() {
           Airpods Pro Max Full Specifications
         </Text>
         <Flex direction={"row"} gap={20} w={"100%"} mt={20}>
-          <Paper withBorder w={"45%"}>
-            <Text p={10}>General</Text>
+          <Paper withBorder p={10}>
+            <Text pb={5} fw={500}>
+              Product Details
+            </Text>
             <Divider />
-            {Object.entries(gs).map(([key, value], index) => (
-              <Group
-                key={key}
-                noWrap
-                align="center"
-                bg={index % 2 === 0 ? "#EEEEFF" : "transparent"}
-                pl={20}
-              >
-                <Text weight={500} w={"25%"}>
-                  {key}
-                </Text>
-                <Text ml="xs">: {value}</Text>
-              </Group>
-            ))}
-          </Paper>
-          <Paper withBorder w={"45%"}>
-            <Text p={10}>Product Details</Text>
-            <Divider />
-            {Object.entries(productDetail).map(([key, value], index) => (
-              <Group
-                key={key}
-                noWrap
-                align="center"
-                bg={index % 2 === 0 ? "#EEEEFF" : "transparent"}
-                pl={20}
-              >
-                <Text weight={500} w={"25%"}>
-                  {key}
-                </Text>
-                <Text ml="xs">: {value}</Text>
-              </Group>
-            ))}
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                gap: "20px",
+              }}
+            >
+              {displayedSpecs.map((chunk, index) => (
+                <List key={index} listStyleType="disc" p={10}>
+                  {chunk.map((item, idx) => (
+                    <List.Item key={idx}>{item}</List.Item>
+                  ))}
+                </List>
+              ))}
+            </div>
+            <Group>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Cupiditate aspernatur magnam error nostrum eius laboriosam earum
+              numquam alias? Alias quia non sunt ullam fugit totam minima veniam
+              cumque optio similique?
+            </Group>
           </Paper>
         </Flex>
         <Group mt={45}>
@@ -260,41 +293,41 @@ function Product() {
         </Group>
       </Flex>
       {opened && (
-        <Modal 
-        opened={opened} 
-        onClose={close} 
-        withCloseButton={false} 
-        centered 
-        radius="md"
-      >
-        <Flex direction="column" spacing="md" >
-          <Flex justify="flex-end " align={"flex-end"}>
-             <RxCross2 size={20} onClick={()=>close()}/>
+        <Modal
+          opened={opened}
+          onClose={close}
+          withCloseButton={false}
+          centered
+          radius="md"
+        >
+          <Flex direction="column" spacing="md">
+            <Flex justify="flex-end " align={"flex-end"}>
+              <RxCross2 size={20} onClick={() => close()} />
+            </Flex>
+            <Text align="center" size="xl" weight={500} c="dark" fw={"bold"}>
+              Sign in to Continue
+              <Divider />
+            </Text>
+            <Group justify="center" align="center">
+              <Button
+                leftSection={<BsGoogle size={20} />}
+                color="red"
+                radius="xl"
+                size="md"
+                mt={20}
+                w={"75%"}
+                onClick={() => navigate(`/purchase`)}
+              >
+                <Text fw="bold" c="white">
+                  Continue with Google
+                </Text>
+              </Button>
+            </Group>
+            <Text c="dimmed" size="sm" mt={20}>
+              By continuing, you agree to our Terms and Conditions.
+            </Text>
           </Flex>
-          <Text align="center" size="xl" weight={500} c="dark" fw={"bold"}>
-            Sign in to Continue 
-          <Divider/>
-          </Text>
-          <Group   justify="center"
-           align="center">
-          <Button
-            leftSection={<BsGoogle size={20} />}
-            color="red" 
-            radius="xl"
-            size="md"
-            mt={20}
-            w={"75%"}
-            onClick={() => navigate(`/purchase`)}
-          >
-            <Text fw="bold" c="white">Continue with Google</Text>
-          </Button>
-          </Group>
-          <Text c="dimmed" size="sm" mt={20}>
-            By continuing, you agree to our Terms and Conditions.
-          </Text>
-        </Flex>
-      </Modal>
-      
+        </Modal>
       )}
     </Box>
   );

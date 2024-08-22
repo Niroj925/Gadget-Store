@@ -1,15 +1,9 @@
 import {  ScrollArea, rem } from '@mantine/core';
 import {
-  IconCalendarStats,
-  IconAssembly,
+  
   IconLayoutDashboard,
   IconUsers,
-  IconDeviceAnalytics,
   IconSettings,
-  IconBell,
-  IconFlag3,
-  IconTruckDelivery,
-  IconReorder,
   IconShoppingCart,
   IconCoin,
   IconChartBar,
@@ -38,11 +32,11 @@ const mockdata = [
     icon: IconBox,
     initiallyOpened: true,
     links: [
-      { label: 'All Products', link: '/products/all' },
-      { label: 'Add New Product', link: '/products/new' },
-      { label: 'Categories', link: '/products/categories' },
-      { label: 'Attributes', link: '/products/attributes' },
-      { label: 'Inventory', link: '/products/inventory' },
+      { label: 'All Products', link: 'all-product' },
+      // { label: 'Add New Product', link: 'add-product' },
+      { label: 'Categories', link: 'all-categories' },
+      // { label: 'Attributes', link: '/products/attributes' },
+      // { label: 'Inventory', link: '/products/inventory' },
     ],
   },
   {
@@ -166,11 +160,9 @@ const mockdata = [
 
 export function SideBar() {
   const [openedLink, setOpenedLink] = useState(null);
-
   const toggleLink = (label) => {
     setOpenedLink(openedLink === label ? null : label);
   };
-  // const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
   const links=  mockdata.map((item) => (
     <LinksGroup
       {...item}

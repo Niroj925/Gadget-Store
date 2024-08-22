@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { SideBar } from "../component/sidebar/Sidebar";
 import Header from "../component/header/Header";
+import { SideBar } from "../component/sidebar/Sidebar";
 
 const DashboardLayout = () => {
   const [opened, { toggle }] = useDisclosure();
