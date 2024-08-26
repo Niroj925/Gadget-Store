@@ -27,7 +27,7 @@ function AllProduct() {
           <Table.Td>{element.price}</Table.Td>
           <Table.Td>{element.stock}</Table.Td>
           <Table.Td>{element.status}</Table.Td>
-          <Table.Td><Anchor>{element.action}</Anchor></Table.Td>
+          <Table.Td><Anchor onClick={()=>navigate('/dashboard/edit-product')}>{element.action}</Anchor></Table.Td>
 
         </Table.Tr>
       ));
