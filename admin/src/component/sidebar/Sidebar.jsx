@@ -15,7 +15,8 @@ import {
   IconHeadset,
   IconUserCircle,
   IconFileReport,
-  IconBox
+  IconBox,
+  IconCategoryFilled
 } from '@tabler/icons-react';
 import classes from './sidebar.module.css';
 import { LinksGroup } from '../linksGroup/LinkGroup';
@@ -34,58 +35,66 @@ const mockdata = [
     links: [
       { label: 'All Products', link: 'all-product' },
       // { label: 'Add New Product', link: 'add-product' },
-      { label: 'Categories', link: 'all-categories' },
+      // { label: 'Categories', link: 'all-categories' },
       // { label: 'Attributes', link: '/products/attributes' },
       // { label: 'Inventory', link: '/products/inventory' },
+    ],
+  },
+  {
+    label: 'Category',
+    icon: IconCategoryFilled,
+    initiallyOpened: true,
+    links: [
+      { label: 'All Categories', link: 'all-categories' },
     ],
   },
   {
     label: 'Orders',
     icon: IconShoppingCart,
     links: [
-      { label: 'All Orders', link: '/orders/all' },
+      { label: 'All Orders', link: 'orders' },
       { label: 'Pending', link: '/orders/pending' },
       { label: 'Processing', link: '/orders/processing' },
       { label: 'Completed', link: '/orders/completed' },
       { label: 'Returned', link: '/orders/returned' },
     ],
   },
-  {
-    label: 'Customers',
-    icon: IconUsers,
-    links: [
-      { label: 'All Customers', link: '/customers/all' },
-      { label: 'Add New Customer', link: '/customers/new' },
-      { label: 'Customer Groups', link: '/customers/groups' },
-    ],
-  },
-  {
-    label: 'Sales',
-    icon: IconCoin,
-    links: [
-      { label: 'Sales Report', link: '/sales/report' },
-      { label: 'Discounts', link: '/sales/discounts' },
-      { label: 'Coupons', link: '/sales/coupons' },
-    ],
-  },
-  {
-    label: 'Marketing',
-    icon: IconChartBar,
-    links: [
-      { label: 'Campaigns', link: '/marketing/campaigns' },
-      { label: 'Email Marketing', link: '/marketing/email' },
-      { label: 'SEO Tools', link: '/marketing/seo' },
-    ],
-  },
-  {
-    label: 'Content',
-    icon: IconArticle,
-    links: [
-      { label: 'Pages', link: '/content/pages' },
-      { label: 'Blog Posts', link: '/content/blog' },
-      { label: 'Banners', link: '/content/banners' },
-    ],
-  },
+  // {
+  //   label: 'Customers',
+  //   icon: IconUsers,
+  //   links: [
+  //     { label: 'All Customers', link: '/customers/all' },
+  //     { label: 'Add New Customer', link: '/customers/new' },
+  //     { label: 'Customer Groups', link: '/customers/groups' },
+  //   ],
+  // },
+  // {
+  //   label: 'Sales',
+  //   icon: IconCoin,
+  //   links: [
+  //     { label: 'Sales Report', link: '/sales/report' },
+  //     { label: 'Discounts', link: '/sales/discounts' },
+  //     { label: 'Coupons', link: '/sales/coupons' },
+  //   ],
+  // },
+  // {
+  //   label: 'Marketing',
+  //   icon: IconChartBar,
+  //   links: [
+  //     { label: 'Campaigns', link: '/marketing/campaigns' },
+  //     { label: 'Email Marketing', link: '/marketing/email' },
+  //     { label: 'SEO Tools', link: '/marketing/seo' },
+  //   ],
+  // },
+  // {
+  //   label: 'Content',
+  //   icon: IconArticle,
+  //   links: [
+  //     { label: 'Pages', link: '/content/pages' },
+  //     { label: 'Blog Posts', link: '/content/blog' },
+  //     { label: 'Banners', link: '/content/banners' },
+  //   ],
+  // },
   {
     label: 'Analytics',
     icon: IconChartLine,
@@ -105,28 +114,28 @@ const mockdata = [
       { label: 'Fulfillment', link: '/shipping/fulfillment' },
     ],
   },
-  {
-    label: 'Payments',
-    icon: IconCreditCard,
-    links: [
-      { label: 'Payment Methods', link: '/payments/methods' },
-      { label: 'Transactions', link: '/payments/transactions' },
-      { label: 'Refunds', link: '/payments/refunds' },
-    ],
-  },
+  // {
+  //   label: 'Payments',
+  //   icon: IconCreditCard,
+  //   links: [
+  //     { label: 'Payment Methods', link: '/payments/methods' },
+  //     { label: 'Transactions', link: '/payments/transactions' },
+  //     { label: 'Refunds', link: '/payments/refunds' },
+  //   ],
+  // },
   {
     label: 'Reviews',
     icon: IconStar,
     link: '/reviews',
   },
-  {
-    label: 'Support',
-    icon: IconHeadset,
-    links: [
-      { label: 'Tickets', link: '/support/tickets' },
-      { label: 'FAQs', link: '/support/faqs' },
-    ],
-  },
+  // {
+  //   label: 'Support',
+  //   icon: IconHeadset,
+  //   links: [
+  //     { label: 'Tickets', link: '/support/tickets' },
+  //     { label: 'FAQs', link: '/support/faqs' },
+  //   ],
+  // },
   {
     label: 'Staffs',
     icon: IconUserCircle,
