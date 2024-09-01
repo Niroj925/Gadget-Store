@@ -1,10 +1,11 @@
 import { Flex, Paper,Box,Group,Image,Text, Divider, Button, List, Center, Rating, Progress } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks';
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function Product() {
   
-  
+  const navigate=useNavigate();
   const [specs, setSpecs] = useState([
     "ipX4 Water and Sweat Resistant",
     "Punchy Heavy Bass",
@@ -43,13 +44,13 @@ function Product() {
   // Determine which specs to display based on screen size
   const displayedSpecs =
     columns === 1 ? [specs] : columns === 2 ? tabletSpecs : chunkedSpecs;
-
+   
 
   return (
     <Paper withBorder={true} p={10}>
       <Flex justify={"space-between"}>
         <Text>Product Details</Text>
-        <Button>Edit Product</Button>
+        <Button onClick={()=>navigate('/dashboard/edit-product')}>Edit Product</Button>
       </Flex>
       <Divider mt={10} mb={10}/>
       <Flex direction={"column"} gap={20}>
@@ -97,15 +98,14 @@ function Product() {
         <Flex direction={"column"} gap={20}>
           <Paper withBorder>
             
-             <Text>Name  </Text>
-             <Text>Price  </Text>
-             <Text>Category  </Text>
+             <Text>Name</Text>
+             <Text>Price </Text>
+             <Text>Category </Text>
              <Text>Brand  </Text>
              <Text>Colors  </Text>
             
           </Paper>
-          <Paper withBorder>
-           
+          <Paper withBorder>   
           <Text>Stocks  </Text>
           <Text>Sales  </Text>
           <Text>Return  </Text>
