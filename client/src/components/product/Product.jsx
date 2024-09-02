@@ -44,7 +44,7 @@ function Product() {
     waterResistance: "no",
   });
 
-  const [specs, setSpecs] = useState([
+  const [specs] = useState([
     "ipX4 Water and Sweat Resistant",
     "Punchy Heavy Bass",
     "Immersive Sound Quality",

@@ -60,7 +60,7 @@ function Dashboard() {
   ];
   return (
     <Flex direction={"column"}>
-      <Flex direction={"row"} wrap={"wrap"} gap={20}>
+      <Flex  wrap={"wrap"} gap={20}>
         <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
@@ -142,7 +142,7 @@ function Dashboard() {
           </Flex>
         </Paper>
       </Flex>
-      <Flex gap={20} mt={20}>
+      <Flex gap={20} mt={20} >
         <Paper w={"100%"} p={10}>
           <Box
             sx={{
@@ -268,7 +268,7 @@ function Dashboard() {
         </Paper>
       </Flex>
 
-      <Flex gap={20} mt={20}>
+      <Flex gap={20} mt={20} >
         <Paper
           w={"100%"}
           style={{
