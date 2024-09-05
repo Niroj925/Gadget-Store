@@ -19,6 +19,7 @@ export function LinksGroup({ icon: Icon, label, links, link, isOpened, toggle })
             className={classes.link}
             onClick={(event) => navigate(link.link)}
             p={5}
+            c={'textcolor.0'} fw={500}
           >
             {link.label}
           </Text>
@@ -35,7 +36,7 @@ export function LinksGroup({ icon: Icon, label, links, link, isOpened, toggle })
             <ThemeIcon variant="light" size={30}>
               <Icon size="1.1rem" />
             </ThemeIcon>
-            <Box ml="md">{label}</Box>
+            <Box ml="md" c={'textcolor.0'} fw={500}>{label}</Box>
           </Box>
           {hasLinks && (
             <ChevronIcon

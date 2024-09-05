@@ -66,17 +66,17 @@ function Dashboard() {
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700}>
+            <Text size="20px" fw={700} >
               Total Sales
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700}>
+            <Text size="25px" fw={700} >
               $75000
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
-              <Text>32.4%</Text>
+              <Text fw={700 } >32.4%</Text>
               <IconArrowNarrowUp color="green"/>
             </Flex>
           </Flex>
@@ -86,17 +86,17 @@ function Dashboard() {
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700}>
+            <Text size="20px" fw={700} >
               Total Orders
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700}>
+            <Text size="25px" fw={700} >
               354
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
-              <Text>32.4%</Text>
+              <Text  fw={700}>32.4%</Text>
               <IconArrowNarrowUp  color="green"/>
             </Flex>
           </Flex>
@@ -106,17 +106,17 @@ function Dashboard() {
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700}>
+            <Text size="20px" fw={700} >
               Total Customers
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700}>
+            <Text size="25px" fw={700} >
               345
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
-              <Text>32.4%</Text>
+              <Text fw={700} >32.4%</Text>
               <IconArrowNarrowUp color="green" />
             </Flex>
           </Flex>
@@ -124,19 +124,19 @@ function Dashboard() {
         <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
-          </Flex>
+          </Flex> 
           <Paper mt={-10}>
-            <Text size="20px" fw={700}>
+            <Text size="20px" fw={700} >
               Total Products
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700}>
+            <Text size="25px" fw={700} >
               367
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
-              <Text>32.4%</Text>
+              <Text  fw={700}>32.4%</Text>
               <IconArrowNarrowDown color="red" />
             </Flex>
           </Flex>
@@ -152,39 +152,39 @@ function Dashboard() {
               gap: "25px",
             }}
           >
-            <Text size="xl" weight="bold">
+            <Text size="xl" fw={700}  >
               Order Statistics
             </Text>
             <Text size="sm" c="gray.5">
               30 days
             </Text>
             <Center>
-              <Text size="xl" weight="bold">
+              <Text size="xl"  fw={700}>
                 21,95,230
               </Text>
             </Center>
             <Flex direction={"column"} gap={20} mt={20}>
               <Paper>
-                <Text>Processing (24)</Text>
+                <Text >Processing (24)</Text>
                 <Progress value={24} color="blue" label="Processing (24)" />
               </Paper>
               <Paper>
-                <Text>Pending (285)</Text>
+                <Text >Pending (285)</Text>
                 <Progress value={285} color="gray.5" label="Pending (285)" />
               </Paper>
               <Paper>
-                <Text>Completed (865)</Text>
+                <Text >Completed (865)</Text>
                 <Progress value={865} color="green" label="Completed (865)" />
               </Paper>
               <Paper>
-                <Text>Cancelled (309)</Text>
+                <Text >Cancelled (309)</Text>
                 <Progress value={309} color="red" label="Cancelled (309)" />
               </Paper>
             </Flex>
           </Box>
         </Paper>
         <Paper w={"100%"} p={10}>
-          <Text size="20px">Order Success Rate</Text>
+          <Text size="20px"  fw={700}>Order Success Rate</Text>
           <Flex mt={45} gap={20}>
             <Flex direction={"column"} gap={20}>
               <RingProgress
@@ -222,47 +222,47 @@ function Dashboard() {
           </Flex>
         </Paper>
         <Paper w={"100%"} p={10}>
-          <Text>Recent Activies</Text>
+          <Text  fw={700}>Recent Activies</Text>
           <Flex direction={"column"} mt={20}>
             <Flex justify={"space-between"} gap={10}>
               <Group>
                 <Paper w={10} h={10} radius={"50%"} bg={"red"} />
-                <Text>One order Delivered</Text>
+                <Text  fw={700}>One order Delivered</Text>
               </Group>
               <Center>
-                <Text size="10px">14 mins ago</Text>
+                <Text size="10px" c={"gray"}>14 mins ago</Text>
               </Center>
             </Flex>
             <Group>
-              <Text>A new item has been sold with good review and rating</Text>
+              <Text >A new item has been sold with good review and rating</Text>
             </Group>
           </Flex>
           <Flex direction={"column"} mt={20}>
             <Flex justify={"space-between"} gap={10}>
               <Group>
                 <Paper w={10} h={10} radius={"50%"} bg={"blue"} />
-                <Text>One order Delivered</Text>
+                <Text  fw={700}>One order Delivered</Text>
               </Group>
               <Center>
                 <Text size="10px">14 mins ago</Text>
               </Center>
             </Flex>
             <Group>
-              <Text>A new item has been sold with good review and rating</Text>
+              <Text  >A new item has been sold with good review and rating</Text>
             </Group>
           </Flex>
           <Flex direction={"column"} mt={20}>
             <Flex justify={"space-between"} gap={10}>
               <Group>
                 <Paper w={10} h={10} radius={"50%"} bg={"green"} />
-                <Text>One order Delivered</Text>
+                <Text  fw={700}>One order Delivered</Text>
               </Group>
               <Center>
-                <Text size="10px">14 mins ago</Text>
+                <Text size="10px" >14 mins ago</Text>
               </Center>
             </Flex>
             <Group>
-              <Text>A new item has been sold with good review and rating</Text>
+              <Text >A new item has been sold with good review and rating</Text>
             </Group>
           </Flex>
         </Paper>
@@ -280,7 +280,7 @@ function Dashboard() {
           }}
         >
           <Flex direction={"column"} justify={"flex-start"} align={"flex-start"} ml={50} mb={10} >
-            <Text c={'primary.3'}>Earning Statics</Text>
+            <Text  fw={700}>Earning Statics</Text>
             <Text>7 Days</Text>
           </Flex>
           <BarChart
@@ -304,7 +304,7 @@ function Dashboard() {
           }}
         >
           <Flex direction={"column"} justify={"flex-start"} align={"flex-start"} ml={50} mb={10} >
-            <Text>Earning Statics</Text>
+            <Text  fw={700}>Earning Statics</Text>
             <Text>7 Days</Text>
           </Flex>
           <AreaChart
@@ -327,7 +327,7 @@ function Dashboard() {
           }}
         >
           <Flex direction={"column"} justify={"flex-start"} align={"flex-start"} ml={50} mb={10} >
-            <Text>Sales History</Text>
+            <Text  fw={700 }>Sales History</Text>
             <Text>7 Days</Text>
           </Flex>
           <BarChart

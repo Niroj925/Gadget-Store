@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor} from "@mantine/core" 
-import { IconFilter, IconPlus } from '@tabler/icons-react'
+import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor, Menu} from "@mantine/core" 
+import { IconClock2, IconClockHour3, IconFilter, IconPlus, IconRuler, IconRulerMeasure } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom';
 function Shipping() {
 
@@ -66,11 +66,21 @@ function Shipping() {
     <Paper withBorder>
      <Flex direction={"row"} justify={"space-between"} align={"center"} p={10}>
       <Group>
-        <Text>All Orders</Text>
+        <Text>Delivery Orders</Text>
       </Group>
-      <Flex gap={20}>
+      {/* <Flex gap={20}>
         <Button variant='outline' leftSection={<IconFilter />}>Filter</Button>     
-    </Flex>
+    </Flex> */}
+    <Menu shadow="md" width={200}>
+          <Menu.Target>
+        <Button variant='outline' leftSection={<IconFilter />}>Filter</Button>     
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item leftSection={<IconClockHour3 size={20} />}>Order date</Menu.Item>
+            <Menu.Item leftSection={<IconRulerMeasure size={20} />}> Distance </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
      </Flex>
      <Divider/>
      <Box>

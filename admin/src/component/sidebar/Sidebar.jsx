@@ -33,8 +33,8 @@ const mockdata = [
     icon: IconBox,
     initiallyOpened: true,
     links: [
-      { label: 'All Products', link: 'all-product' },
-      // { label: 'Add New Product', link: 'add-product' },
+      { label: 'Products List', link: 'all-product' },
+      { label: 'Products', link: 'products' },
       // { label: 'Categories', link: 'all-categories' },
       // { label: 'Attributes', link: '/products/attributes' },
       // { label: 'Inventory', link: '/products/inventory' },
@@ -44,30 +44,23 @@ const mockdata = [
     label: 'Category',
     icon: IconCategoryFilled,
     initiallyOpened: true,
-    links: [
-      { label: 'All Categories', link: 'all-categories' },
-    ],
+    link:'all-categories'
   },
   {
     label: 'Orders',
     icon: IconShoppingCart,
-    links: [
-      { label: 'All Orders', link: 'orders' },
-      { label: 'Pending', link: '/orders/pending' },
-      { label: 'Processing', link: '/orders/processing' },
-      { label: 'Completed', link: '/orders/completed' },
-      { label: 'Returned', link: '/orders/returned' },
-    ],
+    link:'orders'
   },
-  // {
-  //   label: 'Customers',
-  //   icon: IconUsers,
-  //   links: [
-  //     { label: 'All Customers', link: '/customers/all' },
-  //     { label: 'Add New Customer', link: '/customers/new' },
-  //     { label: 'Customer Groups', link: '/customers/groups' },
-  //   ],
-  // },
+  {
+    label: 'Customers',
+    icon: IconUsers,
+    link:'customers'
+    // links: [
+    //   { label: 'All Customers', link: '/customers/all' },
+    //   { label: 'Add New Customer', link: '/customers/new' },
+    //   { label: 'Customer Groups', link: '/customers/groups' },
+    // ],
+  },
   // {
   //   label: 'Sales',
   //   icon: IconCoin,
@@ -95,24 +88,25 @@ const mockdata = [
   //     { label: 'Banners', link: '/content/banners' },
   //   ],
   // },
-  {
-    label: 'Analytics',
-    icon: IconChartLine,
-    links: [
-      { label: 'Overview', link: '/analytics/overview' },
-      { label: 'Sales Analytics', link: '/analytics/sales' },
-      { label: 'Customer Analytics', link: '/analytics/customers' },
-      { label: 'Product Performance', link: '/analytics/products' },
-    ],
-  },
+  // {
+  //   label: 'Analytics',
+  //   icon: IconChartLine,
+  //   links: [
+  //     { label: 'Overview', link: '/analytics/overview' },
+  //     { label: 'Sales Analytics', link: '/analytics/sales' },
+  //     { label: 'Customer Analytics', link: '/analytics/customers' },
+  //     { label: 'Product Performance', link: '/analytics/products' },
+  //   ],
+  // },
   {
     label: 'Shipping',
     icon: IconTruck,
-    links: [
-      { label: 'Shipping Methods', link: '/shipping/methods' },
-      { label: 'Shipping Zones', link: '/shipping/zones' },
-      { label: 'Fulfillment', link: '/shipping/fulfillment' },
-    ],
+    link:'shipping'
+    // links: [
+    //   { label: 'Shipping Methods', link: '/shipping/methods' },
+    //   { label: 'Shipping Zones', link: '/shipping/zones' },
+    //   { label: 'Fulfillment', link: '/shipping/fulfillment' },
+    // ],
   },
   // {
   //   label: 'Payments',
@@ -123,11 +117,11 @@ const mockdata = [
   //     { label: 'Refunds', link: '/payments/refunds' },
   //   ],
   // }, 
-  {
-    label: 'Reviews',
-    icon: IconStar,
-    link: '/reviews',
-  },
+  // {
+  //   label: 'Reviews',
+  //   icon: IconStar,
+  //   link: '/reviews',
+  // },
   // {
   //   label: 'Support',
   //   icon: IconHeadset,
@@ -139,10 +133,11 @@ const mockdata = [
   {
     label: 'Staffs',
     icon: IconUserCircle,
-    links: [
-      { label: 'All Users', link: '/users/all' },
-      { label: 'Roles & Permissions', link: '/users/roles' },
-    ],
+    link:'staff'
+    // links: [
+    //   { label: 'All Users', link: '/users/all' },
+    //   { label: 'Roles & Permissions', link: '/users/roles' },
+    // ],
   },
   {
     label: 'Settings',

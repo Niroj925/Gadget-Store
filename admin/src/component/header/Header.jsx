@@ -22,8 +22,10 @@ import {
   IconUser,
   IconLogout,
 } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate=useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
   return (
     <Flex justify={"flex-end"} p={15} gap={10} direction={"row"}>
@@ -44,7 +46,7 @@ function Header() {
           />
         )}
       </Group>
-      <Group gap={0}>
+      <Group gap={0} onClick={()=>navigate('/dashboard/orders')}>
         <IconBell size={30} color="grey" />
         <Flex
           bg={"red"}

@@ -6,6 +6,11 @@ import {
   Paper,
   Switch,
   Text,
+  Image,
+  Center,
+  Modal,
+  TextInput,
+  Autocomplete
 } from "@mantine/core";
 import {
   IconArrowAutofitDown,
@@ -17,6 +22,7 @@ import {
 import React, { useCallback, useState } from "react";
 import jsPDF from 'jspdf';
 import { useNavigate } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 
 
 function Order() {
@@ -37,6 +43,7 @@ const navigate=useNavigate();
   const [orderFullFillType,setOrderFullFillType]=useState('');
     const [orderOpen, setOrderOpen] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [opened, { open: paymentAcceptModelOpen, close }] = useDisclosure(false);
 
   const handleSwitchChange = useCallback((event) => {
      console.log(event.currentTarget.value)
@@ -112,12 +119,33 @@ const navigate=useNavigate();
           </Group>
         ))}
       </Paper>
-      {/* </Flex> */}
 
-      <Paper withBorder mt={10} p={10}>
-        <Text>Order Fullfillment</Text>
-        <Divider />
-        <Paper withBorder>
+      <Paper withBorder mt={20}>
+        <Text p={10}>Payment Details</Text>
+        <Divider/>
+        <Paper>
+          <Flex justify={"space-between"} align={"center"} p={10}>
+            <Text>Verify the Payment</Text>
+          
+          <Flex justify={"flex-end"} gap={20}>
+            <Button bg={"green"} >Accept</Button>
+            <Button bg={"red"} onClick={()=>paymentAcceptModelOpen()}>Reject</Button>
+          </Flex>
+          </Flex>
+          <Divider mt={5}/>
+          <Center p={10}>
+
+          <Image
+                src="../image/img.jpeg"
+                alt="Large"
+                style={{ width: "50%" }}
+                radius={"md"}
+              />
+          </Center>
+        </Paper>
+
+      </Paper>
+        <Paper withBorder mt={20}>
           <Flex
             p={10}
             justify={"space-between"}
@@ -160,8 +188,29 @@ const navigate=useNavigate();
         </Flex>
       )}
     </Flex>
-        </Paper>
       </Paper>
+      <Modal opened={opened} onClose={close}>
+        <Center>
+          {/* <CgDanger size={25} color="red" /> */}
+          
+        </Center>
+        <Text mt={10} fw={600} ta="center">
+          Are you sure you want to Reject?
+        </Text>
+        <Text mt={10} maw={400} ta="center" size="sm">
+          The action of reject cannot be undone. Are you sure you want to
+          reject the payment for this order?
+        </Text>
+        <Autocomplete mt={10} placeholder="Reason of order payment reject..." 
+        data={[
+          'Insufficient Payment',
+           'Blur image',
+            'Not genuine proof', 
+            ]}/>
+        <Group mt={20} justify="center">
+          <Button onClick={()=>close()}>Confirm</Button>
+        </Group>
+      </Modal>
     </Paper>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor, Menu} from "@mantine/core" 
 import { IconFilter, IconPlus } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom';
-function AllOrders() {
+function Staff() {
 
    const navigate=useNavigate();
    const [activePage, setPage] = useState(1);
@@ -49,25 +49,8 @@ function AllOrders() {
   return (
     <Paper withBorder>
      <Flex direction={"row"} justify={"space-between"} align={"center"} p={10}>
-      <Group>
-        <Text>{paymentStatus}</Text>
-      </Group>
-    <Group>
-    <Menu shadow="md" width={200}>
-          <Menu.Target>
-            <Button variant='outline' leftSection={<IconFilter />}>Filter</Button> 
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            {/* <Menu.Item>All Orders</Menu.Item> */}
-            <Menu.Item onClick={()=>setPaymentStatus('pending')} >Pending</Menu.Item>
-            <Menu.Item onClick={()=>setPaymentStatus('processing')} >Processing</Menu.Item>
-            <Menu.Item onClick={()=>setPaymentStatus('completed')} >Completed</Menu.Item>
-            <Menu.Item onClick={()=>setPaymentStatus('returned')} >Returned</Menu.Item>
-            <Menu.Item onClick={()=>setPaymentStatus('cancelled')} >Cancelled</Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-    </Group>
+        <Text>List of Staffs</Text>
+        <Button leftSection={<IconPlus />} onClick={()=>navigate('/dashboard/add-staff')}>Add Staff</Button>
      </Flex>
      <Divider/>
      <Box>
@@ -92,4 +75,4 @@ function AllOrders() {
   )
 }
 
-export default AllOrders
+export default Staff

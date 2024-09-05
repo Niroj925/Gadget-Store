@@ -38,7 +38,6 @@ function AllProduct() {
         <Text>All Products</Text>
       </Group>
       <Flex gap={20}>
-        <Button variant='outline' leftSection={<IconFilter />}>Filter</Button>     
         <Button  onClick={()=>navigate('/dashboard/add-product')} leftSection={<IconPlus/>}>Add Product</Button>
       </Flex>
      </Flex>

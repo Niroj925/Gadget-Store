@@ -31,7 +31,6 @@ function AllCategory() {
         <Text>All Products</Text>
       </Group>
       <Flex gap={20}>
-        <Button variant='outline' leftSection={<IconFilter />}>Filter</Button>     
         <Button  onClick={()=>navigate('/dashboard/add-category')} leftSection={<IconPlus/>}>Add-Categories</Button>
       </Flex>
      </Flex>
