@@ -1,86 +1,64 @@
-import { Text, Container, ActionIcon, Group, rem } from '@mantine/core';
-import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
-import classes from './Footer.module.css';
+import { Container, Grid, Text, Anchor, Group, Button, Input, Image, Paper, Box, Flex, Divider, TextInput } from '@mantine/core';
+import { FaFacebookF, FaTwitter, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa';
+import { IoLogoYoutube } from 'react-icons/io5';
 
-const data = [
-  {
-    title: 'About',
-    links: [
-      { label: 'Features', link: '#' },
-      { label: 'Pricing', link: '#' },
-      { label: 'Support', link: '#' },
-      { label: 'Forums', link: '#' },
-    ],
-  },
-  {
-    title: 'Project',
-    links: [
-      { label: 'Contribute', link: '#' },
-      { label: 'Media assets', link: '#' },
-      { label: 'Changelog', link: '#' },
-      { label: 'Releases', link: '#' },
-    ],
-  },
-  {
-    title: 'Community',
-    links: [
-      { label: 'Join Discord', link: '#' },
-      { label: 'Follow on Twitter', link: '#' },
-      { label: 'Email newsletter', link: '#' },
-      { label: 'GitHub discussions', link: '#' },
-    ],
-  },
-];
-
-export function FooterLinks() {
-  const groups = data.map((group) => {
-    const links = group.links.map((link, index) => (
-      <Text
-      key={index}
-      className={classes.link}
-      component="a"
-      href={link.link}
-      onClick={(e)=>e.preventDefault()}
-      >{link.label}</Text>
-    ));
-
-    return (
-      <div className={classes.wrapper} key={group.title}>
-        <Text className={classes.title}>{group.title}</Text>
-        {links}
-      </div>
-    );
-  });
-
+function FooterLinks() {
   return (
-    <footer className={classes.footer}>
-      <Container className={classes.inner}>
-        <div className={classes.logo}>
-          {/* <MantineLogo size={30} /> */}
-          <Text>Logo</Text>
-          <Text size="xs" c="dimmed" className={classes.description}>
-            Build fully functional accessible web applications faster than ever
-          </Text>
-        </div>
-        <div className={classes.groups}>{groups}</div>
+    <Box w={"100%"} bg={'#363636'}>
+      <Flex p={20} justify={'space-around'}>
+        <Flex justify={'space-around'} gap={45}>
+         <Flex direction={'column'} >
+          <Text c={'white'}>Quick Links</Text>
+         <Anchor href='#' c={'dimmed'}>Shop</Anchor>
+         <Anchor href='#'  c={'dimmed'}>About us</Anchor>
+         <Anchor href='#'  c={'dimmed'}>Contact us</Anchor>
+         <Anchor href='#'  c={'dimmed'}>FAQ's</Anchor>
+         <Anchor href='#'  c={'dimmed'}>Shipping & Returns</Anchor>
+         
+         </Flex>
+         <Flex direction={'column'}>
+         <Text c={'white'}>Customer Service</Text>
+         <Anchor href='#'  c={'dimmed'}>Help Center</Anchor>
+         <Anchor href='#'  c={'dimmed'}>Shipping Information</Anchor>
+         <Anchor href='#' c={'dimmed'} >Return & Exchange</Anchor>
+         <Anchor href='#' c={'dimmed'} >Contact Support</Anchor>
+         </Flex>
+        </Flex>
+        <Flex direction={"column"} gap={20}>
+       <Box>
+        <Text c={'white'}>Social Media</Text>
+        <Flex gap={20}>
+          <FaFacebookF color='white' size={25}/>
+          <FaInstagram color='white' size={25}/>
+          <IoLogoYoutube color='white' size={25} />
+          <FaLinkedin color='white' size={25}/>
+          <FaTiktok color='white' size={25}/>
+        </Flex>
+       </Box>
+       <Box>
+        <Text c={'white'}>Stay Updated</Text>
+        <Text c={'dimmed'}>Subscribe to receive the latest news and exclusive offers.</Text>
+        <Flex gap={10}>
+          <TextInput placeholder='Enter your email..'></TextInput>
+          <Button bg={'#414977'}>Subscribe</Button>
+        </Flex>
+       </Box>
+        </Flex>
+      </Flex>
+      <Divider style={{borderColor:'gray'}} />
+      <Container>
+        <Grid>
+          <Grid.Col md={6}>
+            <Text size="sm" color="dimmed">&copy; 2024 YourCompany. All rights reserved.</Text>
+          </Grid.Col>
+          <Grid.Col md={6} style={{ textAlign: 'right' }}>
+            <Anchor href="/terms" size="sm" c={'dimmed'}>Terms & Conditions</Anchor>
+            <Anchor href="/privacy" size="sm" ml="lg" c={'dimmed'}>Privacy Policy</Anchor>
+          </Grid.Col>
+        </Grid>
       </Container>
-      <Container className={classes.afterFooter}>
-        <Text c="dimmed" size="sm">
-          © 2020 mantine.dev. All rights reserved.
-        </Text>
-
-        <Group gap={0} className={classes.social} justify="flex-end" wrap="nowrap">
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandTwitter style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandYoutube style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandInstagram style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
-          </ActionIcon>
-        </Group>
-      </Container>
-    </footer>
+      </Box>
   );
 }
+
+export default FooterLinks;

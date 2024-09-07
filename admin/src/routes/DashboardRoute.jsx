@@ -15,6 +15,7 @@ import Product from "../pages/dashboard/product/Product";
 import Products from "../pages/dashboard/product/Products";
 import Shipping from "../pages/dashboard/shipping/shipping";
 import AddStaff from "../pages/dashboard/staff/AddStaff";
+import EditStaff from "../pages/dashboard/staff/EditStaff";
 import Staff from "../pages/dashboard/staff/Staff";
 
 
@@ -82,6 +83,10 @@ const DashboardRoutes = {
       {
         path: "add-staff",
         element: <AddStaff/>,
+      },
+      {
+        path: "edit-staff",
+        element: <EditStaff/>,
       },
       {
         path: "customers",

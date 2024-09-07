@@ -5,8 +5,7 @@ import Categories from '../../components/categories/Categories'
 import Popular from '../../components/popular/Popular'
 import Services from '../../components/services/Services'
 import NewProduct from '../../components/newProduct/NewProduct'
-import { FooterLinks } from '../../components/layout/Footer'
-import Navbar from '../../components/layout/Navbar'
+import FooterLinks from '../../components/layout/Footer'
 
 function Home() {
   return (
@@ -16,7 +15,7 @@ function Home() {
       <NewProduct/>
       <Popular/>
       <Services/>
-      <FooterLinks/>
+     <FooterLinks/>
     </Box>
   )
 }

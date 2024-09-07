@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { Table, Checkbox, Paper, Flex, Button,Text, Divider } from '@mantine/core';
+import { Table, Checkbox, Paper, Flex, Button,Text, Divider, TextInput, Center, Box, ScrollArea } from '@mantine/core';
+import { IconMapPin, IconRouteAltRight, IconSearch } from '@tabler/icons-react';
 
 const elements = [
   { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
@@ -12,7 +13,8 @@ const elements = [
 
 function Delivery() {
   const [selectedRows, setSelectedRows] = useState([]);
-  
+  const [btnOpen,setBtnOpen]=useState(false);
+  const [searchOpen, setSearchOpen]=useState(true);
   const orderDeliveries = [
     {
       id:'1',
@@ -48,31 +50,34 @@ function Delivery() {
     },
 
   ];
-  const handleSelect=(event)=>{
-    setSelectedRows(
-      event.currentTarget.checked
-        ? [...selectedRows, event.target.value]
-        : selectedRows.filter((position) => position !==  event.target.value.id)
-    )
-  }
+  const handleSelect = (event, id) => {
+    setBtnOpen(!btnOpen);
+    if (event.currentTarget.checked) {
+      // Add the row's ID to the selectedRows array
+      setSearchOpen(false)
+      setSelectedRows([...selectedRows, id]);
+    } else {
+      // Remove the row's ID from the selectedRows array
+      setSearchOpen(true)
+      setSelectedRows(selectedRows.filter((selectedId) => selectedId !== id));
+    }
+    console.log(selectedRows);
+  };
+  
 
   const rows = orderDeliveries.map((element) => (
     <Table.Tr
-      key={element.name}
-      bg={selectedRows.includes(element.position) ? 'var(--mantine-color-blue-light)' : undefined}
+      key={element.id} // use element.id as key, not element.name
+      bg={selectedRows.includes(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
     >
       <Table.Td>
         <Checkbox
           aria-label="Select row"
-          value={element}
-          checked={selectedRows.includes(element.id)}
-          onChange={(e)=>handleSelect(e)
-           
-        
-          }
+          value={element.id} // set the value as element.id, not the entire element object
+          checked={selectedRows.includes(element.id)} // check based on the id
+          onChange={(e) => handleSelect(e, element.id)} // pass the event and id to handleSelect
         />
       </Table.Td>
-      {/* <Table.Td>{element.id}</Table.Td> */}
       <Table.Td>{element.contact}</Table.Td>
       <Table.Td>{element.customerName}</Table.Td>
       <Table.Td>{element.orderName}</Table.Td>
@@ -80,18 +85,62 @@ function Delivery() {
       <Table.Td>{element.location}</Table.Td>
     </Table.Tr>
   ));
+  
 
   return (
     <Paper withBorder p={20}>
+      <Center>
+      <Text fw={700} size='25px'>Delivery Order Lists</Text>
+      </Center>
+      {/* <Divider/> */}
+       <Paper withBorder p={10} mt={10}>
       <Flex justify={'space-between'}>
-          <Text fw={700} size='25px'>Delivery Order Lists</Text>
+        
+          {/* <TextInput
+            rightSection={
+              <IconSearch />
+            }
+            radius={20}
+            placeholder="Search contact..."
+          ></TextInput> */}
+              {(searchOpen && selectedRows.length<=0) ? (
+          <TextInput
+            rightSection={
+              <IconSearch />
+            }
+            radius={20}
+            placeholder="Search Contact..."
+          ></TextInput>
+        ) : (
+          <IconSearch
+            onClick={() => setSearchOpen(!searchOpen)}
+            style={{ color: "grey" }}
+            size={30}
+          />
+        )}
+          {
+            selectedRows.length>0?(
           <Flex gap={10}>
             <Button bg={'green'} >Accepted</Button>
             <Button bg={'red'}>Not Available</Button> 
           </Flex>
+            ):(
+              <Flex gap={20} justify={'center'} align={'center'}>
+                <IconMapPin size={35} color='#102a43'/>
+                <Paper w={40}  h={40} radius={"50%"} bg={'blue'} style={{display:'flex', justifyContent:"center",alignItems:"center"}} >
+                
+                <IconRouteAltRight  color='white'/>
+
+                </Paper>
+                </Flex>
+            )
+          }
+
       </Flex>
-      <Divider mt={10} mb={10}/>
-      <Paper withBorder >
+      </Paper>
+      {/* <Divider mt={10} mb={10}/> */}
+      <Paper withBorder mt={10}>
+        <ScrollArea>
     <Table style={{overflowX:'scroll',flex:1}}>
       <Table.Thead>
         <Table.Tr>
@@ -106,6 +155,7 @@ function Delivery() {
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
     </Table>
+    </ScrollArea>
     </Paper>
     </Paper>
   );

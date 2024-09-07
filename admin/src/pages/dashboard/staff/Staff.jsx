@@ -11,39 +11,45 @@ function Staff() {
   console.log(activePage);
   const orders = [
     {
-      orderId: 'ORD001',
-      customerName: 'John Doe',
-      productName:'EarPhone',
-      date: '2024-08-19',
-      action: 'Details',
+      id:'1',
+      name: 'John Doe',
+      email:'EarPhone',
+      contact: '2024-08-19',
+      role: 'Details',
     },
     {
-      orderId: 'ORD002',
-      customerName: 'Jane Smith',
-      productName:'EarPhone',
-      date: '2024-08-18',
-      action: 'Shipped - PayPal',
+      id:'2',
+      name: 'John Doe',
+      email:'EarPhone',
+      contact: '2024-08-19',
+      role: 'Details',
     },
     {
-      orderId: 'ORD003',
-      customerName: 'Alice Johnson',
-      productName:'EarPhone',
-      date: '2024-08-17',
-      action: 'Details',
+      id:'3',
+      name: 'John Doe',
+      email:'EarPhone',
+      contact: '2024-08-19',
+      role: 'Details',
     },
-    // Add more orders as needed
+    {
+      id:'4',
+      name: 'John Doe',
+      email:'EarPhone',
+      contact: '2024-08-19',
+      role: 'Details',
+    },
   ];
   
   console.log(orders);
   
 
     const rows = orders.map((element) => (
-        <Table.Tr key={element.orderId}>
-           <Table.Td>{element.orderId}</Table.Td>
-          <Table.Td>{element.customerName}</Table.Td>
-          <Table.Td>{element.productName}</Table.Td>
-          <Table.Td>{element.date}</Table.Td>
-          <Table.Td><Anchor onClick={()=>navigate('/dashboard/order-info')}>{element.action}</Anchor></Table.Td>
+        <Table.Tr key={element.id}>
+           <Table.Td>{element.name}</Table.Td>
+          <Table.Td>{element.email}</Table.Td>
+          <Table.Td>{element.contact}</Table.Td>
+          <Table.Td>{element.role}</Table.Td>
+          <Table.Td><Anchor onClick={()=>navigate('/dashboard/edit-staff')}>{element.role}</Anchor></Table.Td>
         </Table.Tr>
       ));
   return (
@@ -57,11 +63,11 @@ function Staff() {
      <Table>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>OrderId </Table.Th>
-          <Table.Th>customerName</Table.Th>
-          <Table.Th>productName</Table.Th>
-          <Table.Th>Date</Table.Th>
-          <Table.Th>Action</Table.Th>
+          {/* <Table.Th>OrderId </Table.Th> */}
+          <Table.Th>Name</Table.Th>
+          <Table.Th>Email</Table.Th>
+          <Table.Th>Contact</Table.Th>
+          <Table.Th>Role</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
