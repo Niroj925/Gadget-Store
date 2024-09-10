@@ -130,6 +130,7 @@ function Delivery() {
                 <Paper w={40}  h={40} radius={"50%"} bg={'blue'} style={{display:'flex', justifyContent:"center",alignItems:"center"}} >
                 
                 <IconRouteAltRight  color='white'/>
+                
 
                 </Paper>
                 </Flex>

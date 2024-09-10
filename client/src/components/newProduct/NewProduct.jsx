@@ -21,6 +21,8 @@ function NewProduct() {
     { name: "Bob" },
     { name: "Charlie" },
     { name: "Diana" },
+    { name: "Bob" },
+    { name: "Charlie" }
   ];
 
   return (

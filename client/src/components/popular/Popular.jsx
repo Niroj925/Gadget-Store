@@ -1,78 +1,93 @@
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Group,
+  Image,
+  Paper,
+  Rating,
+  Text,
+  ScrollArea  ,
 
-import { Flex, Group, Image, Paper, Text, Button, ScrollArea } from '@mantine/core';
-import { useRef, useEffect, useState } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { MdOutlineNavigateNext, MdOutlineSkipPrevious, MdSkipPrevious } from 'react-icons/md';
-
+} from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import React,{useRef} from "react";
 function Popular() {
+  const { hovered, ref: btnRef } = useHover();
+ const scrollRef = useRef(null);
   const namesArray = [
-    { name: 'Alice' },
-    { name: 'Bob' },
-    { name: 'Charlie' },
-    { name: 'Diana' },
-    { name: 'Alice' },
-    { name: 'Bob' },
-    { name: 'Charlie' },
-    { name: 'Diana' },
+    { name: "Alice" },
+    { name: "Bob" },
+    { name: "Charlie" },
+    { name: "Diana" },
+    { name: "Bob" },
+    { name: "Charlie" }
   ];
 
-  // Reference to ScrollArea
-  const scrollRef = useRef(null);
-  const [cardWidth, setCardWidth] = useState(0);
-
-  // Calculate card width dynamically based on the first card's width
-  useEffect(() => {
-    if (scrollRef.current) {
-      const firstCard = scrollRef.current.querySelector('.card');
-      if (firstCard) {
-        setCardWidth(firstCard.offsetWidth + 20); // Add gap between cards
-      }
-    }
-  }, []);
-
-  // Scroll to the next card
-  const scrollNext = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
-    }
-  };
-
-  // Scroll to the previous card
-  const scrollPrev = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <Flex direction="column" mt={20} gap={10} p={20}>
+    <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
       <Text size="xl" fw={500}>
-        Popular products
+        Popular Items
       </Text>
-      
-      {/* Scroll Area for horizontal scrolling */}
-      <Flex align="center" gap={20}>
-        <FaChevronLeft onClick={scrollPrev} size={25}/>
-        <ScrollArea
+      <ScrollArea
           style={{ width: '100%' }}
           scrollbarSize={6}
           type="never" // Hides the scrollbar
           viewportRef={scrollRef}
         >
-          <Flex gap={20} wrap="nowrap" style={{ overflowX: 'hidden' }}>
-            {namesArray &&
-              namesArray.map((item, index) => (
-                <Paper className="card" withBorder key={index} mt={10} radius={10} style={{ minWidth: 200 }}>
-                  <Group position="center">
-                    <Text>{item.name}</Text>
-                  </Group>
-                  <Image src="/image/img.jpeg" width={150} />
-                </Paper>
-              ))}
-          </Flex>
-        </ScrollArea>
-        <FaChevronRight onClick={scrollNext} size={25}/>
+      <Flex gap={20} wrap={"nowrap"} w={"100%"} >
+        {namesArray &&
+          namesArray.map((item) => {
+            const { hovered, ref } = useHover();
+            return (
+              <Paper
+                mt={10}
+                radius={10}
+                gap={10}
+                ref={ref}
+                // withBorder={hovered ? true : false}
+                bg={hovered?'#E7E7FF':'white'}
+              >
+                <Image
+                  src="/image/img.jpeg"
+                  w={250}
+                  height={250}
+                  style={{
+                    borderBottomLeftRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  }}
+                />
+
+                <Flex direction={"column"} g>
+                  <Text ta={"center"}>{item.name}</Text>
+                  <Text c={"dimmed"} ta={"center"}>
+                    item model name
+                  </Text>
+                  <Center>
+                    <Rating value={3} readOnly />
+                  </Center>
+                </Flex>
+                <Button
+                  w={"100%"}
+                  radius={0}
+                  bg={"#414977"}
+                  style={{
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                    borderTopLeftRadius: "0px",
+                    borderTopRightRadius: "0px",
+                  }}
+                >
+                  Buy Now
+                </Button>
+              </Paper>
+            );
+          })}
       </Flex>
+      </ScrollArea>
     </Flex>
   );
 }

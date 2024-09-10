@@ -1,25 +1,40 @@
-import { Flex, Pagination,Group,Paper,Text, Rating,Button,Image } from '@mantine/core'
-import React, { useState } from 'react'
-import { MdFavorite, MdOutlineFavoriteBorder } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import {
+  Flex,
+  Pagination,
+  Group,
+  Paper,
+  Text,
+  Rating,
+  Button,
+  Image,
+} from "@mantine/core";
+import React, { useState } from "react";
+import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import useOrderStore from "../../store/store";
 
 function Products() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [favIndex, setFavIndex] = useState({ name: null });
-  const [clickedItem,setClickedItem]=useState({name:null});
+  const [clickedItem, setClickedItem] = useState({ name: null });
   const [activePage, setPage] = useState(1);
-  console.log(activePage)
+
+  const addOrder = useOrderStore((state) => state.addOrder); 
+ 
   const namesArray = [
-    { name: "Alice" },
-    { name: "Bob" },
-    { name: "Charlie" },
-    { name: "Diana" },
+    { id: "1", name: "Alice" },
+    { id: "1", name: "Bob" },
+    { id: "1", name: "Charlie" },
+    { id: "1", name: "Diana" },
   ];
+
   return (
-   <Flex direction={"column"} p={20} gap={20}>
-        <Group justify="start">
-      <Text  component="h3" size="30px" fw="bold">Gadgets For You</Text>
-    </Group>
+    <Flex direction={"column"} p={20} gap={20}>
+      <Group justify="start">
+        <Text component="h3" size="30px" fw="bold">
+          Gadgets For You
+        </Text>
+      </Group>
       <Flex gap={20} wrap={"wrap"}>
         {namesArray &&
           namesArray.map((index) => {
@@ -46,7 +61,11 @@ function Products() {
                       )}
                     </Button>
                   </Flex>
-                  <Group justify="center" p={10} onClick={()=>navigate('/product')}>
+                  <Group
+                    justify="center"
+                    p={10}
+                    onClick={() => navigate("/product")}
+                  >
                     <Image src="/image/imgrm.png" w={150} />
                   </Group>
                 </Paper>
@@ -60,7 +79,10 @@ function Products() {
                     <Button
                       radius={20}
                       variant="outline"
-                      onClick={()=>setClickedItem(index)}
+                      onClick={() =>{
+                        addOrder(index); 
+                        setClickedItem(index);
+                      }}
                       styles={(theme) => ({
                         root: {
                           borderColor: "#414B80",
@@ -68,10 +90,10 @@ function Products() {
                             clickedItem.name === index.name
                               ? "#414B80"
                               : "transparent",
-                          color: clickedItem.name === index.name? "white" : "black",
+                          color:
+                            clickedItem.name === index.name ? "white" : "black",
                         },
                       })}
-        
                     >
                       Add To Cart
                     </Button>
@@ -82,10 +104,15 @@ function Products() {
           })}
       </Flex>
       <Group justify="center">
-      <Pagination  value={activePage} onChange={setPage} total={10} color="#414B80"/>
+        <Pagination
+          value={activePage}
+          onChange={setPage}
+          total={10}
+          color="#414B80"
+        />
       </Group>
-   </Flex>
-  )
+    </Flex>
+  );
 }
 
-export default Products
+export default Products;

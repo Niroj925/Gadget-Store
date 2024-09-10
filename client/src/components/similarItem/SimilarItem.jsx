@@ -1,9 +1,10 @@
-import { Button, Flex, Group, Image, Paper,Rating,Text } from '@mantine/core';
-import React, { useState } from 'react'
+import { Button, Flex, Group, Image, Paper,Rating,Text,ScrollArea } from '@mantine/core';
+import React, { useState,useRef } from 'react'
 import { MdFavorite, MdOutlineFavoriteBorder } from 'react-icons/md';
 
 function SimilarItem() {
     const [favIndex, setFavIndex] = useState({ name: null });
+    const scrollRef=useRef();
     const namesArray = [
         { name: "Alice" },
         { name: "Bob" },
@@ -18,7 +19,13 @@ function SimilarItem() {
     <Group justify="start">
     <Text  component="h3" size="24px" fw="bold">Similar Items You Might Like</Text>
   </Group>
-    <Flex gap={20} wrap={"wrap"} w={"100%"}>
+  <ScrollArea
+          style={{ width: '100%' }}
+          scrollbarSize={6}
+          type="never" // Hides the scrollbar
+          viewportRef={scrollRef}
+        >
+    <Flex gap={20} wrap={"nowrap"} w={"100%"}>
       {namesArray &&
         namesArray.map((index) => {
           return (
@@ -57,6 +64,7 @@ function SimilarItem() {
           );
         })}
     </Flex>
+    </ScrollArea>
     </Flex>
   )
 }
