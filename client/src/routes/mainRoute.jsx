@@ -3,7 +3,9 @@
 //     lazy(() => import("../layout/team-layout/TeamLayout"))
 //   );
 
+import Cart from "../components/cart/Cart";
 import Category from "../components/category/Category";
+import Favourite from "../components/favourite/Favourite";
 import Product from "../components/product/Product";
 import Products from "../components/products/Products";
 import PurchaseItem from "../components/purchaseItem/PurchaseItem";
@@ -32,6 +34,14 @@ import Home from "../pages/home/Home";
       {
         path: "purchase",
         element: <PurchaseItem />,
+      },
+      {
+        path: "cart",
+        element: <Cart/>,
+      },
+      {
+        path: "favourite",
+        element: <Favourite/>,
       }
     ],
 

@@ -27,10 +27,13 @@ function Categories() {
       {namesArray&&namesArray.map((item)=>{
         return(
           <Paper withBorder mt={10} radius={10} onClick={()=>navigate("/category")}>
-            <Image src='/image/img.jpeg' w={250} height={250}/> 
-            <Group justify='center'>
+          <Group justify='center'>
             <Text>{item.name}</Text>
             </Group>
+            <Image src='/image/img.jpeg' w={250} height={250}/> 
+            {/* <Group justify='center'>
+            <Text>{item.name}</Text>
+            </Group> */}
             </Paper>
         )
       })}

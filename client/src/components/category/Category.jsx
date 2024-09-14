@@ -22,18 +22,23 @@ import { IoSearchSharp } from "react-icons/io5";
 import { MdFavorite } from "react-icons/md";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import useOrderStore from "../../store/store";
 
 function Category() {
   const navigate=useNavigate();
-  const [favIndex, setFavIndex] = useState({ name: null });
-  const [clickedItem,setClickedItem]=useState({name:null});
   const [activePage, setPage] = useState(1);
+  const orders=useOrderStore((state)=>state.orders);
+  const addOrder = useOrderStore((state) => state.addOrder); 
+  const addFavourite = useOrderStore((state) => state.addFavourite); 
+  const removeFavourite = useOrderStore((state) => state.removeFavourite); 
+  const favouriteList = useOrderStore((state) => state.favouriteList);
+
   console.log(activePage)
   const namesArray = [
-    { name: "Alice" },
-    { name: "Bob" },
-    { name: "Charlie" },
-    { name: "Diana" },
+    {id:"32423", name: "Alice" },
+    {id:"3247tuge", name: "Bob" },
+    { id:"fvbsndfj",name: "Charlie" },
+    {id:"sdfj324r", name: "Diana" },
   ];
  
   return (
@@ -133,14 +138,14 @@ function Category() {
                       p={10}
                       radius={"50%"}
                       variant="transparent"
-                      onClick={() => setFavIndex(index)}
                     >
-                      {favIndex.name == index.name ? (
-                        <MdFavorite size={20} style={{ color: "#414B80" }} />
+                      {favouriteList&&favouriteList.some((product)=>product.id=== index.id) ? (
+                        <MdFavorite size={20} style={{ color: "#414B80" }}  onClick={()=>removeFavourite(index.id)} />
                       ) : (
                         <MdOutlineFavoriteBorder
                           size={20}
                           style={{ color: "#414B80" }}
+                          onClick={()=>addFavourite(index)}
                         />
                       )}
                     </Button>
@@ -156,21 +161,20 @@ function Category() {
                   <Text>Best gadget for ever</Text>
                   <Rating value={3.5} fractions={2} readOnly />
                   <Group mt={10}>
-                    <Button
+                  <Button
                       radius={20}
                       variant="outline"
-                      onClick={()=>setClickedItem(index)}
+                      disabled={orders.some(order=>order.id===index.id)?true:false}
+                      color={orders.some(order=>order.id===index.id)?"gray":"white"}
+                      onClick={() =>{
+                        addOrder(index); 
+                      }}                     
                       styles={(theme) => ({
                         root: {
                           borderColor: "#414B80",
-                          backgroundColor:
-                            clickedItem.name === index.name
-                              ? "#414B80"
-                              : "transparent",
-                          color: clickedItem.name === index.name? "white" : "black",
+                          backgroundColor:"#414B80"
                         },
                       })}
-        
                     >
                       Add To Cart
                     </Button>

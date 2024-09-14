@@ -21,10 +21,8 @@ import useOrderStore from "../../store/store";
 const Navbar = () => {
   // const navigate=useNavigate();
   const [search, setSearch] = useState("");
-  const orderCount = useOrderStore((state) => state.noOfOrder); // Get the number of orders
-
-  console.log(orderCount);
-  console.log(search);
+  const orderCount = useOrderStore((state) => state.noOfOrder);
+  const favCount = useOrderStore((state) => state.noOfFavourite);
   const categories = [
     {
       id: "dghjwriey",
@@ -39,6 +37,11 @@ const Navbar = () => {
       name: "Earphone",
     },
   ];
+  const handleSearch = () => {
+    if (search.trim()) {
+      window.location.href = `/products?search=${search}`;
+    }
+  };
   return (
     <Flex
       bg="#E7E7FF"
@@ -95,18 +98,22 @@ const Navbar = () => {
       <Group>
         <TextInput
           placeholder="Search Product"
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
-          rightSection={
-            <IconSearch
-              onClick={() =>
-                (window.location.href = `/products?search=${search}`)
-              }
-            />
-          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+          rightSection={<IconSearch onClick={handleSearch} />}
         />
 
         <Group pr={20} pl={20}>
-          <MdOutlineShoppingCart size={25} color="#414977" />
+          <MdOutlineShoppingCart
+            onClick={() => (window.location.href = `/cart`)}
+            size={25}
+            color="#414977"
+          />
           {orderCount > 0 && (
             <Flex
               bg={"red"}
@@ -123,6 +130,25 @@ const Navbar = () => {
               </Text>
             </Flex>
           )}
+          <Flex>
+            <Image src="favourite.png" w={20} h={20}   onClick={() => (window.location.href = `/favourite`)}/>
+            {favCount > 0 && (
+              <Flex
+                bg={"red"}
+                ml={-10}
+                mt={-16}
+                w={20}
+                h={20}
+                style={{ borderRadius: "50%" }}
+                justify={"center"}
+                align={"center"}
+              >
+                <Text c={"white"} ta={"center"} mt={2} size={14} fw={700}>
+                  {favCount}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
         </Group>
       </Group>
     </Flex>

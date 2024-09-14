@@ -15,17 +15,20 @@ import useOrderStore from "../../store/store";
 
 function Products() {
   const navigate = useNavigate();
-  const [favIndex, setFavIndex] = useState({ name: null });
-  const [clickedItem, setClickedItem] = useState({ name: null });
+  const [favitem, setFavitem] = useState({ name: null });
   const [activePage, setPage] = useState(1);
 
   const addOrder = useOrderStore((state) => state.addOrder); 
- 
+  const orders = useOrderStore((state) => state.orders); 
+  const addFavourite = useOrderStore((state) => state.addFavourite); 
+  const removeFavourite = useOrderStore((state) => state.removeFavourite); 
+  const favouriteList = useOrderStore((state) => state.favouriteList);
+console.log(favouriteList)
   const namesArray = [
-    { id: "1", name: "Alice" },
-    { id: "1", name: "Bob" },
-    { id: "1", name: "Charlie" },
-    { id: "1", name: "Diana" },
+    { id: "1ityhjgh", name: "Alice" },
+    { id: "23594yhg", name: "Bob" },
+    { id: "3gh4uith", name: "Charlie" },
+    { id: "440tugi", name: "Diana" },
   ];
 
   return (
@@ -37,7 +40,7 @@ function Products() {
       </Group>
       <Flex gap={20} wrap={"wrap"}>
         {namesArray &&
-          namesArray.map((index) => {
+          namesArray.map((item) => {
             return (
               <Flex direction={"column"}>
                 <Paper withBorder mt={10} radius={10} bg={"#EEEEFF"} maw={200}>
@@ -49,14 +52,15 @@ function Products() {
                       p={10}
                       radius={"50%"}
                       variant="transparent"
-                      onClick={() => setFavIndex(index)}
+                      onClick={() => setFavitem(item)}
                     >
-                      {favIndex.name == index.name ? (
-                        <MdFavorite size={20} style={{ color: "#414B80" }} />
+                      {favouriteList&&favouriteList.some((product)=>product.id=== item.id) ? (
+                        <MdFavorite size={20} style={{ color: "#414B80" }}  onClick={()=>removeFavourite(item.id)} />
                       ) : (
                         <MdOutlineFavoriteBorder
                           size={20}
                           style={{ color: "#414B80" }}
+                          onClick={()=>addFavourite(item)}
                         />
                       )}
                     </Button>
@@ -71,7 +75,7 @@ function Products() {
                 </Paper>
                 <Flex direction={"column"} gap={5}>
                   <Text p={5} fw={"bold"} maw={200}>
-                    {index.name}
+                    {item.name}
                   </Text>
                   {/* <Text>Best gadget for ever</Text> */}
                   <Rating value={3.5} fractions={2} readOnly />
@@ -79,19 +83,15 @@ function Products() {
                     <Button
                       radius={20}
                       variant="outline"
+                      disabled={orders.some(order=>order.id===item.id)?true:false}
+                      color={orders.some(order=>order.id===item.id)?"gray":"white"}
                       onClick={() =>{
-                        addOrder(index); 
-                        setClickedItem(index);
-                      }}
+                        addOrder(item); 
+                      }}                     
                       styles={(theme) => ({
                         root: {
                           borderColor: "#414B80",
-                          backgroundColor:
-                            clickedItem.name === index.name
-                              ? "#414B80"
-                              : "transparent",
-                          color:
-                            clickedItem.name === index.name ? "white" : "black",
+                          backgroundColor:"#414B80"
                         },
                       })}
                     >

@@ -61,7 +61,7 @@ function NewProduct() {
                   }}
                 />
 
-                <Flex direction={"column"} g>
+                <Flex direction={"column"} mb={10}>
                   <Text ta={"center"}>{item.name}</Text>
                   <Text c={"dimmed"} ta={"center"}>
                     item model name

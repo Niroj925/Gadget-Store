@@ -5,12 +5,15 @@ import { IoLocation } from "react-icons/io5";
 import Map from "../map/Map";
 import { RxCross2 } from "react-icons/rx";
 import { FaCheckCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import useOrderStore from "../../store/store";
 
 function PurchaseItem() {
+  const locationState=useLocation();
   const navigate=useNavigate();
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [paymentMethod,setPaymentMethod]=useState("esewa");
+  const custmerContact=useOrderStore((state)=>state.custmerContact);
   const [purchaseDetail, setPurchaseDetail] = useState({
     Price: "Rs. 654",
     Quantity: "1",
@@ -30,7 +33,9 @@ function PurchaseItem() {
   .catch(error => console.error('Error:', error));
   };
 
-  const {hovered,ref}=useHover()
+  const {hovered,ref}=useHover();
+console.log(custmerContact)
+console.log(locationState.state)
   return (
     <Box>
       <Flex p={45} direction={"column"}>

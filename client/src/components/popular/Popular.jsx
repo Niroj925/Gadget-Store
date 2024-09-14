@@ -13,6 +13,8 @@ import {
 } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import React,{useRef} from "react";
+import { FcPrevious } from "react-icons/fc";
+import { MdOutlineNavigateNext } from "react-icons/md";
 function Popular() {
   const { hovered, ref: btnRef } = useHover();
  const scrollRef = useRef(null);
@@ -27,9 +29,16 @@ function Popular() {
 
   return (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
+      <Flex justify={'space-between'}>
+
       <Text size="xl" fw={500}>
         Popular Items
       </Text>
+      {/* <Flex>
+      <MdOutlineNavigateNext size={45} color="#414977" style={{ transform: 'rotate(180deg)' }} />
+      <MdOutlineNavigateNext size={45} color="#414977"/>
+      </Flex> */}
+      </Flex>
       <ScrollArea
           style={{ width: '100%' }}
           scrollbarSize={6}
@@ -61,7 +70,7 @@ function Popular() {
                   }}
                 />
 
-                <Flex direction={"column"} g>
+                <Flex direction={"column"} mb={10} >
                   <Text ta={"center"}>{item.name}</Text>
                   <Text c={"dimmed"} ta={"center"}>
                     item model name

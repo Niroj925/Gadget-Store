@@ -14,6 +14,7 @@ import {
   Radio,
   Rating,
   Text,
+  TextInput,
 } from "@mantine/core";
 import React, { useState } from "react";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -23,26 +24,16 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { BsGoogle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
+import useOrderStore from "../../store/store";
 
 function Product() {
   const navigate = useNavigate();
   const [count, setCount] = useState(1);
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
-
-  const [gs, setGs] = useState({
-    brand: "Apple",
-    model: "Pro Max",
-    price: "200",
-    releaseDate: "2024/8/9",
-    modelNumber: "3765387teu358",
-  });
-
-  const [productDetail, setProductDetail] = useState({
-    color: "black",
-    weight: "152gm",
-    battery: "1800mAh",
-    waterResistance: "no",
-  });
+  const [contact, setContact] = useState(null);
+  const [error, setError] = useState("");
+  const [validContact, setValidContact] = useState(false);
+  const setCustomerContact = useOrderStore((state) => state.setCustomerContact);
 
   const [specs] = useState([
     "ipX4 Water and Sweat Resistant",
@@ -79,7 +70,6 @@ function Product() {
     tabletSpecs.push(specs.slice(half));
   }
 
-  // Determine which specs to display based on screen size
   const displayedSpecs =
     columns === 1 ? [specs] : columns === 2 ? tabletSpecs : chunkedSpecs;
 
@@ -89,6 +79,20 @@ function Product() {
   const decrement = () => {
     count >= 2 && setCount(count - 1);
   };
+
+  const handleContactChange = (e) => {
+    const value = e.target.value;
+    setContact(value);
+    const regex = /^9[78]\d{8}$/;
+    if (regex.test(value)) {
+      setError("");
+      setValidContact(true);
+    } else {
+      setError("Invalid Contact Number.");
+      setValidContact(false);
+    }
+  };
+
   return (
     <Box>
       <Flex direction={"row"} gap={50} p={25}>
@@ -308,21 +312,34 @@ function Product() {
               Sign in to Continue
               <Divider />
             </Text>
-            <Group justify="center" align="center">
-              <Button
-                leftSection={<BsGoogle size={20} />}
-                color="red"
-                radius="xl"
-                size="md"
-                mt={20}
-                w={"75%"}
-                onClick={() => navigate(`/purchase`)}
-              >
-                <Text fw="bold" c="white">
-                  Continue with Google
-                </Text>
-              </Button>
-            </Group>
+            <TextInput
+              label="Contact Number"
+              value={contact}
+              type="number"
+              placeholder="Enter Your Contact Number..."
+              onChange={handleContactChange}
+              error={error}
+            />
+            {validContact && (
+              <Group justify="center" align="center">
+                <Button
+                  leftSection={<BsGoogle size={20} />}
+                  color="red"
+                  radius="xl"
+                  size="md"
+                  mt={20}
+                  w={"75%"}
+                  onClick={() => {
+                    setCustomerContact(contact);
+                     navigate(`/purchase`);
+                  }}
+                >
+                  <Text fw="bold" c="white">
+                    Continue with Google
+                  </Text>
+                </Button>
+              </Group>
+            )}
             <Text c="dimmed" size="sm" mt={20}>
               By continuing, you agree to our Terms and Conditions.
             </Text>
