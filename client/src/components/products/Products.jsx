@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import useOrderStore from "../../store/store";
+import { useMediaQuery } from "@mantine/hooks";
 
 function Products() {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ function Products() {
   const removeFavourite = useOrderStore((state) => state.removeFavourite); 
   const favouriteList = useOrderStore((state) => state.favouriteList);
 console.log(favouriteList)
+const isMobile = useMediaQuery("(max-width: 768px)");
+const isTablet = useMediaQuery("(max-width: 1024px)");
   const namesArray = [
     { id: "1ityhjgh", name: "Alice" },
     { id: "23594yhg", name: "Bob" },
@@ -70,7 +73,7 @@ console.log(favouriteList)
                     p={10}
                     onClick={() => navigate("/product")}
                   >
-                    <Image src="/image/imgrm.png" w={150} />
+                    <Image src="/image/imgrm.png" w={isMobile?145:150} />
                   </Group>
                 </Paper>
                 <Flex direction={"column"} gap={5}>

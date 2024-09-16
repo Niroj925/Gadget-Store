@@ -1,12 +1,15 @@
 import { Container, Grid, Text, Anchor, Group, Button, Input, Image, Paper, Box, Flex, Divider, TextInput } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { FaFacebookF, FaTwitter, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa';
 import { IoLogoYoutube } from 'react-icons/io5';
 
 function FooterLinks() {
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isMobile = useMediaQuery("(max-width: 767px)");
   return (
     <Box w={"100%"} bg={'#363636'}>
-      <Flex p={20} justify={'space-around'}>
-        <Flex justify={'space-around'} gap={45}>
+      <Flex p={20} justify={'space-around'} direction={isMobile?'column':'row'}>
+        <Flex justify={isMobile?'space-between':'space-around'} gap={45}>
          <Flex direction={'column'} >
           <Text c={'white'}>Quick Links</Text>
          <Anchor href='#' c={'dimmed'}>Shop</Anchor>
@@ -39,7 +42,7 @@ function FooterLinks() {
         <Text c={'white'}>Stay Updated</Text>
         <Text c={'dimmed'}>Subscribe to receive the latest news and exclusive offers.</Text>
         <Flex gap={10}>
-          <TextInput placeholder='Enter your email..'></TextInput>
+          <TextInput w={ isMobile?"65%":"100%"} placeholder='Enter your email..'></TextInput>
           <Button bg={'#414977'}>Subscribe</Button>
         </Flex>
        </Box>

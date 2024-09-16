@@ -55,6 +55,7 @@ function Product() {
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const columns = isDesktop ? 3 : isTablet ? 2 : 1;
 
@@ -95,8 +96,8 @@ function Product() {
 
   return (
     <Box>
-      <Flex direction={"row"} gap={50} p={25}>
-        <Box padding="md" shadow="xs" style={{ width: "50%" }}>
+      <Flex direction={isMobile?"column":"row"} gap={50} p={25}>
+        <Box padding="md" shadow="xs" style={{ width:isMobile?"100%":"50%" }}>
           <Group position="center">
             {/* Large image */}
             <Image
@@ -301,7 +302,8 @@ function Product() {
           opened={opened}
           onClose={close}
           withCloseButton={false}
-          centered
+          centered={!isMobile?true:false}
+        zIndex={2500}
           radius="md"
         >
           <Flex direction="column" spacing="md">

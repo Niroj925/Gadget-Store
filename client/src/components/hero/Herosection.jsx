@@ -26,19 +26,31 @@ function Herosection() {
       }}
       h={"100vh"}
     >
-      <Flex direction={"row"} mt={20} p={20} gap={25} justify={"space-around"}>
-        <Flex w="50%">
+      <Flex
+        direction={isMobile ? "column" : "row"}
+        mt={10}
+        p={20}
+        gap={25}
+        justify={"space-around"}
+      >
+        <Flex w={isMobile ? "100%" : "50%"}>
           <Group dir="Column">
             <Text
-              size="3.125rem"
+              size={isMobile ? "1.95rem" : "3.125rem"}
               fw={750}
               style={{
                 lineHeight: "1.5",
                 gap: "15px",
               }}
+              mt={isMobile ? -45 : 0}
             >
               Shopping And Department Store
             </Text>
+            {isMobile && (
+              <Flex>
+                <Image src="./image/imgrm.png" w={"100%"} />
+              </Flex>
+            )}
             <Text
               size="1.42rem"
               fw={"400"}
@@ -56,17 +68,20 @@ function Herosection() {
               fw="700"
               radius={25}
               onClick={() => navigate("/products")}
+              w={150}
             >
               Shop Now
             </Button>
           </Group>
         </Flex>
-        <Flex>
-          <Image
-            src="./image/imgrm.png"
-            w={isMobile ? "100%" : isTablet ? 300 : 450}
-          />
-        </Flex>
+        {!isMobile && (
+          <Flex>
+            <Image
+              src="./image/imgrm.png"
+              w={isMobile ? "100%" : isTablet ? 300 : 450}
+            />
+          </Flex>
+        )}
       </Flex>
     </Box>
   );

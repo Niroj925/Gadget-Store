@@ -58,7 +58,7 @@ function Services() {
       <Text size="xl" fw={500}>
         Services Help You To Shop
       </Text>
-      <Flex gap={20} wrap={"wrap"}>
+      <Flex gap={10} wrap={"wrap"}>
         {namesArray &&
           namesArray.map((item) => {
             const { hovered, ref } = useHover();
@@ -68,8 +68,8 @@ function Services() {
                 mt={10}
                 radius={10}
                 p={20}
-                w={200}
-                h={200}
+                w={170}
+                h={165}
                 ref={ref}
                 bg={hovered?'#E7E7FF':'white'}
               >

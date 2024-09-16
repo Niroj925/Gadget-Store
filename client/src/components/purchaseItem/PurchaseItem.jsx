@@ -1,12 +1,12 @@
-import { Flex, Group, Paper, Image, Divider, Text, Box, Anchor, Button, Radio, Modal } from "@mantine/core";
-import { useDisclosure, useHover } from "@mantine/hooks";
+import { Flex, Group, Paper, Image, Divider, Text, Box, Button, Radio, Modal } from "@mantine/core";
+import { useDisclosure, useHover, useMediaQuery } from "@mantine/hooks";
 import React, { useState } from "react";
 import { IoLocation } from "react-icons/io5";
 import Map from "../map/Map";
-import { RxCross2 } from "react-icons/rx";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle} from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import useOrderStore from "../../store/store";
+import CartList from "../cart/CartList";
 
 function PurchaseItem() {
   const locationState=useLocation();
@@ -22,6 +22,9 @@ function PurchaseItem() {
   });
   const [openMap,setOpenMap]=useState(false);
   const [location,setLocation]=useState(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const handleMarkerPositionChange =  (position) => {
     console.log(position)
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}`)
@@ -38,18 +41,25 @@ console.log(custmerContact)
 console.log(locationState.state)
   return (
     <Box>
-      <Flex p={45} direction={"column"}>
-        <Paper withBorder p={25}>
+      <Flex p={20} direction={"column"}>
+        <Paper withBorder p={20}>
           <Text fw={"bold"} size="24px">
             Review Item and Shipping
           </Text>
           <Divider mt={10}/>
-          <Flex direction={"row"} gap={"5%"} mt={20}>
-            <Group w={"25%"}>
+          <Flex direction={isMobile?"column":"row"} gap={"5%"} mt={20}>
+            {
+              locationState.state?(
+                <>
+                 <CartList/>
+                </>
+              ):(
+                <>      
+            <Group w={isMobile?"100%":"25%"} >
               <Image src="/image/img.jpeg" radius={15} />
             </Group>
 
-            <Paper withBorder w={"45%"}>
+            <Paper withBorder w={isMobile?"100%":"45%"} mt={isMobile?20:0}>
               <Text fw={"bold"} align="center">Airpods Pro Max</Text>
               <Divider />
               {Object.entries(purchaseDetail).map(([key, value], index) => (
@@ -60,21 +70,22 @@ console.log(locationState.state)
                   bg={index % 2 === 0 ? "#EEEEFF" : "transparent"}
                   pl={20}
                 >
-                  <Text weight={500} w={"25%"}>
+                  <Text weight={500} w={isMobile?"40%":"25%"}>
                     {key}
                   </Text>
                   <Text ml="xs">: {value}</Text>
                 </Group>
               ))}
             </Paper>
+            </>
+              )
+            }
             {
               location&&(
-
-          
-            <Paper withBorder p={10} >
+            <Paper withBorder p={10} w={isMobile?"100%":250} h={220} justify={'center'} mt={isMobile?20:0}>
             <Text fw={"bold"} align="center">Payment</Text>
             <Divider/>
-            <Text >Select Payment Method</Text>
+            <Text >Payment Method</Text>
             <Radio.Group 
             name="paymentMethod"
       value={paymentMethod}

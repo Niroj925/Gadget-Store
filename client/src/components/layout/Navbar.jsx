@@ -16,6 +16,8 @@ import {
 } from "@tabler/icons-react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import useOrderStore from "../../store/store";
+import { useMediaQuery } from "@mantine/hooks";
+import { RxHamburgerMenu } from "react-icons/rx";
 // import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -23,6 +25,10 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const orderCount = useOrderStore((state) => state.noOfOrder);
   const favCount = useOrderStore((state) => state.noOfFavourite);
+
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
   const categories = [
     {
       id: "dghjwriey",
@@ -56,10 +62,16 @@ const Navbar = () => {
         top: 0,
         zIndex: 1000,
       }}
+      pt={15}
+      pb={15}
     >
+      {
+        !isMobile?(
+      <>
       <Box onClick={() => (window.location.href = `/`)} pl={25}>
         <Image src="/image/logormimg.png" w={55} h={45} />
       </Box>
+         
       <Group gap={25}>
         <Menu shadow="md" width={200}>
           <Menu.Target>
@@ -95,6 +107,11 @@ const Navbar = () => {
           Delivery
         </Anchor>
       </Group>
+      </>
+       ):(
+        <RxHamburgerMenu size={20} color="#414977"/>
+      )
+    }
       <Group>
         <TextInput
           placeholder="Search Product"
@@ -106,9 +123,10 @@ const Navbar = () => {
             }
           }}
           rightSection={<IconSearch onClick={handleSearch} />}
+          w={220}
         />
 
-        <Group pr={20} pl={20}>
+        <Group pr={10}>
           <MdOutlineShoppingCart
             onClick={() => (window.location.href = `/cart`)}
             size={25}
