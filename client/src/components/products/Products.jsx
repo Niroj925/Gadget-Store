@@ -37,7 +37,7 @@ const isTablet = useMediaQuery("(max-width: 1024px)");
   return (
     <Flex direction={"column"} p={20} gap={20}>
       <Group justify="start">
-        <Text component="h3" size="30px" fw="bold">
+        <Text size="20px" fw="bold">
           Gadgets For You
         </Text>
       </Group>

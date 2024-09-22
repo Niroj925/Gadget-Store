@@ -11,7 +11,7 @@ import {
   rem,
   Text,
 } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
+import { useHover, useMediaQuery } from "@mantine/hooks";
 import React, { useRef, useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import {
@@ -33,6 +33,9 @@ function Category() {
   const removeFavourite = useOrderStore((state) => state.removeFavourite); 
   const favouriteList = useOrderStore((state) => state.favouriteList);
 
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isTablet = useMediaQuery("(max-width: 1024px)");
+
   console.log(activePage)
   const namesArray = [
     {id:"32423", name: "Alice" },
@@ -42,15 +45,16 @@ function Category() {
   ];
  
   return (
-    <Flex direction={"column"} gap={20} p={25}>
+    <Flex direction={"column"} gap={20} p={20}>
       <Flex
+      direction={isMobile?"column":"row"}
         bg={"#CFCFFF"}
-        gap={50}
+        gap={10}
         justify={"space-around"}
         align={"center"}
         w={"100%"}
       >
-        <Flex direction={"column"} align={"start"} gap={30} w={"50%"}>
+        <Flex direction={"column"} align={isMobile?"center":"start"} gap={20} p={20} w={isMobile?"100%":"50%"}>
           <Text
             style={{
               lineHeight: "1.5",
@@ -124,9 +128,9 @@ function Category() {
     <Group justify="start">
       <Text  component="h3" size="30px" fw="bold">Gadgets For You</Text>
     </Group>
-      <Flex gap={20} wrap={"wrap"}>
+    <Flex gap={20} wrap={"wrap"}>
         {namesArray &&
-          namesArray.map((index) => {
+          namesArray.map((item) => {
             return (
               <Flex direction={"column"}>
                 <Paper withBorder mt={10} radius={10} bg={"#EEEEFF"} maw={200}>
@@ -138,36 +142,41 @@ function Category() {
                       p={10}
                       radius={"50%"}
                       variant="transparent"
+                      onClick={() => setFavitem(item)}
                     >
-                      {favouriteList&&favouriteList.some((product)=>product.id=== index.id) ? (
-                        <MdFavorite size={20} style={{ color: "#414B80" }}  onClick={()=>removeFavourite(index.id)} />
+                      {favouriteList&&favouriteList.some((product)=>product.id=== item.id) ? (
+                        <MdFavorite size={20} style={{ color: "#414B80" }}  onClick={()=>removeFavourite(item.id)} />
                       ) : (
                         <MdOutlineFavoriteBorder
                           size={20}
                           style={{ color: "#414B80" }}
-                          onClick={()=>addFavourite(index)}
+                          onClick={()=>addFavourite(item)}
                         />
                       )}
                     </Button>
                   </Flex>
-                  <Group justify="center" p={10} onClick={()=>navigate('/product')}>
-                    <Image src="/image/imgrm.png" w={150} />
+                  <Group
+                    justify="center"
+                    p={10}
+                    onClick={() => navigate("/product")}
+                  >
+                    <Image src="/image/imgrm.png" w={isMobile?145:150} />
                   </Group>
                 </Paper>
                 <Flex direction={"column"} gap={5}>
                   <Text p={5} fw={"bold"} maw={200}>
-                    {index.name}
+                    {item.name}
                   </Text>
-                  <Text>Best gadget for ever</Text>
+                  {/* <Text>Best gadget for ever</Text> */}
                   <Rating value={3.5} fractions={2} readOnly />
                   <Group mt={10}>
-                  <Button
+                    <Button
                       radius={20}
                       variant="outline"
-                      disabled={orders.some(order=>order.id===index.id)?true:false}
-                      color={orders.some(order=>order.id===index.id)?"gray":"white"}
+                      disabled={orders.some(order=>order.id===item.id)?true:false}
+                      color={orders.some(order=>order.id===item.id)?"gray":"white"}
                       onClick={() =>{
-                        addOrder(index); 
+                        addOrder(item); 
                       }}                     
                       styles={(theme) => ({
                         root: {

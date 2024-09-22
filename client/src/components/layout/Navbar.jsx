@@ -8,16 +8,19 @@ import {
   Text,
   Menu,
   Image,
+  Drawer,
 } from "@mantine/core";
 import {
   IconSearch,
   IconChevronDown,
   IconShoppingCart,
+  IconX,
 } from "@tabler/icons-react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import useOrderStore from "../../store/store";
 import { useMediaQuery } from "@mantine/hooks";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { NavbarNested } from "./SideBar";
 // import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -25,6 +28,7 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const orderCount = useOrderStore((state) => state.noOfOrder);
   const favCount = useOrderStore((state) => state.noOfFavourite);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 767px)");
@@ -65,53 +69,103 @@ const Navbar = () => {
       pt={15}
       pb={15}
     >
-      {
-        !isMobile?(
-      <>
-      <Box onClick={() => (window.location.href = `/`)} pl={25}>
-        <Image src="/image/logormimg.png" w={55} h={45} />
-      </Box>
-         
-      <Group gap={25}>
-        <Menu shadow="md" width={200}>
-          <Menu.Target>
-            <Anchor fw={500} rightSection={<IconChevronDown />} c="black">
-              Category
-            </Anchor>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {/* <Menu.Item >Mobile</Menu.Item>
+      {!isMobile ? (
+        <>
+          <Box onClick={() => (window.location.href = `/`)} pl={25}>
+            <Image src="/image/logormimg.png" w={55} h={45} />
+          </Box>
+
+          <Group gap={25}>
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <Anchor fw={500} rightSection={<IconChevronDown />} c="black">
+                  Category
+                </Anchor>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {/* <Menu.Item >Mobile</Menu.Item>
             <Menu.Item>Headphone</Menu.Item>
             <Menu.Item>Earphone</Menu.Item> */}
-            {categories.map((item) => {
-              return (
-                <Menu.Item
-                  key={item.id}
-                  onClick={() =>
-                    (window.location.href = `/category?search=${item.name}`)
-                  }
-                >
-                  {item.name}
-                </Menu.Item>
-              );
-            })}
-          </Menu.Dropdown>
-        </Menu>
-        <Anchor href="/deals" c="black" fw={500}>
-          Deals
-        </Anchor>
-        <Anchor href="/new" c="black" fw={500}>
-          What's new
-        </Anchor>
-        <Anchor href="/delivery" c="black" fw={500}>
-          Delivery
-        </Anchor>
-      </Group>
-      </>
-       ):(
-        <RxHamburgerMenu size={20} color="#414977"/>
-      )
-    }
+                {categories.map((item) => {
+                  return (
+                    <Menu.Item
+                      key={item.id}
+                      onClick={() =>
+                        (window.location.href = `/category?search=${item.name}`)
+                      }
+                    >
+                      {item.name}
+                    </Menu.Item>
+                  );
+                })}
+              </Menu.Dropdown>
+            </Menu>
+            <Anchor href="/deals" c="black" fw={500}>
+              Deals
+            </Anchor>
+            <Anchor href="/new" c="black" fw={500}>
+              What's new
+            </Anchor>
+            <Anchor href="/delivery" c="black" fw={500}>
+              Delivery
+            </Anchor>
+          </Group>
+        </>
+      ) : (
+        // <RxHamburgerMenu size={20} color="#414977"/>
+        <>
+          {isSidebarOpen ? (
+            <IconX
+              size={20}
+              color="#414977"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            />
+          ) : (
+            <RxHamburgerMenu
+              size={20}
+              color="#414977"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            />
+          )}
+          {/* Sidebar for mobile view */}
+          <Drawer
+            opened={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            title="Menu"
+            padding="md"
+            size="75%"
+            overlayOpacity={0.3}
+          >
+            <NavbarNested />
+            {/* <Box>
+            <Anchor href="/" c="black" fw={500} mb={10} block>
+              Home
+            </Anchor>
+            {categories.map((item) => (
+              <Anchor
+                key={item.id}
+                href={`/category?search=${item.name}`}
+                c="black"
+                fw={500}
+                mb={10}
+                block
+              >
+                {item.name}
+              </Anchor>
+            ))}
+            <Anchor href="/deals" c="black" fw={500} mb={10} block>
+              Deals
+            </Anchor>
+            <Anchor href="/new" c="black" fw={500} mb={10} block>
+              What's New
+            </Anchor>
+            <Anchor href="/delivery" c="black" fw={500} mb={10} block>
+              Delivery
+            </Anchor>
+          </Box> */}
+          </Drawer>
+        </>
+      )}
       <Group>
         <TextInput
           placeholder="Search Product"
@@ -149,7 +203,12 @@ const Navbar = () => {
             </Flex>
           )}
           <Flex>
-            <Image src="favourite.png" w={20} h={20}   onClick={() => (window.location.href = `/favourite`)}/>
+            <Image
+              src="favourite.png"
+              w={20}
+              h={20}
+              onClick={() => (window.location.href = `/favourite`)}
+            />
             {favCount > 0 && (
               <Flex
                 bg={"red"}

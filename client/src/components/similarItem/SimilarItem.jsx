@@ -17,7 +17,7 @@ function SimilarItem() {
   return (
     <Flex direction={"column"} w={"100%"}>
     <Group justify="start">
-    <Text  component="h3" size="24px" fw="bold">Similar Items You Might Like</Text>
+    <Text size="20px" fw="bold">Similar Items You Might Like</Text>
   </Group>
   <ScrollArea
           style={{ width: '100%' }}

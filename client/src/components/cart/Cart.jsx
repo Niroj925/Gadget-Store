@@ -54,7 +54,7 @@ function Cart() {
   return (
     <>
       <Box p={20}>
-        <Text>Shopping Cart</Text>
+        <Text size="20px" fw="bold" pb={10}>Shopping Cart</Text>
         {orders.length > 0 ? (
           <>
             <Flex direction={isMobile ? "column" : "row"} gap={20}>

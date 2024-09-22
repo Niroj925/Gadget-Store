@@ -52,7 +52,7 @@ function FooterLinks() {
       <Container>
         <Grid>
           <Grid.Col md={6}>
-            <Text size="sm" color="dimmed">&copy; 2024 YourCompany. All rights reserved.</Text>
+            <Text size="sm" color="dimmed">&copy; 2024 Gadget Hub. All rights reserved.</Text>
           </Grid.Col>
           <Grid.Col md={6} style={{ textAlign: 'right' }}>
             <Anchor href="/terms" size="sm" c={'dimmed'}>Terms & Conditions</Anchor>
