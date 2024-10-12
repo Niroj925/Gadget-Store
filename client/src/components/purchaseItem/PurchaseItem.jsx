@@ -43,7 +43,7 @@ console.log(locationState.state)
     <Box>
       <Flex p={20} direction={"column"}>
         <Paper withBorder p={20}>
-          <Text fw={"bold"} size="24px">
+          <Text fw={"bold"} size="20px">
             Review Item and Shipping
           </Text>
           <Divider mt={10}/>

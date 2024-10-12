@@ -42,7 +42,7 @@ function FooterLinks() {
         <Text c={'white'}>Stay Updated</Text>
         <Text c={'dimmed'}>Subscribe to receive the latest news and exclusive offers.</Text>
         <Flex gap={10}>
-          <TextInput w={ isMobile?"65%":"100%"} placeholder='Enter your email..'></TextInput>
+          <TextInput  placeholder='Enter your email..'></TextInput>
           <Button bg={'#414977'}>Subscribe</Button>
         </Flex>
        </Box>
