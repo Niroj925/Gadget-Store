@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/middlewares/authorisation/roles.decorator';
+import { roleType } from 'src/helper/types/index.type';
+import { AtGuard } from 'src/middlewares/access_token/at.guard';
+import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 
 @Controller('admin')
 @ApiTags('Admin')
@@ -19,7 +23,7 @@ export class AdminController {
   // @ApiBearerAuth('access-token')
   // @ApiQuery({ name: 'courtId' })
   // @ApiQuery({ name: 'priceId' })
-  @ApiOperation({ summary: 'booking futsal' })
+  @ApiOperation({ summary: 'create admin' })
   create(@Body() createAdminDto: CreateAdminDto) {
     return this.adminService.create(createAdminDto);
   }
@@ -34,9 +38,13 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.update(id, updateAdminDto);
+  @Patch()
+    @Roles(roleType.admin)
+  @UseGuards(AtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  update(@Req() req:any,@Body() updateAdminDto: UpdateAdminDto) {
+    const adminId=req.user.sub;
+    return this.adminService.update(adminId, updateAdminDto);
   }
 
   @Delete(':id')

@@ -10,31 +10,34 @@ import { roleType } from 'src/helper/types/index.type';
 
 @Injectable()
 export class AdminService {
-
   constructor(
     @InjectRepository(adminEntity)
-    private readonly adminRepository:Repository<adminEntity>,
+    private readonly adminRepository: Repository<adminEntity>,
 
-    private readonly dataSource:DataSource,
+    @InjectRepository(authEntity)
+    private readonly authRepository: Repository<authEntity>,
 
-    private readonly hash:hash
-  ){}
+    private readonly dataSource: DataSource,
+
+    private readonly hash: hash,
+  ) {}
   async create(createAdminDto: CreateAdminDto) {
-    console.log(createAdminDto);
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { email, password } = createAdminDto;
+      const { email, password, location, name } = createAdminDto;
       const hashedPassword = await this.hash.value(password);
       const auth = new authEntity();
       auth.email = email;
-      (auth.password = hashedPassword), (auth.role = roleType.admin);
+      auth.password = hashedPassword;
+      auth.role = roleType.admin;
       await queryRunner.manager.save(auth);
 
       const admin = new adminEntity();
-       admin.name="",
-       admin.auth=auth
+      admin.name = name;
+      admin.location = location;
+      admin.auth = auth;
       await queryRunner.manager.save(admin);
       await queryRunner.commitTransaction();
       return true;
@@ -55,13 +58,29 @@ export class AdminService {
     return `This action returns a #${id} admin`;
   }
 
- async update(id: string, updateAdminDto: UpdateAdminDto) {
-    const admin = await this.adminRepository.findOne({
-      where: { id },
-    });
-    const updatedAdmin = Object.assign(admin, updateAdminDto);
-    this.adminRepository.save(updatedAdmin);
-    return true;
+  async update(id: string, updateAdminDto: UpdateAdminDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { email } = updateAdminDto;
+      const admin = await this.adminRepository.findOne({
+        where: { id },
+        relations:['auth']
+      });
+      const updatedAdmin = Object.assign(admin, updateAdminDto);
+      await queryRunner.manager.save(updatedAdmin);
+
+       await this.authRepository.update({id:admin.auth.id},{email});
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      console.log(error);
+      await queryRunner.rollbackTransaction();
+      throw new ForbiddenException(error.errorResponse);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   remove(id: number) {

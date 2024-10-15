@@ -22,14 +22,9 @@ export class AuthService {
     const {email,password}=createAuthDto;
    const authUser=await this.authRepository.findOne({
     where:{email},
-    relations:['restaurant','superAdmin','staff']
+    relations:['admin']
   });
-  const roleUser={
-    admin:'restaurant',
-    superAdmin:'superAdmin',
-    customer : 'customer',
-    staff:'staff'
-  }
+  
    if (!authUser) {
     throw new ForbiddenException("User Not found")
   } else {
@@ -37,11 +32,10 @@ export class AuthService {
     if (!status) {
       throw new UnauthorizedException("Credential doesn't match")
     }
-    const userRole = roleUser[authUser.role]; 
-    const roleEntityId = authUser[userRole]?.id
+  
     const tokens = {
-      acessToken: await this.token.generateAcessToken({ sub: roleEntityId?roleEntityId:authUser.id, role: authUser.role }),
-      refreshToken: await this.token.generateRefreshToken({ sub: roleEntityId?roleEntityId:authUser.id, role: authUser.role }),
+      acessToken: await this.token.generateAcessToken({ sub: authUser.admin.id, role: authUser.role }),
+      refreshToken: await this.token.generateRefreshToken({ sub: authUser.admin.id, role: authUser.role }),
       role:authUser.role
     }
     authUser.rToken = await this.hash.value(tokens.refreshToken)

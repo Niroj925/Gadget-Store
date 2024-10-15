@@ -8,9 +8,9 @@ export class adminEntity extends parentEntity {
     name: string;
 
     @Column()
-    address: string;
+    location: string;
 
-    @Column()
+    @Column({default:null})
     photo: string;
 
     @OneToOne(() => authEntity, (restaurant) => restaurant.admin)
