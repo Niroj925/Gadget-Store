@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { Token } from 'src/helper/utils/token';
 import { hash } from 'src/helper/utils/hash';
 import { authEntity } from 'src/model/auth.entity';
+import { customerEntity } from 'src/model/customer.entity';
+import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +15,9 @@ export class AuthService {
   constructor(
     @InjectRepository(authEntity)
     private readonly authRepository:Repository<authEntity>,
+
+    @InjectRepository(customerEntity)
+    private readonly customerRepository:Repository<customerEntity>,
 
     private token:Token,
     private hash:hash
@@ -42,6 +47,25 @@ export class AuthService {
     await this.authRepository.save(authUser)
     return tokens
   }
+  }
+
+  async validateGoogleUser(createCustomerDto:CreateCustomerDto){
+
+    const customer=await this.customerRepository.findOne({where:{email:createCustomerDto.email}});
+    if(customer){
+      console.log('customer exist');
+      return customer;
+    }else{
+      console.log('customer does not exist');
+      const newCustomer=this.customerRepository.create({
+        email:createCustomerDto.email,
+        profile:createCustomerDto.profile,
+        name:createCustomerDto.name
+      });
+      await this.customerRepository.save(newCustomer);
+      return newCustomer;
+    }
+
   }
 
   findAll() {

@@ -8,10 +8,19 @@ import { authEntity } from 'src/model/auth.entity';
 import { AtStrategy } from 'src/middlewares/access_token/at.strategy';
 import { RtStrategy } from 'src/middlewares/refresh_token/rt.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from '../../middlewares/google_strategy/google.strategy';
+import { ConfigModule } from '@nestjs/config';
+import googleOauthConfig from 'src/config/google-oauth.config';
+import { customerEntity } from 'src/model/customer.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([authEntity])],
+  imports:[
+    TypeOrmModule.forFeature([authEntity,customerEntity]),
+    // PassportModule.register({ session: false }),
+    ConfigModule.forFeature(googleOauthConfig)
+  ],
   controllers: [AuthController],
-  providers: [AuthService,Token,hash,AtStrategy,RtStrategy,JwtService],
+  providers: [AuthService,Token,hash,AtStrategy,RtStrategy,JwtService,GoogleStrategy],
 })
 export class AuthModule {}

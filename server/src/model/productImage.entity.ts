@@ -4,9 +4,9 @@ import { productEntity } from "./product.entity";
 
 @Entity('productImage')
 export class productImageEntity extends parentEntity{
-    @Column()
+    @Column({default:null})
     image:string;
 
-    @ManyToOne(()=>productEntity,(product)=>product.image)
+    @ManyToOne(()=>productEntity,(product)=>product.image,{onDelete:'CASCADE'})
     product:productEntity;
 }

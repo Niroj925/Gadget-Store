@@ -45,6 +45,11 @@ function Cart() {
       setValidContact(false);
     }
   };
+
+  const handleGoogleLogin = () => {
+    // Redirect to your backend's Google auth endpoint
+    window.location.href = 'http://localhost:4000/api/v1/auth/google/login';
+  }
   const billInfo = {
     totalAmount: 500,
     discount: 100,
@@ -167,7 +172,8 @@ function Cart() {
                 w={"75%"}
                 onClick={() => {
                   setCustomerContact(contact);
-                  navigate(`/purchase`, { state: { order: orders } });
+                  handleGoogleLogin();
+                  // navigate(`/purchase`, { state: { order: orders } });
                 }}
               >
                 <Text fw="bold" c="white">

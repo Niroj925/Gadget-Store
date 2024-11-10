@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './config/pg.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { AdminModule } from './modules/admin/admin.module';
     TypeOrmModule.forRoot(databaseConfig),
     AuthModule,
     AdminModule,
+    CategoryModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -19,7 +19,7 @@ export class UploadService {
         const bucketName = this.configService.get<string>('AWS_S3_BUCKET');
         const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
         const baseName = fileName.substring(0, fileName.lastIndexOf('.'));
-        const uniqueFileName = `${Date.now()}${fileExtension}`;
+        const uniqueFileName = `${baseName}-${Date.now()}${fileExtension}`;
         await this.s3Client.send(
             new PutObjectCommand({
                 Bucket: bucketName,

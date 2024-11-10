@@ -40,11 +40,11 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(3030);
+  await app.listen(4000);
 }
 bootstrap()
   .then(() => {
-    console.log('Server started in http://localhost:3030/api');
+    console.log('Server started in http://localhost:4000/api');
   })
   .catch((e) =>
     console.error(`Error started while server starting as \n ${e.message}`),

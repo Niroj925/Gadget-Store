@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Redirect, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GoogleAuthGuard } from 'src/middlewares/guard/google-auth/google-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -17,6 +18,21 @@ export class AuthController {
   @ApiOperation({ summary: 'SignIn your Account' })
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  googleLogin(){
+
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  googleCallback(@Req() req:any,@Res() res:any){
+  const user=req.user;
+  if(user){
+  res.redirect('http://localhost:5173/purchase')
+  }
   }
 
   @Get()

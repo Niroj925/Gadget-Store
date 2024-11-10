@@ -15,7 +15,7 @@ export class customerEntity extends parentEntity{
     @Column()
     profile:string;
 
-    @Column('bigint')
+    @Column('bigint',{default:null})
     phone:number;
 
     @OneToOne(()=>locationEntity,(location)=>location.customer)
@@ -24,6 +24,6 @@ export class customerEntity extends parentEntity{
     @OneToMany(()=>orderEntity,(order)=>order.customer)
     order:orderEntity[];
 
-    @ManyToOne(()=>reviewEntity,(review)=>review.customer)
-    review:reviewEntity;
+    @OneToMany(()=>reviewEntity,(review)=>review.customer)
+    review:reviewEntity[];
 }

@@ -14,7 +14,7 @@ export class reviewEntity extends parentEntity{
     @ManyToOne(()=>productEntity,(product)=>product.review)
     product:productEntity;
 
-    @OneToMany(()=>customerEntity,(customer)=>customer.review)
-    customer:customerEntity[];
+    @ManyToOne(()=>customerEntity,(customer)=>customer.review)
+    customer:customerEntity;
 
 }
