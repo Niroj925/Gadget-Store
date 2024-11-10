@@ -31,7 +31,7 @@ export class AuthController {
   googleCallback(@Req() req:any,@Res() res:any){
   const user=req.user;
   if(user){
-  res.redirect('http://localhost:5173/purchase')
+  res.redirect(`http://localhost:5173/purchase?customerId=${user.id}`)
   }
   }
 

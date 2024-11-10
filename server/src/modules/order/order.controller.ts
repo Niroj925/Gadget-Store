@@ -1,15 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('order')
+@ApiTags('Order')
+@ApiResponse({ status: 201, description: 'Created Successfully' })
+@ApiResponse({ status: 401, description: 'Unathorised request' })
+@ApiResponse({ status: 400, description: 'Bad request' })
+@ApiResponse({ status: 500, description: 'Server Error' })
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  @Post(':customerId')
+  @ApiOperation({ summary: 'create order' })
+  create(@Param('customerId',ParseUUIDPipe) customerId:string, @Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(customerId,createOrderDto);
   }
 
   @Get()

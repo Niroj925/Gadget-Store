@@ -4,17 +4,16 @@ import { orderStatus } from "src/helper/types/index.type";
 import { orderDeliverEntity } from "./orderDeliver.entity";
 import { productEntity } from "./product.entity";
 import { customerEntity } from "./customer.entity";
+import { orderProductEntity } from "./orderProduct.entity";
 
 @Entity('order')
 export class orderEntity extends parentEntity{
-    @Column()
-    quantity:number;
 
     @Column()
     status:orderStatus;
 
-    @ManyToOne(()=>productEntity,(product)=>product.order)
-    product:productEntity;
+    @OneToMany(()=>orderProductEntity,(product)=>product.order)
+    orderProduct:orderProductEntity[];
 
     @OneToMany(()=>orderDeliverEntity,(orderDeliver)=>orderDeliver.order)
     deliver:orderDeliverEntity[];

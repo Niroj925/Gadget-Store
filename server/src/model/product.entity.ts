@@ -17,6 +17,7 @@ import { reviewEntity } from './review.entity';
 import { orderEntity } from './order.entity';
 import { productColorEntity } from './productColor.entity';
 import { newArrivalEntity } from './newArrival.entity';
+import { orderProductEntity } from './orderProduct.entity';
 
 @Entity('product')
 export class productEntity extends parentEntity {
@@ -38,8 +39,8 @@ export class productEntity extends parentEntity {
   @Column({ default: ProductStatus.available })
   status: ProductStatus;
 
-  @OneToMany(() => orderEntity, (order) => order.product)
-  order: orderEntity[];
+  @OneToMany(() => orderProductEntity, (order) => order.product)
+  order: orderProductEntity[];
 
   @ManyToOne(() => categoryEntity, (category) => category.product)
   category: categoryEntity;
