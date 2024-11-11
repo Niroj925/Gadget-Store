@@ -10,6 +10,8 @@ import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { OrderModule } from './modules/order/order.module';
+import { ReviewModule } from './modules/review/review.module';
+import { DeliveryModule } from './modules/delivery/delivery.module';
 
 @Module({
   imports: [
@@ -22,7 +24,9 @@ import { OrderModule } from './modules/order/order.module';
     CategoryModule,
     ProductModule,
     CustomerModule,
-    OrderModule
+    OrderModule,
+    ReviewModule,
+    DeliveryModule
   ],
   controllers: [AppController],
   providers: [AppService],

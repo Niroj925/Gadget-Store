@@ -3,7 +3,8 @@ export enum roleType {
     admin='admin',
     superAdmin='superAdmin',
     customer = 'customer',
-    staff='staff'
+    staff='staff',
+    delivery='delivery'
 }
 
 export enum enrollStatus {
@@ -21,8 +22,8 @@ export enum tableStatus{
 export enum orderStatus {
     pending='pending',
     accepted='accepted',
+    packaged = "packaged",
     delivered = "delivered",
-    partiallyDelivered = "partiallyDelivered",
     cancel = "cancel"
 }
 

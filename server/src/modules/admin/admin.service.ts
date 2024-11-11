@@ -7,6 +7,9 @@ import { DataSource, Repository } from 'typeorm';
 import { hash } from 'src/helper/utils/hash';
 import { authEntity } from 'src/model/auth.entity';
 import { roleType } from 'src/helper/types/index.type';
+import { CreateLocationDto } from '../customer/dto/create-customer.dto';
+import { storeEntity } from 'src/model/store.entity';
+import { UpdateLocationDto } from '../customer/dto/update-location.dto';
 
 @Injectable()
 export class AdminService {
@@ -16,6 +19,9 @@ export class AdminService {
 
     @InjectRepository(authEntity)
     private readonly authRepository: Repository<authEntity>,
+
+    @InjectRepository(storeEntity)
+    private readonly storeRepository: Repository<storeEntity>,
 
     private readonly dataSource: DataSource,
 
@@ -50,6 +56,17 @@ export class AdminService {
     }
   }
 
+ async addLocation(id:string,createLocationDto:CreateLocationDto){
+  const {latitude,longitude,location}=createLocationDto;
+  const store=this.storeRepository.create({
+    location,
+    latitude,
+    longitude,
+    admin:{id}
+  });
+  await this.storeRepository.save(store);
+ }
+
   findAll() {
     return `This action returns all admin`;
   }
@@ -81,6 +98,13 @@ export class AdminService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+ async updateStore(id:string,updateLocationDto:UpdateLocationDto){
+   const store=await this.storeRepository.findOne({where:{admin:{id}}});
+   const updatedAdmin = Object.assign(store, updateLocationDto);
+   await this.storeRepository.save(updatedAdmin);
+   return true
   }
 
   remove(id: number) {

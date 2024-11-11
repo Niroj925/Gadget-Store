@@ -8,6 +8,7 @@ import { hash } from 'src/helper/utils/hash';
 import { authEntity } from 'src/model/auth.entity';
 import { customerEntity } from 'src/model/customer.entity';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
+import { roleType } from 'src/helper/types/index.type';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,7 @@ export class AuthService {
     const {email,password}=createAuthDto;
    const authUser=await this.authRepository.findOne({
     where:{email},
-    relations:['admin']
+    relations:['admin','delivery']
   });
   
    if (!authUser) {
@@ -39,8 +40,8 @@ export class AuthService {
     }
   
     const tokens = {
-      acessToken: await this.token.generateAcessToken({ sub: authUser.admin.id, role: authUser.role }),
-      refreshToken: await this.token.generateRefreshToken({ sub: authUser.admin.id, role: authUser.role }),
+      acessToken: await this.token.generateAcessToken({ sub: authUser.role==roleType.admin? authUser.admin.id:authUser.delivery.id, role: authUser.role }),
+      refreshToken: await this.token.generateRefreshToken({ sub: authUser.role==roleType.admin? authUser.admin.id:authUser.delivery.id, role: authUser.role }),
       role:authUser.role
     }
     authUser.rToken = await this.hash.value(tokens.refreshToken)

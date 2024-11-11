@@ -1,26 +1,60 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { reviewEntity } from 'src/model/review.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReviewService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(
+    @InjectRepository(reviewEntity)
+    private readonly reviewRepository: Repository<reviewEntity>,
+  ) {}
+
+  async create(createReviewDto: CreateReviewDto) {
+    const { rating, review, customerId, productId } = createReviewDto;
+    const existingReview = await this.reviewRepository.findOne({
+      where: { customer: { id: customerId }, product: { id: productId } },
+    });
+    if (existingReview) {
+      console.log('review exist');
+      const updatedReview = Object.assign(existingReview, createReviewDto);
+      await this.reviewRepository.save(updatedReview);
+      return true;
+    }
+    console.log('create new review');
+    const newReview = this.reviewRepository.create({
+      rating,
+      review,
+      product: { id: productId },
+      customer: { id: customerId },
+    });
+    await this.reviewRepository.save(newReview);
+    return true;
   }
 
-  findAll() {
-    return `This action returns all review`;
+  async findAll(id: string) {
+    console.log(id);
+    const reviews = await this.reviewRepository.find({
+      where: { product: { id } },
+    });    
+    return reviews;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findOne(id: string) {
+    return await this.reviewRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  async update(id: string, updateReviewDto: UpdateReviewDto) {
+    const review = await this.reviewRepository.findOne({ where: { id } });
+    const updatedReview = Object.assign(review, updateReviewDto);
+    await this.reviewRepository.save(updatedReview);
+    return true;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: string) {
+    await this.reviewRepository.delete({ id });
+    return true;
   }
 }

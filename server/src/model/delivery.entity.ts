@@ -10,7 +10,7 @@ export class deliveryEntity extends parentEntity{
     @Column('bigint')
     phone:number;
 
-    @Column()
+    @Column({default:null})
     photo:string;
 
     @OneToOne(()=>authEntity,(auth)=>auth.delivery)

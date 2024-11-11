@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { orderStatus } from 'src/helper/types/index.type';
 
 @Controller('order')
 @ApiTags('Order')
@@ -19,14 +20,27 @@ export class OrderController {
     return this.orderService.create(customerId,createOrderDto);
   }
 
-  @Get()
-  findAll() {
-    return this.orderService.findAll();
+  @Get('customer/:customerId')
+  findAll(@Param('customerId',ParseUUIDPipe) customerId:string) {
+    return this.orderService.findAll(customerId);
+  }
+
+
+  @Get('status')
+  @ApiQuery({ name: 'status', enum: orderStatus })
+  findByStatus( @Query() query: { status: orderStatus },) {
+    return this.orderService.findByStatus(query.status);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+    return this.orderService.findOne(id);
+  }
+
+  @Patch('status/:orderId')
+  @ApiQuery({ name: 'status', enum: orderStatus })
+  updateStatus(@Param('orderId', ParseUUIDPipe) orderId: string, @Query() query: { status: orderStatus },) {
+    return this.orderService.updateOrderStatus(orderId,query.status);
   }
 
   @Patch(':id')
@@ -36,6 +50,6 @@ export class OrderController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.orderService.remove(+id);
+    return this.orderService.remove(id);
   }
 }

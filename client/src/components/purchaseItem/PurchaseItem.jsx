@@ -4,13 +4,15 @@ import React, { useState } from "react";
 import { IoLocation } from "react-icons/io5";
 import Map from "../map/Map";
 import { FaCheckCircle} from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useOrderStore from "../../store/store";
 import CartList from "../cart/CartList";
 
 function PurchaseItem() {
   const locationState=useLocation();
   const navigate=useNavigate();
+  const params=useSearchParams();
+  console.log(params);
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [paymentMethod,setPaymentMethod]=useState("esewa");
   const custmerContact=useOrderStore((state)=>state.custmerContact);
@@ -34,6 +36,39 @@ function PurchaseItem() {
     setLocation(data.display_name)
   })
   .catch(error => console.error('Error:', error));
+  };
+
+    // Add the post function for eSewa payment
+    const post = (path, params) => {
+      const form = document.createElement("form");
+      form.setAttribute("method", "POST");
+      form.setAttribute("action", path);
+  
+      for (const key in params) {
+        const hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", params[key]);
+        form.appendChild(hiddenField);
+      }
+  
+      document.body.appendChild(form);
+      form.submit();
+    };
+
+
+  const handlePayment = () => {
+    post("https://uat.esewa.com.np/epay/main", {
+      amt: 350,
+      psc: 0,
+      pdc: 50,
+      txAmt: 0,
+      tAmt: 400,
+      pid: 'hdgfb38563tge',
+      scd: "EPAYTEST",
+      su: "http://localhost:5173/purchase?q=su",
+      fu: "http://localhost:5173/purchase/failed?q=fu"
+    });
   };
 
   const {hovered,ref}=useHover();
@@ -97,7 +132,7 @@ console.log(locationState.state)
               </Flex>
             </Radio.Group>
             <Group mt={10} justify="center" align="center"> 
-            <Button variant="fill" radius={20}  w={"125px"} bg={"#414B80"} onClick={()=>modelOpen(true)}> 
+            <Button variant="fill" radius={20}  w={"125px"} bg={"#414B80"} onClick={handlePayment}> 
              Pay Now
           </Button>
             </Group>
