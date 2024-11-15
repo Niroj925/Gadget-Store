@@ -77,39 +77,11 @@ function Products() {
             return (
               <Flex direction={"column"}>
                 <Paper withBorder mt={10} radius={10} bg={"#EEEEFF"} maw={200}>
-                  <Flex justify={"flex-end"} p={5}>
-                    {/* <IconDotsVertical/> */}
-                    <Menu shadow="md" width={150}>
-                            <Menu.Target>
-                              {/* <Button c="black" bg="none"> */}
-                              <Box >
-                              <IconDotsVertical/> 
-                              </Box>
-                              {/* </Button> */}
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                              <Menu.Item
-                                onClick={() =>
-                                  navigate("/dashboard/edit-product")
-                                }
-                              >
-                               Edit Product
-                              </Menu.Item>
-                              <Menu.Item
-                                 onClick={() => deleteModelOpen()}
-                                c="red"
-                              >
-                                Delete Product
-                              </Menu.Item>
-                            </Menu.Dropdown>
-                          </Menu>
-                  </Flex>
                   <Group
-                    justify="center"
-                
-                    onClick={() => navigate("/product")}
+                    justify="center"               
+                    onClick={() => navigate(`/dashboard/product?id=${index.id}`)}
                   >
-                    <Image radius={10} src="/image/img.jpeg" w={150} />
+                    <Image radius={10} src="/image/img.jpeg" w={150} h={150} />
                   </Group>
                 </Paper>
                 <Flex direction={"column"} gap={5}>
@@ -118,18 +90,18 @@ function Products() {
                   </Text>
                   {/* <Text>Best gadget for ever</Text> */}
                   <Rating value={3.5} fractions={2} readOnly />
-                  <Button
+                  {/* <Button
                     variant="transparent"
                     onClick={() => navigate("/dashboard/product")}
                   >
                     View more...
-                  </Button>
+                  </Button> */}
                 </Flex>
               </Flex>
             );
           })}
       </Flex>
-      <Group justify="center">
+      <Group justify="center" mt={20}>
         <Pagination
           value={activePage}
           onChange={setPage}

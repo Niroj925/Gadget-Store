@@ -15,102 +15,106 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowsUpDown, IconDotsVertical } from "@tabler/icons-react";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { axiosPublicInstance } from "../../../api";
+import { product } from "../../../api/product/product";
 
 function Product() {
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const [mainImage, setMainImage] = useState({});
   const [gs, setGs] = useState({
-    Name: "XYZ",
-    brand: "Apple",
+    Name: "",
+    brand:  "",
     model: "Pro Max",
-    price: "200",
-    Category: "3765387teu358",
-    releaseDate: "2024/8/9",
+    price: "",
+    Category: "",
+    releaseDate: "",
+  });
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: [id],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${product}/${id}`);
+      setMainImage(response.data.image[0]);
+      
+      return response.data;
+    },
   });
 
+  console.log(data);
+  // console.log(mainImage);
+  const specs = data?.spec.map((spec) => spec.specification) || [];
+
+  const date = new Date(data?.createdAt);
+  const localDateString = date.toLocaleDateString();
+
+  useEffect(()=>{
+    const date = new Date(data?.createdAt);
+    const localDateString = date.toLocaleDateString();
+setGs({
+  Name: data?.name,
+  brand: data?.brand,
+  model: "Pro Max",
+  price: data?.price,
+  Category: data?.category?.name,
+  releaseDate: localDateString,
+});
+  },[data])
+
+
+
+  console.log(gs);
   const [productDetail, setProductDetail] = useState({
     Stock: "25",
     Sales: "321",
     Return: "7",
   });
 
-  const [specs, setSpecs] = useState([
-    "ipX4 Water and Sweat Resistant",
-    "Punchy Heavy Bass",
-    "Immersive Sound Quality",
-    "TPE Strong and Flexible Wire",
-    "Oxidation Resistant Tip",
-    "Anti Winding Wire",
-    "Can Pick And Cut Calls",
-    "Pin: 3.5mm",
-    "Driver: 11mm",
-    "Speaker Impedance: 16 ohms",
-    "Frequency Response: 20Hz-20kHz",
-    "Water Resistance: ipx4",
-    "HD Stereo Sound",
-    "Super Tough Wire",
-    "Support High Quality Clear Call",
+  const [reviews] = useState([
+    {
+      profile: "../image/rmimg.png",
+      name: "Niroj Thapa",
+      rating: 5,
+      createdAt: "2 days ago",
+      review:
+        " Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias",
+    },
+    {
+      profile: "../image/rmimg.png",
+      name: "Niroj Thapa",
+      rating: 5,
+      createdAt: "2 days ago",
+      review:
+        " Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias",
+    },
   ]);
-
-  const [reviews]=useState([
-    {
-      profile:'../image/rmimg.png',
-      name:'Niroj Thapa',
-      rating:5,
-      createdAt:'2 days ago',
-      review:" Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias"
-    },
-    {
-      profile:'../image/rmimg.png',
-      name:'Niroj Thapa',
-      rating:5,
-      createdAt:'2 days ago',
-      review:" Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias"
-    },
-    {
-      profile:'../image/rmimg.png',
-      name:'Niroj Thapa',
-      rating:5,
-      createdAt:'2 days ago',
-      review:" Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias"
-    },
-    {
-      profile:'../image/rmimg.png',
-      name:'Niroj Thapa',
-      rating:5,
-      createdAt:'2 days ago',
-      review:" Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditat aspernatur magnam error nostrum eius laboriosam earum numquam alias"
-    },
-  ])
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
 
-  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
+  const columns = isDesktop ? 2 : 1;
 
   const chunkedSpecs = [];
-  for (let i = 0; i < specs.length; i += 5) {
-    chunkedSpecs.push(specs.slice(i, i + 5));
+  const itemsPerColumn =
+    columns === 2 ? Math.ceil(specs.length / 2) : specs.length;
+
+  for (let i = 0; i < specs.length; i += itemsPerColumn) {
+    chunkedSpecs.push(specs.slice(i, i + itemsPerColumn));
   }
 
-  const tabletSpecs = [];
-  if (columns === 2) {
-    const half = Math.ceil(specs.length / 2);
-    tabletSpecs.push(specs.slice(0, half));
-    tabletSpecs.push(specs.slice(half));
-  }
-
-  // Determine which specs to display based on screen size
-  const displayedSpecs =
-    columns === 1 ? [specs] : columns === 2 ? tabletSpecs : chunkedSpecs;
-
+  const displayedSpecs = chunkedSpecs;
   return (
     <Paper withBorder={true} p={10}>
       <Flex justify={"space-between"}>
         <Text>Product Details</Text>
-        <Button onClick={() => navigate("/dashboard/edit-product")}>
+        <Button onClick={() => navigate(`/dashboard/edit-product?id=${id}`)}>
           Edit Product
         </Button>
       </Flex>
@@ -120,40 +124,41 @@ function Product() {
           <Box padding="md" shadow="xs" w={"100%"}>
             <Group position="center">
               {/* Large image */}
-              <Image
-                src="../image/img.jpeg"
+              {/* <Image
+                src={mainImage.image}
                 alt="Large"
-                style={{ width: "100%" }}
+                style={{
+                  width: "100%", 
+                  height: "400px", 
+                  objectFit: "cover",
+                }}
                 radius={"md"}
-              />
+              /> */}
+              <img  src={mainImage.image}  style={{
+                  width: "100%", 
+                  height: "400px", 
+                  objectFit: "cover",
+                  borderRadius:'10px'
+                }}/>
             </Group>
             <Group position="center" mt="lg">
               {/* Row of small images */}
               <Flex direction="row" gap={9}>
-                <Image
-                  src="../image/img.jpeg"
-                  alt="Small"
-                  w={"24%"}
-                  radius={"md"}
-                />
-                <Image
-                  src="../image/img.jpeg"
-                  alt="Small"
-                  w={"24%"}
-                  radius={"md"}
-                />
-                <Image
-                  src="../image/img.jpeg"
-                  alt="Small"
-                  w={"24%"}
-                  radius={"md"}
-                />
-                <Image
-                  src="../image/img.jpeg"
-                  alt="Small"
-                  w={"24%"}
-                  radius={"md"}
-                />
+                {data?.image.map((item) => (
+                  <Image
+                    key={item.image} // Add a unique key
+                    src={item.image}
+                    alt="Small"
+                    style={{
+                      width: "80px", // Set a fixed width for small images
+                      height: "80px", // Set a fixed height for small images
+                      objectFit: "cover", // Ensures image fills the container without distortion
+                      cursor:'pointer'
+                    }}
+                    radius={"md"}
+                    onClick={() => setMainImage(item)}
+                  />
+                ))}
               </Flex>
             </Group>
           </Box>
@@ -220,12 +225,7 @@ function Product() {
               </List>
             ))}
           </div>
-          <Group>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate
-            aspernatur magnam error nostrum eius laboriosam earum numquam alias?
-            Alias quia non sunt ullam fugit totam minima veniam cumque optio
-            similique?
-          </Group>
+          <Group>{data?.description}</Group>
         </Paper>
 
         <Paper withBorder>
@@ -365,45 +365,42 @@ function Product() {
             </Flex>
           </Flex>
           <Paper>
-            <Flex p={10} justify={"flex-end"} gap={5} >
-              <Text>2545 Reviews</Text> 
-              <IconArrowsUpDown size={20} color="gray"/>
+            <Flex p={10} justify={"flex-end"} gap={5}>
+              <Text>2545 Reviews</Text>
+              <IconArrowsUpDown size={20} color="gray" />
             </Flex>
             <Divider />
             <ScrollArea h={250}>
-            {
-              reviews.map((review)=>{
-                return(   
-            <Flex direction={"column"} p={20}>
-              <Flex justify={"space-between"} align={"center"}>
-                <Flex gap={20}>
-                  <Box w={50} h={50} radius={50} >
-                    <Image src="../image/imgrm.png" />
-                  </Box>
-                  <Flex direction={"column"}>
-                    <Text>Name Thapa</Text>
-                    <Rating value={4} readOnly />
+              {reviews.map((review) => {
+                return (
+                  <Flex direction={"column"} p={20}>
+                    <Flex justify={"space-between"} align={"center"}>
+                      <Flex gap={20}>
+                        <Box w={50} h={50} radius={50}>
+                          <Image src="../image/imgrm.png" />
+                        </Box>
+                        <Flex direction={"column"}>
+                          <Text>Name Thapa</Text>
+                          <Rating value={4} readOnly />
+                        </Flex>
+                      </Flex>
+                      <Flex direction={"column"}>
+                        <Flex justify={"flex-end"}>
+                          <IconDotsVertical />
+                        </Flex>
+                        <Text>2 hr ago</Text>
+                      </Flex>
+                    </Flex>
+                    <Flex>
+                      <Text>
+                        For plaintext Lorem Ipsum, type lorem then press the
+                        Ctrl-Shift-L keyboard shortcut. The default keyboard
+                        shortcut is the same for all supported platforms.
+                      </Text>
+                    </Flex>
                   </Flex>
-                </Flex>
-                <Flex direction={"column"}>
-                  <Flex justify={"flex-end"}>
-
-                  <IconDotsVertical  />
-                  </Flex>
-                  <Text>2 hr ago</Text>
-                </Flex>
-              </Flex>
-              <Flex>
-                <Text>
-                  For plaintext Lorem Ipsum, type lorem then press the
-                  Ctrl-Shift-L keyboard shortcut. The default keyboard shortcut
-                  is the same for all supported platforms.
-                </Text>
-              </Flex>
-            </Flex>
-                )
-              })
-            }
+                );
+              })}
             </ScrollArea>
           </Paper>
         </Paper>

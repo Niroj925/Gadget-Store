@@ -27,6 +27,10 @@ import { useNavigate } from "react-router-dom";
 function Header() {
   const navigate=useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const handleLogout=()=>{
+    navigate('/')
+  }
   return (
     <Flex justify={"flex-end"} p={15} gap={10} direction={"row"}>
       <Group h={35}>
@@ -79,7 +83,7 @@ function Header() {
 
           <Menu.Dropdown>
             <Menu.Item leftSection={<IconUser size={20} />}>Profile</Menu.Item>
-            <Menu.Item leftSection={<IconLogout size={20} />}>
+            <Menu.Item leftSection={<IconLogout size={20} />} onClick={handleLogout}>
               Log Out
             </Menu.Item>
           </Menu.Dropdown>

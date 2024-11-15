@@ -14,6 +14,6 @@ export class locationEntity extends parentEntity{
     location:string;
 
     @OneToOne(()=>customerEntity,(customer)=>customer.location)
-    @JoinColumn({name:'custoerId'})
+    @JoinColumn({name:'customerId'})
     customer:customerEntity;
 }

@@ -40,7 +40,7 @@ export class AuthService {
     }
   
     const tokens = {
-      acessToken: await this.token.generateAcessToken({ sub: authUser.role==roleType.admin? authUser.admin.id:authUser.delivery.id, role: authUser.role }),
+      accessToken: await this.token.generateAcessToken({ sub: authUser.role==roleType.admin? authUser.admin.id:authUser.delivery.id, role: authUser.role }),
       refreshToken: await this.token.generateRefreshToken({ sub: authUser.role==roleType.admin? authUser.admin.id:authUser.delivery.id, role: authUser.role }),
       role:authUser.role
     }

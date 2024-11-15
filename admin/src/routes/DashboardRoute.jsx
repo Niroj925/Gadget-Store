@@ -3,6 +3,7 @@ import DashboardLayout from "../layout/DashboardLayout";
 import AddCategory from "../pages/dashboard/category/AddCategory";
 import AllCatgory from "../pages/dashboard/category/AllCatgory";
 import Category from "../pages/dashboard/category/Category";
+import CategoryProduct from "../pages/dashboard/category/CategoryProduct";
 import EditCategory from "../pages/dashboard/category/EditCategory";
 import Customers from "../pages/dashboard/customer/Customers";
 import Dashboard from "../pages/dashboard/home/Dashboard";
@@ -59,6 +60,10 @@ const DashboardRoutes = {
       {
         path: "category",
         element: < Category/>,
+      },
+      {
+        path: "category-product",
+        element: < CategoryProduct/>,
       },
       {
         path: "edit-categories",

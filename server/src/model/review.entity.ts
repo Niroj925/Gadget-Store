@@ -11,7 +11,7 @@ export class reviewEntity extends parentEntity{
     @Column()
     rating:number;
 
-    @ManyToOne(()=>productEntity,(product)=>product.review)
+    @ManyToOne(()=>productEntity,(product)=>product.review,{onDelete:'CASCADE'})
     product:productEntity;
 
     @ManyToOne(()=>customerEntity,(customer)=>customer.review)

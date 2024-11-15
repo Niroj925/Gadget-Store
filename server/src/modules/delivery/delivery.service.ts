@@ -6,7 +6,9 @@ import { deliveryEntity } from 'src/model/delivery.entity';
 import { DataSource, Repository } from 'typeorm';
 import { hash } from 'src/helper/utils/hash';
 import { authEntity } from 'src/model/auth.entity';
-import { roleType } from 'src/helper/types/index.type';
+import { orderStatus, roleType } from 'src/helper/types/index.type';
+import { OrderService } from '../order/order.service';
+import { storeEntity } from 'src/model/store.entity';
 
 @Injectable()
 export class DeliveryService {
@@ -14,9 +16,14 @@ export class DeliveryService {
     @InjectRepository(deliveryEntity)
     private readonly deliveryRepository:Repository<deliveryEntity>,
 
+    @InjectRepository(storeEntity)
+    private readonly storeRepository:Repository<storeEntity>,
+
     private readonly dataSource:DataSource,
 
-    private readonly hash:hash
+    private readonly hash:hash,
+
+    private readonly orderService:OrderService
   ){}
  async create(createDeliveryDto: CreateDeliveryDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -51,6 +58,19 @@ export class DeliveryService {
     return await this.deliveryRepository.find();
   }
 
+  async myDelivery(){
+   const orders=await this.orderService.findByStatus(orderStatus.packaged);
+   const store=await this.storeRepository.find();
+
+   orders.forEach((order: any) => {
+    let {latitude,longitude}=order.customer.location;
+    let distance = this.haversine(store[0].latitude, store[0].longitude, latitude,longitude);
+    (order as any).distance = distance;
+  });
+  orders.sort((a: any, b: any) => a.distance - b.distance);
+   return orders
+  }
+
  async findOne(id: string) {
     return await this.deliveryRepository.findOne({where:{id}});
   }
@@ -66,4 +86,33 @@ export class DeliveryService {
   await this.deliveryRepository.delete({id});
     return true;
   }
+
+  haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    // Radius of the Earth in kilometers
+    const R: number = 6371.0;
+
+    // Convert latitude and longitude from degrees to radians
+    const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
+
+    const lat1Rad: number = toRadians(lat1);
+    const lon1Rad: number = toRadians(lon1);
+    const lat2Rad: number = toRadians(lat2);
+    const lon2Rad: number = toRadians(lon2);
+
+    // Differences in latitude and longitude
+    const dLat: number = lat2Rad - lat1Rad;
+    const dLon: number = lon2Rad - lon1Rad;
+
+    // Haversine formula
+    const a: number = Math.sin(dLat / 2) ** 2 +
+                      Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                      Math.sin(dLon / 2) ** 2;
+
+    const c: number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Distance in kilometers
+    const distance: number = R * c;
+
+    return distance;
+}
 }

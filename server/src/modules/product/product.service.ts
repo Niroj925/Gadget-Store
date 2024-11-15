@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { createBulkProductDto, CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { productEntity } from 'src/model/product.entity';
@@ -10,6 +10,7 @@ import { categoryEntity } from 'src/model/category.entity';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { productColorEntity } from 'src/model/productColor.entity';
 import { newArrivalEntity } from 'src/model/newArrival.entity';
+import { ProductStatus } from 'src/helper/types/index.type';
 
 @Injectable()
 export class ProductService {
@@ -101,9 +102,20 @@ export class ProductService {
   async findAll(pagination:PaginationDto) {
     const {page,pageSize}=pagination;
     const products=await this.productRepository.find({
-    relations:['spec','color','image'],
+    // relations:['spec','color','image'],
     skip: (page - 1) * pageSize,
-    take: pageSize
+    take: pageSize,
+    relations:['category'],
+    select:{
+      id:true,
+      name:true,
+      price:true,
+      status:true,
+      category:{
+        id:true,
+        name:true
+      }
+    }
     })
     return products;
   }
@@ -130,7 +142,10 @@ export class ProductService {
   }
 
 async  findOne(id: string) {
-  const product=await this.productRepository.findOne({where:{id}});
+  const product=await this.productRepository.findOne({
+    where:{id},
+    relations:['spec','image','color','review','category']
+  });
     return product;
   }
 
@@ -141,9 +156,25 @@ async  findOne(id: string) {
     return true;
   }
 
+  async changeBulkStatus(createBulkProductDto:createBulkProductDto,status:ProductStatus){
+    const {productIds}=createBulkProductDto;
+    productIds.forEach(async(productId)=>{
+      await this.productRepository.update({id:productId},{status})
+    })
+    return true
+  }
+
  async remove(id: string) {
   await this.productRepository.delete({id});
     return true;
+  }
+
+  async deleteBulk(createBulkProductDto:createBulkProductDto){
+   const {productIds}=createBulkProductDto;
+   productIds.forEach(async(productId)=>{
+     await this.productRepository.delete({id:productId})
+   })
+   return true
   }
 
   async removeProductImage(id: string) {

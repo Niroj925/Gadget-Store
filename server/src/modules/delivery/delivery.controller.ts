@@ -31,6 +31,11 @@ export class DeliveryController {
     return this.deliveryService.findAll();
   }
 
+  @Get('my-orders')
+  myDelivery(){
+    return this.deliveryService.myDelivery()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.deliveryService.findOne(id);

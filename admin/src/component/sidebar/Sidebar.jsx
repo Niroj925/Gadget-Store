@@ -35,7 +35,7 @@ const mockdata = [
     links: [
       { label: 'Products List', link: 'all-product' },
       { label: 'Products', link: 'products' },
-      // { label: 'Categories', link: 'all-categories' },
+      { label: 'Add Product', link: 'add-product' },
       // { label: 'Attributes', link: '/products/attributes' },
       // { label: 'Inventory', link: '/products/inventory' },
     ],

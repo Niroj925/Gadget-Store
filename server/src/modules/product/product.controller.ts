@@ -13,17 +13,18 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto, productImageDto } from './dto/create-product.dto';
+import { createBulkProductDto, CreateProductDto, productImageDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import {
   ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from 'src/middlewares/authorisation/roles.decorator';
-import { roleType } from 'src/helper/types/index.type';
+import { ProductStatus, roleType } from 'src/helper/types/index.type';
 import { AtGuard } from 'src/middlewares/access_token/at.guard';
 import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
@@ -58,8 +59,6 @@ export class ProductController {
     @Body() createProductDto: CreateProductDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    // console.log(createProductDto);
-    // console.log(files);
     const fileUrls = [];
     for (const file of files) {
       const fileUrl = await this.uploadService.upload(
@@ -106,6 +105,26 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @Patch('change-status')
+  // @Roles(roleType.admin)
+  // @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'update product status' })
+  @ApiQuery({name:'status',enum:ProductStatus})
+  changeBulkStatus(@Query() query: { status: ProductStatus },@Body() createBulkProductDto:createBulkProductDto) {
+    return this.productService.changeBulkStatus(createBulkProductDto,query.status);
+  }
+
+  @Patch('bulk-delete')
+  // @Roles(roleType.admin)
+  // @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'delete product' })
+  deleteBulk(@Body() createBulkProductDto:createBulkProductDto) {
+    return this.productService.deleteBulk(createBulkProductDto);
+  }
+
+
   @Patch(':id')
   @Roles(roleType.admin)
   @UseGuards(AtGuard, RolesGuard)
@@ -127,6 +146,7 @@ export class ProductController {
   async removeNewArrival(@Param('id') id: string) {
     return this.productService.removeNewArrival(id);
   }
+
 
   @Delete(':id')
   @Roles(roleType.admin)

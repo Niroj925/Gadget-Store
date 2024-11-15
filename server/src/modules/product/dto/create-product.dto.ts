@@ -11,9 +11,10 @@ export class CreateProductDto {
   @ApiProperty()
   description: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
-  brand: string;
+  brand?: string;
 
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
@@ -74,4 +75,16 @@ export class productImageDto {
     format: 'binary',
   })
   photo: Express.Multer.File;
+}
+
+export class createBulkProductDto{
+  @IsArray()
+  @ApiProperty({
+    description: 'List of product ids',
+    type: [String],
+  })
+  // @Transform(({ value }) =>
+  //   typeof value === 'string' ? value.split(',') : value,
+  // )
+  productIds?: string[];
 }

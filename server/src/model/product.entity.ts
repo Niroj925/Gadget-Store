@@ -33,7 +33,7 @@ export class productEntity extends parentEntity {
   @Column()
   description: string;
 
-  @Column()
+  @Column({default:null})
   brand: string;
 
   @Column({ default: ProductStatus.available })
@@ -48,9 +48,7 @@ export class productEntity extends parentEntity {
   @OneToMany(() => productImageEntity, (image) => image.product)
   image: productImageEntity[];
 
-  @OneToMany(() => productSpecEntity, (spec) => spec.product, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => productSpecEntity, (spec) => spec.product)
   spec: productSpecEntity[];
 
   @OneToMany(() => reviewEntity, (review) => review.product)
@@ -60,6 +58,5 @@ export class productEntity extends parentEntity {
   color: productColorEntity[];
 
   @OneToOne(() => newArrivalEntity, (newArrival) => newArrival.product)
-  @JoinColumn({ name: 'productId' })
   newArrival: newArrivalEntity;
 }

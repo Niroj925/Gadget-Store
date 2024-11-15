@@ -32,6 +32,12 @@ export class CategoryController {
     return this.categoryService.findAll();
   }
 
+  @Get('product/:id')
+  findProduct(@Param('id',ParseUUIDPipe) id: string) {
+    return this.categoryService.findProduct(id);
+  }
+
+
   @Get(':id')
   findOne(@Param('id',ParseUUIDPipe) id: string) {
     return this.categoryService.findOne(id);
