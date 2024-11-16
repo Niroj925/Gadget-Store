@@ -147,6 +147,16 @@ export class ProductController {
     return this.productService.removeNewArrival(id);
   }
 
+  @Delete('color/:id')
+  async removeProductColor(@Param('id') id: string) {
+    return this.productService.removeProductColor(id);
+  }
+
+  @Delete('image/:id')
+  async removeImage(@Param('id') id: string) {
+    return this.productService.removeImage(id);
+  }
+
 
   @Delete(':id')
   @Roles(roleType.admin)

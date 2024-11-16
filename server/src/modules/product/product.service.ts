@@ -24,6 +24,9 @@ export class ProductService {
     @InjectRepository(productImageEntity)
     private readonly productImageRepository: Repository<productImageEntity>,
 
+    @InjectRepository(productColorEntity)
+    private readonly productColorRepository: Repository<productColorEntity>,
+
     @InjectRepository(newArrivalEntity)
     private readonly newArrivalRepository: Repository<newArrivalEntity>,
 
@@ -166,6 +169,16 @@ async  findOne(id: string) {
 
  async remove(id: string) {
   await this.productRepository.delete({id});
+    return true;
+  }
+
+  async removeImage(id:string){
+    await this.productImageRepository.delete({id});
+    return true;
+  }
+
+  async removeProductColor(id:string){
+    await this.productColorRepository.delete({id});
     return true;
   }
 
