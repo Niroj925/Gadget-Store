@@ -14,21 +14,22 @@ import {
   FileInput,
   SimpleGrid,
   Image,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
-  IconFile,
-  IconImageInPicture,
+  IconActivity,
   IconPlus,
+  IconTrash,
   IconUpload,
+  IconX,
 } from "@tabler/icons-react";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosPrivateInstance, axiosPublicInstance } from "../../../api";
-import { category } from "../../../api/product/category";
 import { addProduct, product } from "../../../api/product/product";
 import { toast } from "react-toastify";
 
@@ -38,17 +39,21 @@ function EditProduct() {
   const id = searchParams.get("id");
   const navigate = useNavigate();
   const colorRef = useRef();
-  const categoryRef = useRef();
+  const specRef = useRef();
+  const [newSpec,setNewSpec]=useState('');
   const [opened, { open, close }] = useDisclosure(false);
+  const [newSpecs,setNewSpecs]=useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
+  console.log(id);
   const {
     isLoading,
-    data: categoryData,
+    data,
     error: errorToGet,
   } = useQuery({
     queryKey: [id],
     queryFn: async () => {
-      const response = await axiosPublicInstance.get(product);
+      const response = await axiosPublicInstance.get(`${product}/${id}`);
       return response.data;
     },
   });
@@ -76,6 +81,21 @@ function EditProduct() {
     },
   });
 
+  useEffect(() => {
+    if (data) {
+      form.setValues({
+        productName: data?.name || "",
+        brand: data?.brand || "",
+        category: data?.category?.name || "",
+        specs:  [],
+        colors:  [],
+        description: data?.description || "",
+        price: data?.price || "",
+        images:  [],
+      });
+    }
+  }, [data]); 
+
   const handleDrop = (acceptedFiles) => {
     form.setFieldValue("images", [
       ...form.values.images,
@@ -95,10 +115,19 @@ function EditProduct() {
     }
   };
 
+  const handleSpecAdd=()=>{
+    if(newSpec!==''){ 
+      setNewSpecs((specs)=>[...specs, newSpec])
+    setNewSpec('')
+    }
+  }
+
   const handleSpecsChange = (event) => {
     const lines = event.target.value.split("\n");
     form.setFieldValue("specs", lines);
   };
+
+
 
   const handleSubmit = async () => {
     try {
@@ -109,6 +138,7 @@ function EditProduct() {
       formData.append("description", description);
       formData.append("price", price);
       specs.forEach((spec, index) => formData.append(`specs[${index}]`, spec));
+      newSpecs.forEach((spec, index) => formData.append(`specs[${index}]`, spec));
       formData.append("colors", colors.join(","));
       images.forEach((image) => formData.append("photo", image));
      console.log('specs:',specs);
@@ -116,11 +146,12 @@ function EditProduct() {
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
-      const response = await axiosPrivateInstance.post(`${addProduct}/${category}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log("resp:", response.data);
-      return response.data;  
+      // const response = await axiosPrivateInstance.post(`${addProduct}/${category}`, formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+      // console.log("resp:", response.data);
+      // return response.data; 
+      return true 
     } catch (error) {
       console.error(error);
       throw error;  
@@ -143,16 +174,6 @@ function EditProduct() {
       toast.error(error.message);
     },
   });
-  
-  const handleCategoryClick = (category) => {
-    form.setFieldValue("category", category.id);
-    categoryRef.current.value = category.name;
-  };
-
-  const handleModelCancle = () => {
-    setSelectedCategory(null);
-    close();
-  };
 
   return (
     <Paper withBorder>
@@ -180,6 +201,7 @@ function EditProduct() {
           <TextInput
             placeholder="Enter brand.."
             value={form.values.brand}
+            disabled
             onChange={(event) => {
               form.setFieldValue("brand", event.currentTarget.value );
               // handleAddCategory(value);
@@ -187,8 +209,8 @@ function EditProduct() {
           />
           <TextInput
             placeholder="Select Category"
-            ref={categoryRef}
-            value={categoryRef.current?.value}
+            disabled
+            value={form.values.category}
             rightSection={
               <IconPlus
                 color="black"
@@ -208,6 +230,25 @@ function EditProduct() {
             </Flex>
             <Divider mt={10} />
             <List>
+              {
+                data?.color.map((item,index) => (
+
+                  <List.Item
+                     onMouseEnter={() => setHoveredIndex(item.id)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  
+                  >
+                    <Flex gap={20} >
+                   <Text> {item.color} </Text>
+                   {
+                    hoveredIndex===item.id&&(
+                      <IconX cursor={'pointer'} color="red"/>  
+                    )
+                   }
+                    </Flex>
+                  </List.Item>
+                ))
+              }
               {form.values.colors.map((color) => (
                 <List.Item>{color}</List.Item>
               ))}
@@ -238,6 +279,45 @@ function EditProduct() {
                 </Flex>
               </Center>
             </Dropzone>
+            <SimpleGrid cols={8} spacing="md" mt="md" gap={5}>
+                {data?.image.map((image, index) => (
+                  <Box 
+                  onMouseEnter={() => setHoveredIndex(image.id)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  style={{height:'125px'}}
+                  >
+                  <Image
+                    key={index}
+                    src={image.image}
+                    alt={`Selected Image ${index + 1}`}
+                    width={100}
+                    height={100}
+                    fit="cover"
+                    opacity={(hoveredIndex===image.id)?0.6:1}
+                    onLoad={() => {
+                      URL.revokeObjectURL(image.preview);
+                    }}
+                    radius={hoveredIndex===image.id ? 0:10}
+                  />  
+                  {
+                    hoveredIndex===image.id&&(
+               
+                  <Box bg={'red'}  h={20} w={"100%"} style={{
+                    display:'flex',
+                     justifyContent:'center',
+                     alignItems:'center',
+                     borderBottomLeftRadius:'10px',
+                     borderBottomRightRadius:'10px',
+                     cursor:'pointer'
+                     }} >
+                    <Text c={'white'}>Delete</Text>
+                    </Box> 
+                     )
+                    }
+                    </Box>
+                  
+                ))}
+              </SimpleGrid>
 
             {form.values.images.length > 0 && (
               <SimpleGrid cols={4} spacing="md" mt="md" gap={5}>
@@ -258,15 +338,39 @@ function EditProduct() {
             )}
           </Paper>
           <Paper aria-label="specs" withBorder p={10}>
+               <TextInput
+            placeholder="Write spec..."
+            value={newSpec}
+            onChange={(e)=>setNewSpec(e.target.value)}
+            rightSection={
+              <IconPlus
+                color="black"
+                size={25}
+                width={700}
+                onClick={handleSpecAdd}
+              />
+            }
+            mb={10}
+          />
             <Textarea
-              placeholder="Write or Paste specifications here..."
+              placeholder="Paste specifications here..."
               rows={5}
               value={form.values.specs}
               onChange={handleSpecsChange}
             />
 
             <List pl={20}>
-              {form.values.specs?.map((color) => (
+              {data?.spec?.map((spec) => (
+                <List.Item>{spec.specification}</List.Item>
+              ))}
+            </List>
+            <List pl={20}>
+              {form.values.specs.map((color) => (
+                <List.Item>{color}</List.Item>
+              ))}
+            </List>
+            <List pl={20}>
+              {newSpecs.map((color) => (
                 <List.Item>{color}</List.Item>
               ))}
             </List>
@@ -286,45 +390,6 @@ function EditProduct() {
           </Center>
         </Flex>
       </form>
-
-      <Modal opened={opened} onClose={close}>
-        <Text fw={600} ta="center">
-          Select Category
-        </Text>
-        <Divider mt={10} mb={10} />
-        {isLoading ? (
-          <Center>
-            <Loader />
-          </Center>
-        ) : (
-          <Paper withBorder p={20} mah={150} style={{ overflow: "scroll" }}>
-            {categoryData?.map((category) => (
-              <Paper
-                withBorder
-                mb={10}
-                p={5}
-                bg={
-                  form.values.category == category.id ? "whiteSmoke" : "white"
-                }
-                c={form.values.category == category.id ? `primary.0` : "black"}
-                onClick={() => handleCategoryClick(category)}
-                style={{ cursor: "pointer" }}
-              >
-                <Flex gap={20}>
-                  {/* <Image src={category.profile} /> */}
-                  <Text>{category.name}</Text>
-                </Flex>
-              </Paper>
-            ))}
-          </Paper>
-        )}
-        <Group mt={20} justify="center">
-          <Button variant="default" onClick={handleModelCancle}>
-            Cancel
-          </Button>
-          <Button onClick={() => close()}>Confirm</Button>
-        </Group>
-      </Modal>
     </Paper>
   );
 }

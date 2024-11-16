@@ -23,12 +23,17 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../providers/useAuthStore";
 
 function Header() {
   const navigate=useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-
+  const removeOrder = useAuthStore((state) => state.removeOrder); 
+  // const orders = useOrderStore((state) => state.orders);
+  // const favouriteList = useOrderStore((state) => state.favouriteList);
+  // const addFavourite = useOrderStore((state) => state.addFavourite);
   const handleLogout=()=>{
+
     navigate('/')
   }
   return (

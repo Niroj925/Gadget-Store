@@ -10,8 +10,8 @@ const authStore = (set) => ({
 const useAuthStore = create()(
   devtools(
     persist(authStore, {
-      name: "auth", // The localStorage key to persist the state
-      storage: createJSONStorage(() => localStorage), // Using localStorage for persistence
+      name: "auth",
+      storage: createJSONStorage(() => localStorage), 
     })
   )
 );
