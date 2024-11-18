@@ -3,15 +3,16 @@ import { DeliveryService } from './delivery.service';
 import { DeliveryController } from './delivery.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { deliveryEntity } from 'src/model/delivery.entity';
-import { authEntity } from 'src/model/auth.entity';
 import { hash } from 'src/helper/utils/hash';
-import { OrderService } from '../order/order.service';
-import { orderEntity } from 'src/model/order.entity';
 import { storeEntity } from 'src/model/store.entity';
+import { OrderModule } from '../order/order.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([deliveryEntity,authEntity,orderEntity,storeEntity])],
+  imports:[
+    TypeOrmModule.forFeature([deliveryEntity,storeEntity]),
+    OrderModule
+  ],
   controllers: [DeliveryController],
-  providers: [DeliveryService,hash,OrderService],
+  providers: [DeliveryService,hash],
 })
 export class DeliveryModule {}

@@ -10,7 +10,8 @@ import { categoryEntity } from 'src/model/category.entity';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { productColorEntity } from 'src/model/productColor.entity';
 import { newArrivalEntity } from 'src/model/newArrival.entity';
-import { ProductStatus } from 'src/helper/types/index.type';
+import { filterProductType, ProductStatus } from 'src/helper/types/index.type';
+import { paginationToken } from 'aws-sdk/clients/supportapp';
 
 @Injectable()
 export class ProductService {
@@ -123,6 +124,18 @@ export class ProductService {
     return products;
   }
 
+  async findPrice(id:string){
+   const product=await this.productRepository.findOne({
+    where:{id},
+    select:{
+      id:true,
+      price:true,
+      discount:true
+    }
+  });
+  return product
+  }
+
   async findArrival(){
     const newArrivals=await this.newArrivalRepository.find({
       relations:['product.image','product.spec'],
@@ -152,9 +165,54 @@ async  findOne(id: string) {
     return product;
   }
 
- async update(id:string, updateProductDto: UpdateProductDto) {
+  async findProduct(query:filterProductType,paginationDto:PaginationDto){
+    const product=await this.productRepository.find({
+      relations:['review','order.orderProduct'],
+      select:{
+        id:true,
+        name:true,
+        price:true,
+        review:{
+          id:true,
+          rating:true,
+          review:true
+        },
+        order:{
+          id:true,
+         
+          
+        }
+      }
+    })
+
+    return product
+
+  }
+
+ async update(id:string,fileUrls:any, updateProductDto: UpdateProductDto) {
     const product = await this.productRepository.findOne({ where: { id} });
     const updatedProduct = Object.assign(product, updateProductDto);
+    if(updateProductDto.colors){
+    const colors=updateProductDto.colors.map((color)=>{
+      const newColor=this.productColorRepository.create({
+        color:color,
+        product:{id}
+      })
+      return  newColor;
+    });
+    await this.productColorRepository.save(colors);
+  }
+
+  if(fileUrls.length>0){
+    const images=fileUrls.map((file)=>{
+      const newColor=this.productImageRepository.create({
+        image:file,
+        product:{id}
+      })
+      return newColor;
+    });
+    await this.productImageRepository.save(images);
+  }
     await this.productRepository.save(updatedProduct);
     return true;
   }

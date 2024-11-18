@@ -16,6 +16,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconDotsVertical, IconFilter, IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosPublicInstance } from "../../../api";
+import { product } from "../../../api/product/product";
+import { useQuery } from "@tanstack/react-query";
 
 function Products() {
   const navigate = useNavigate();
@@ -31,6 +34,21 @@ function Products() {
     { name: "Charlie" },
     { name: "Diana" },
   ];
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: ['product'],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${product}?page=${activePage}&pageSize=10`);
+      // setMainImage(response.data.image[0]);
+
+      return response.data;
+    },
+  });
+
+  console.log(data);
   return (
     <Flex direction={"column"}>
       <Flex justify={"space-between"} p={10}>

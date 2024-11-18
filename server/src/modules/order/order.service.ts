@@ -1,13 +1,15 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, orderProductDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { orderEntity } from 'src/model/order.entity';
 import { DataSource, Repository } from 'typeorm';
 import { customerEntity } from 'src/model/customer.entity';
-import { orderStatus } from 'src/helper/types/index.type';
+import { orderStatus, paymentMethod, paymentStatus } from 'src/helper/types/index.type';
 import { orderProductEntity } from 'src/model/orderProduct.entity';
 import { productEntity } from 'src/model/product.entity';
+import { paymentEntity } from 'src/model/payment.entity';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class OrderService {
@@ -15,21 +17,26 @@ export class OrderService {
     @InjectRepository(orderEntity)
     private readonly orderRepository: Repository<orderEntity>,
 
+    @InjectRepository(paymentEntity)
+    private readonly paymentRepository: Repository<paymentEntity>,
+
     private readonly dataSource: DataSource,
+
+    private readonly productService:ProductService
   ) {}
 
-  async create(id: string, createOrderDto: CreateOrderDto) {
+  async create(id: string,paymentMethod:paymentMethod,createOrderDto: CreateOrderDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { orderInfo } = createOrderDto;
-
+      const { deliveryCharge, orderInfo } = createOrderDto;
+    
       const order = new orderEntity();
       order.customer = { id } as customerEntity;
       order.status = orderStatus.pending;
-
-      await queryRunner.manager.save(order);
+    
+      await queryRunner.manager.save(order); 
 
       const orderProducts = orderInfo.map((item) => {
         const orderProduct = new orderProductEntity();
@@ -38,13 +45,22 @@ export class OrderService {
         orderProduct.quantity = item.quantity;
         return orderProduct;
       });
-
-      await queryRunner.manager.save(orderProducts);
-
+    
+      await queryRunner.manager.save(orderProducts); 
+    
+      const payment = new paymentEntity();
+      payment.amount = await this.totalAmount(orderInfo) ;
+      payment.deliveryCharge= deliveryCharge ?? 0;
+      payment.paymentMethod = paymentMethod;
+      payment.status = paymentStatus.pending;
+      payment.order = order;
+    
+      await queryRunner.manager.save(payment); 
+    
       await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       await queryRunner.rollbackTransaction();
       throw new ForbiddenException(error.errorResponse);
     } finally {
@@ -88,6 +104,7 @@ export class OrderService {
       select:{
         id:true,
         status:true,
+        createdAt:true,
         customer:{
           id:true,
           name:true,
@@ -153,5 +170,14 @@ export class OrderService {
  async remove(id: string) {
   await this.orderRepository.delete({id});
     return true;
+  }
+
+  async totalAmount(products:orderProductDto[]):Promise<number>{
+    let t_amount=0;
+    for (const product of products) {
+      const productInfo = await this.productService.findPrice(product.product);
+      t_amount += productInfo.price * product.quantity;
+    }
+    return t_amount;
   }
 }

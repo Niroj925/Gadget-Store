@@ -30,20 +30,29 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosPrivateInstance, axiosPublicInstance } from "../../../api";
-import { addProduct, product } from "../../../api/product/product";
+import { addProduct, deleteColor, deleteImage, product } from "../../../api/product/product";
 import { toast } from "react-toastify";
 
 function EditProduct() {
-  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [deleteModel, { open: deleteModelOpen, close: deleteModelClose }] =
+    useDisclosure(false);
   const colorRef = useRef();
-  const specRef = useRef();
-  const [newSpec,setNewSpec]=useState('');
+  const [newSpec, setNewSpec] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
-  const [newSpecs,setNewSpecs]=useState([]);
+  const [newSpecs, setNewSpecs] = useState([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [deleteColorId, setDeleteColorId] = useState("");
+  const [deleteImageId, setDeleteImageId] = useState("");
+  const [isColorSelected,setIsColorSelected]=useState(false);
+  const [isImageSelected,setIsImageSelected]=useState(false);
+  const deleteItem = {
+    color: "color",
+    image: "image",
+  };
 
   console.log(id);
   const {
@@ -87,14 +96,14 @@ function EditProduct() {
         productName: data?.name || "",
         brand: data?.brand || "",
         category: data?.category?.name || "",
-        specs:  [],
-        colors:  [],
+        specs: [],
+        colors: [],
         description: data?.description || "",
         price: data?.price || "",
-        images:  [],
+        images: [],
       });
     }
-  }, [data]); 
+  }, [data]);
 
   const handleDrop = (acceptedFiles) => {
     form.setFieldValue("images", [
@@ -115,53 +124,103 @@ function EditProduct() {
     }
   };
 
-  const handleSpecAdd=()=>{
-    if(newSpec!==''){ 
-      setNewSpecs((specs)=>[...specs, newSpec])
-    setNewSpec('')
+  const handleSpecAdd = () => {
+    if (newSpec !== "") {
+      setNewSpecs((specs) => [...specs, newSpec]);
+      setNewSpec("");
     }
-  }
+  };
 
   const handleSpecsChange = (event) => {
     const lines = event.target.value.split("\n");
     form.setFieldValue("specs", lines);
   };
 
-
+  const handleDeleteModel = (deleteOption, item) => {
+    deleteOption === deleteItem.color
+      ? (
+        setDeleteColorId(item),
+        setIsColorSelected(true),
+        setIsImageSelected(false)
+      )
+      :(
+        setDeleteImageId(item),
+        setIsColorSelected(false),
+        setIsImageSelected(true)
+      ) ;
+    deleteModelOpen();
+  };
 
   const handleSubmit = async () => {
     try {
-      const {productName, brand, description, price, specs, images, colors, category} = form.values;
+      const {
+        productName,
+        brand,
+        description,
+        price,
+        specs,
+        images,
+        colors,
+      } = form.values;
       const formData = new FormData();
       formData.append("name", productName);
       formData.append("brand", brand);
       formData.append("description", description);
       formData.append("price", price);
       specs.forEach((spec, index) => formData.append(`specs[${index}]`, spec));
-      newSpecs.forEach((spec, index) => formData.append(`specs[${index}]`, spec));
-      formData.append("colors", colors.join(","));
+      newSpecs.forEach((spec, index) =>
+        formData.append(`specs[${index}]`, spec)
+      );
+      // formData.append("colors", colors.join(","));
+      if (Array.isArray(colors) && colors.length > 0) {
+        formData.append("colors", colors.join(","));
+      }
       images.forEach((image) => formData.append("photo", image));
-     console.log('specs:',specs);
-      console.log(formData);
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
-      // const response = await axiosPrivateInstance.post(`${addProduct}/${category}`, formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-      // console.log("resp:", response.data);
-      // return response.data; 
-      return true 
+      const response = await axiosPrivateInstance.patch(`${product}/${data?.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
     } catch (error) {
       console.error(error);
-      throw error;  
+      throw error;
     }
   };
-  
-  const { isPending, mutate: mutateCreateProduct } = useMutation({
+
+  const { isPending, mutate: mutateUpdateProduct } = useMutation({
     mutationFn: handleSubmit,
     onSuccess: () => {
-      console.log("Mutation successful");  // Debugging log
+      console.log("Mutation successful"); // Debugging log
+      queryClient.invalidateQueries({
+        queryKey: ["product"],
+        // refetchType: "active",
+        // exact: true,
+      });
+      toast.success("Created Product successfully");
+      navigate("/dashboard/all-product");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleDelete=async()=>{
+     const response = 
+     isImageSelected?(
+     await axiosPrivateInstance.delete(`${deleteImage}/${deleteImageId}`,{ })
+    ):(
+      await axiosPrivateInstance.delete(`${deleteColor}/${deleteColorId}`, {}) 
+    )
+      console.log("resp:", response.data);
+      return response.data;
+  }
+
+  const { isPending:deletePending, mutate: mutateDelete } = useMutation({
+    mutationFn: handleDelete,
+    onSuccess: () => {
+      console.log("Mutation successful"); // Debugging log
       queryClient.invalidateQueries({
         queryKey: ["product"],
         // refetchType: "active",
@@ -187,14 +246,14 @@ function EditProduct() {
             placeholder="Enter product name.."
             value={form.values.productName}
             onChange={(event) => {
-              form.setFieldValue("productName", event.currentTarget.value); 
+              form.setFieldValue("productName", event.currentTarget.value);
             }}
           />
           <TextInput
             placeholder="Enter product price.."
             value={form.values.price}
             onChange={(event) => {
-              form.setFieldValue("price", event.currentTarget.value );
+              form.setFieldValue("price", event.currentTarget.value);
               // handleAddCategory(value);
             }}
           />
@@ -203,7 +262,7 @@ function EditProduct() {
             value={form.values.brand}
             disabled
             onChange={(event) => {
-              form.setFieldValue("brand", event.currentTarget.value );
+              form.setFieldValue("brand", event.currentTarget.value);
               // handleAddCategory(value);
             }}
           />
@@ -230,25 +289,25 @@ function EditProduct() {
             </Flex>
             <Divider mt={10} />
             <List>
-              {
-                data?.color.map((item,index) => (
-
-                  <List.Item
-                     onMouseEnter={() => setHoveredIndex(item.id)}
+              {data?.color.map((item, index) => (
+                <List.Item
+                  onMouseEnter={() => setHoveredIndex(item.id)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  
-                  >
-                    <Flex gap={20} >
-                   <Text> {item.color} </Text>
-                   {
-                    hoveredIndex===item.id&&(
-                      <IconX cursor={'pointer'} color="red"/>  
-                    )
-                   }
-                    </Flex>
-                  </List.Item>
-                ))
-              }
+                >
+                  <Flex gap={20}>
+                    <Text> {item.color} </Text>
+                    {hoveredIndex === item.id && (
+                      <IconX
+                        cursor={"pointer"}
+                        color="red"
+                        onClick={() =>
+                          handleDeleteModel(deleteItem.color, item.id)
+                        }
+                      />
+                    )}
+                  </Flex>
+                </List.Item>
+              ))}
               {form.values.colors.map((color) => (
                 <List.Item>{color}</List.Item>
               ))}
@@ -280,12 +339,12 @@ function EditProduct() {
               </Center>
             </Dropzone>
             <SimpleGrid cols={8} spacing="md" mt="md" gap={5}>
-                {data?.image.map((image, index) => (
-                  <Box 
+              {data?.image.map((image, index) => (
+                <Box
                   onMouseEnter={() => setHoveredIndex(image.id)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  style={{height:'125px'}}
-                  >
+                  style={{ height: "125px" }}
+                >
                   <Image
                     key={index}
                     src={image.image}
@@ -293,31 +352,35 @@ function EditProduct() {
                     width={100}
                     height={100}
                     fit="cover"
-                    opacity={(hoveredIndex===image.id)?0.6:1}
+                    opacity={hoveredIndex === image.id ? 0.6 : 1}
                     onLoad={() => {
                       URL.revokeObjectURL(image.preview);
                     }}
-                    radius={hoveredIndex===image.id ? 0:10}
-                  />  
-                  {
-                    hoveredIndex===image.id&&(
-               
-                  <Box bg={'red'}  h={20} w={"100%"} style={{
-                    display:'flex',
-                     justifyContent:'center',
-                     alignItems:'center',
-                     borderBottomLeftRadius:'10px',
-                     borderBottomRightRadius:'10px',
-                     cursor:'pointer'
-                     }} >
-                    <Text c={'white'}>Delete</Text>
-                    </Box> 
-                     )
-                    }
+                    radius={hoveredIndex === image.id ? 0 : 10}
+                  />
+                  {hoveredIndex === image.id && (
+                    <Box
+                      bg={"red"}
+                      h={20}
+                      w={"100%"}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderBottomLeftRadius: "10px",
+                        borderBottomRightRadius: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        handleDeleteModel(deleteItem.image, image.id)
+                      }
+                    >
+                      <Text c={"white"}>Delete</Text>
                     </Box>
-                  
-                ))}
-              </SimpleGrid>
+                  )}
+                </Box>
+              ))}
+            </SimpleGrid>
 
             {form.values.images.length > 0 && (
               <SimpleGrid cols={4} spacing="md" mt="md" gap={5}>
@@ -338,20 +401,20 @@ function EditProduct() {
             )}
           </Paper>
           <Paper aria-label="specs" withBorder p={10}>
-               <TextInput
-            placeholder="Write spec..."
-            value={newSpec}
-            onChange={(e)=>setNewSpec(e.target.value)}
-            rightSection={
-              <IconPlus
-                color="black"
-                size={25}
-                width={700}
-                onClick={handleSpecAdd}
-              />
-            }
-            mb={10}
-          />
+            <TextInput
+              placeholder="Write spec..."
+              value={newSpec}
+              onChange={(e) => setNewSpec(e.target.value)}
+              rightSection={
+                <IconPlus
+                  color="black"
+                  size={25}
+                  width={700}
+                  onClick={handleSpecAdd}
+                />
+              }
+              mb={10}
+            />
             <Textarea
               placeholder="Paste specifications here..."
               rows={5}
@@ -381,15 +444,41 @@ function EditProduct() {
             rows={5}
             value={form.values.description}
             onChange={(event) => {
-              form.setFieldValue("description", event.currentTarget.value );
+              form.setFieldValue("description", event.currentTarget.value);
             }}
           />
 
           <Center>
-            <Button loading={isPending} onClick={mutateCreateProduct}>Confirm</Button>
+            <Button loading={isPending} onClick={mutateUpdateProduct}>
+              Confirm
+            </Button>
           </Center>
         </Flex>
       </form>
+      <Modal opened={deleteModel} onClose={deleteModelClose}>
+        {/* <Center>
+          <CgDanger size={25} color="red" />
+        </Center> */}
+        <Text mt={10} fw={600} ta="center">
+          Are you sure you want to delete?
+        </Text>
+        <Text mt={10} maw={400} ta="center" size="sm">
+          The action of deletion cannot be undone. Are you sure you want to
+          proceed delete to these item?
+        </Text>
+        <Group mt={20} justify="center">
+          <Button variant="default" onClick={() => deleteModelClose()}>
+            Cancel
+          </Button>
+          <Button
+            loading={deletePending}
+            onClick={mutateDelete}
+            color="red"
+          >
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </Paper>
   );
 }

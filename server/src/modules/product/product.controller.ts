@@ -24,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from 'src/middlewares/authorisation/roles.decorator';
-import { ProductStatus, roleType } from 'src/helper/types/index.type';
+import { filterProductType, ProductStatus, roleType } from 'src/helper/types/index.type';
 import { AtGuard } from 'src/middlewares/access_token/at.guard';
 import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
@@ -95,9 +95,22 @@ export class ProductController {
     return this.productService.findAll(paginationDto);
   }
 
+  @Get('filter')
+  findProduct(
+    @Query() paginationDto?: PaginationDto,
+    @Query('query') query?: filterProductType,
+  ) {
+    return this.productService.findProduct(query,paginationDto);
+  }
+
   @Get('new-arrival')
   findArrival(){
     return this.productService.findArrival();
+  }
+
+  @Get('find-price/:id')
+  findPrice(@Param('id') id: string){
+    return this.productService.findPrice(id);
   }
 
   @Get(':id')
@@ -128,10 +141,23 @@ export class ProductController {
   @Patch(':id')
   @Roles(roleType.admin)
   @UseGuards(AtGuard, RolesGuard)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('photo'))
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'update product' })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(id, updateProductDto);
+ async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto,
+  @UploadedFiles() files: Array<Express.Multer.File>,
+) {
+  const fileUrls = [];
+  for (const file of files) {
+    const fileUrl = await this.uploadService.upload(
+      file.originalname,
+      file.buffer,
+    );
+    fileUrls.push(fileUrl);
+  }
+  // return updateProductDto;
+  return this.productService.update(id,fileUrls, updateProductDto);
   }
 
   @Delete('product-image/:imageId')

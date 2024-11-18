@@ -1,10 +1,11 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { parentEntity } from ".";
 import { orderStatus } from "src/helper/types/index.type";
 import { orderDeliverEntity } from "./orderDeliver.entity";
 import { productEntity } from "./product.entity";
 import { customerEntity } from "./customer.entity";
 import { orderProductEntity } from "./orderProduct.entity";
+import { paymentEntity } from "./payment.entity";
 
 @Entity('order')
 export class orderEntity extends parentEntity{
@@ -20,4 +21,7 @@ export class orderEntity extends parentEntity{
 
     @ManyToOne(()=>customerEntity,(customer)=>customer.order)
     customer:customerEntity;
+
+    @OneToOne(()=>paymentEntity,(payment)=>payment.order)
+    payment:paymentEntity;
 }

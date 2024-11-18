@@ -3,7 +3,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { orderStatus } from 'src/helper/types/index.type';
+import { orderStatus, paymentMethod } from 'src/helper/types/index.type';
 
 @Controller('order')
 @ApiTags('Order')
@@ -16,8 +16,9 @@ export class OrderController {
 
   @Post(':customerId')
   @ApiOperation({ summary: 'create order' })
-  create(@Param('customerId',ParseUUIDPipe) customerId:string, @Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(customerId,createOrderDto);
+  @ApiQuery({name:'paymentMethod',enum:paymentMethod})
+  create(@Query('paymentMethod') paymentMethod:paymentMethod, @Param('customerId',ParseUUIDPipe) customerId:string, @Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(customerId,paymentMethod,createOrderDto);
   }
 
   @Get('customer/:customerId')

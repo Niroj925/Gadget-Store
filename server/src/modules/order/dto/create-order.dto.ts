@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsString, ValidateNested } from "class-validator";
+import { paymentMethod } from "src/helper/types/index.type";
 
 export class orderProductDto{
     @ApiProperty()
@@ -13,6 +14,11 @@ export class orderProductDto{
 }
 
 export class CreateOrderDto {
+
+    @ApiProperty()
+    @IsNumber()
+    deliveryCharge:number
+
     @ApiProperty({
         type: [orderProductDto], 
     })

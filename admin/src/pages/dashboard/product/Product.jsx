@@ -28,7 +28,7 @@ function Product() {
   const [mainImage, setMainImage] = useState({});
   const [gs, setGs] = useState({
     Name: "",
-    brand:  "",
+    brand: "",
     model: "Pro Max",
     price: "",
     Category: "",
@@ -43,7 +43,7 @@ function Product() {
     queryFn: async () => {
       const response = await axiosPublicInstance.get(`${product}/${id}`);
       setMainImage(response.data.image[0]);
-      
+
       return response.data;
     },
   });
@@ -55,20 +55,18 @@ function Product() {
   const date = new Date(data?.createdAt);
   const localDateString = date.toLocaleDateString();
 
-  useEffect(()=>{
+  useEffect(() => {
     const date = new Date(data?.createdAt);
     const localDateString = date.toLocaleDateString();
-setGs({
-  Name: data?.name,
-  brand: data?.brand,
-  model: "Pro Max",
-  price: data?.price,
-  Category: data?.category?.name,
-  releaseDate: localDateString,
-});
-  },[data])
-
-
+    setGs({
+      Name: data?.name,
+      brand: data?.brand,
+      model: "Pro Max",
+      price: data?.price,
+      Category: data?.category?.name,
+      releaseDate: localDateString,
+    });
+  }, [data]);
 
   console.log(gs);
   const [productDetail, setProductDetail] = useState({
@@ -134,12 +132,15 @@ setGs({
                 }}
                 radius={"md"}
               /> */}
-              <img  src={mainImage.image}  style={{
-                  width: "100%", 
-                  height: "400px", 
+              <img
+                src={mainImage.image}
+                style={{
+                  width: "100%",
+                  height: "400px",
                   objectFit: "cover",
-                  borderRadius:'10px'
-                }}/>
+                  borderRadius: "10px",
+                }}
+              />
             </Group>
             <Group position="center" mt="lg">
               {/* Row of small images */}
@@ -150,13 +151,22 @@ setGs({
                     src={item.image}
                     alt="Small"
                     style={{
-                      width: "80px", // Set a fixed width for small images
-                      height: "80px", // Set a fixed height for small images
-                      objectFit: "cover", // Ensures image fills the container without distortion
-                      cursor:'pointer'
+                      width: "80px",
+                      height: "80px", 
+                      objectFit: "cover", 
+                      cursor: "pointer",
+                      border: "2px solid transparent", 
+                      borderRadius: "8px", 
+                      transition: "border 0.3s ease", 
                     }}
-                    radius={"md"}
+                    radius="md"
                     onClick={() => setMainImage(item)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.border = "2px solid #007BFF"; 
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.border = "2px solid transparent"; 
+                    }}
                   />
                 ))}
               </Flex>
