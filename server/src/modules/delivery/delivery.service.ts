@@ -9,6 +9,7 @@ import { authEntity } from 'src/model/auth.entity';
 import { orderStatus, roleType } from 'src/helper/types/index.type';
 import { OrderService } from '../order/order.service';
 import { storeEntity } from 'src/model/store.entity';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Injectable()
 export class DeliveryService {
@@ -58,8 +59,8 @@ export class DeliveryService {
     return await this.deliveryRepository.find();
   }
 
-  async myDelivery(){
-   const orders=await this.orderService.findByStatus(orderStatus.packaged);
+  async myDelivery( paginationDto: PaginationDto,){
+   const orders=await this.orderService.findByStatus(orderStatus.shipped,paginationDto);
    const store=await this.storeRepository.find();
 
    orders.forEach((order: any) => {

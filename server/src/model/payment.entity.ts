@@ -17,6 +17,9 @@ export class paymentEntity extends parentEntity{
     @Column()
     status:paymentStatus;
 
+    @Column({default:null})
+    remarks:string;
+
     @OneToOne(()=>orderEntity,(order)=>order.payment)
     @JoinColumn({name:'orderId'})
     order:orderEntity

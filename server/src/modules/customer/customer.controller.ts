@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto, CreateLocationDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Controller('customer')
 @ApiTags('Customer')
@@ -20,8 +21,8 @@ export class CustomerController {
   }
 
   @Get()
-  findAll() {
-    return this.customerService.findAll();
+  findAll(@Query() paginationDto?:PaginationDto) {
+    return this.customerService.findAll(paginationDto);
   }
 
   @Get(':id')

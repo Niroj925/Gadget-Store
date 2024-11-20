@@ -6,6 +6,7 @@ import { locationEntity } from 'src/model/location.entity';
 import { Repository } from 'typeorm';
 import { customerEntity } from 'src/model/customer.entity';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Injectable()
 export class CustomerService {
@@ -29,8 +30,13 @@ export class CustomerService {
     return true;
   }
 
-  async findAll() {
-    return await this.customerRepository.find();
+  async findAll(paginationDto:PaginationDto) {
+    const {page,pageSize}=paginationDto;
+    const customers= await this.customerRepository.find({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    return customers;
   }
 
   async findOne(id: string) {

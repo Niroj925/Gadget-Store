@@ -1,49 +1,46 @@
 import React, { useState } from 'react'
-import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor, Menu} from "@mantine/core" 
+import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor, Menu, Image} from "@mantine/core" 
 import { IconFilter, IconPlus } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom';
+import { customer } from '../../../api/customer/customer';
+import { useQuery } from '@tanstack/react-query';
+import { axiosPublicInstance } from '../../../api';
 function Customers() {
 
    const navigate=useNavigate();
    const [activePage, setPage] = useState(1);
    const [paymentStatus,setPaymentStatus]=useState('pending');
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: ['customer'],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${customer}?page=${activePage}&pageSize=10`);
+      // setMainImage(response.data.image[0]);
 
-  console.log(activePage);
-  const orders = [
-    {
-      orderId: 'ORD001',
-      customerName: 'John Doe',
-      productName:'EarPhone',
-      date: '2024-08-19',
-      action: 'Details',
+      return response.data;
     },
-    {
-      orderId: 'ORD002',
-      customerName: 'Jane Smith',
-      productName:'EarPhone',
-      date: '2024-08-18',
-      action: 'Shipped - PayPal',
-    },
-    {
-      orderId: 'ORD003',
-      customerName: 'Alice Johnson',
-      productName:'EarPhone',
-      date: '2024-08-17',
-      action: 'Details',
-    },
-    // Add more orders as needed
-  ];
+  });
+  // console.log('customers:',data);
   
-  console.log(orders);
-  
-
-    const rows = orders.map((element) => (
-        <Table.Tr key={element.orderId}>
-           <Table.Td>{element.orderId}</Table.Td>
-          <Table.Td>{element.customerName}</Table.Td>
-          <Table.Td>{element.productName}</Table.Td>
-          <Table.Td>{element.date}</Table.Td>
-          <Table.Td><Anchor onClick={()=>navigate('/dashboard/order-info')}>{element.action}</Anchor></Table.Td>
+    const rows = data?.map((customer) => (
+        <Table.Tr key={customer.id}>
+           <Table.Td>
+            {/* <img src={customer.profile}/> */}
+              <Image
+              src={customer?.profile}
+              h={50}
+              w={50}
+              radius="50%"
+              alt={customer.id}
+              />
+           </Table.Td>
+          <Table.Td>{customer.name}</Table.Td>
+          <Table.Td>{customer.email}</Table.Td>
+          <Table.Td>{customer.phone}</Table.Td>
+          <Table.Td><Anchor onClick={()=>navigate('/dashboard/order-info')}>Details</Anchor></Table.Td>
         </Table.Tr>
       ));
   return (
@@ -56,10 +53,10 @@ function Customers() {
      <Table>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>OrderId </Table.Th>
+          <Table.Th> </Table.Th>
           <Table.Th>customerName</Table.Th>
-          <Table.Th>productName</Table.Th>
-          <Table.Th>Date</Table.Th>
+          <Table.Th>email</Table.Th>
+          <Table.Th>Contact</Table.Th>
           <Table.Th>Action</Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -67,7 +64,7 @@ function Customers() {
     </Table>
     <Divider/>
       <Group justify='center' align='center' p={10}>
-      <Pagination  total={orders.length} value={activePage} onChange={setPage} mt="sm"/>
+      <Pagination  total={data?.length} value={activePage} onChange={setPage} mt="sm"/>
       </Group>
      </Box>
     </Paper>

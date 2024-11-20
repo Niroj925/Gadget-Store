@@ -10,7 +10,7 @@ export enum roleType {
 export enum orderStatus {
   pending = 'pending',
   accepted = 'accepted',
-  packaged = 'packaged',
+  shipped = 'shipped',
   delivered = 'delivered',
   cancel = 'cancel',
 }
@@ -30,7 +30,7 @@ export enum billingStatus {
 }
 
 export enum paymentStatus {
-  approved = 'approved',
+  accept = 'accept',
   pending = 'pending',
   release = 'release',
   reject = 'reject',

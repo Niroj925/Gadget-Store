@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { CreateOrderDto, orderProductDto } from './dto/create-order.dto';
+import { CreateOrderDto, CreateRemarkDto, orderProductDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { orderEntity } from 'src/model/order.entity';
@@ -10,6 +10,7 @@ import { orderProductEntity } from 'src/model/orderProduct.entity';
 import { productEntity } from 'src/model/product.entity';
 import { paymentEntity } from 'src/model/payment.entity';
 import { ProductService } from '../product/product.service';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Injectable()
 export class OrderService {
@@ -97,10 +98,16 @@ export class OrderService {
     return customerOrder;
   }
 
-  async findByStatus(status:orderStatus){
+  async findByStatus(status:orderStatus,paginationDto:PaginationDto){
+    const {page,pageSize}=paginationDto;
     const customerOrder = await this.orderRepository.find({
       where: { status},
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       relations: ['customer.location','orderProduct.product'],
+      order:{
+        createdAt:'DESC'
+      },
       select:{
         id:true,
         status:true,
@@ -123,7 +130,7 @@ export class OrderService {
             name:true,
             price:true
           }
-        }
+        },
       }
     });
     return customerOrder;
@@ -132,7 +139,7 @@ export class OrderService {
   async findOne(id: string) {
     const customerOrder = await this.orderRepository.findOne({
       where: {  id },
-      relations: ['customer.location','orderProduct.product'],
+      relations: ['customer.location','payment','orderProduct.product'],
       select:{
         customer:{
           id:true,
@@ -160,6 +167,12 @@ export class OrderService {
 
  async updateOrderStatus(id:string,status:orderStatus){
     await this.orderRepository.update({id},{status});
+    return true;
+  }
+
+  async updatePaymentStatus(id:string,status:paymentStatus,createRemarkDto:CreateRemarkDto){
+    const {remarks}=createRemarkDto;
+    await this.paymentRepository.update({id},{status,remarks:remarks??null});
     return true;
   }
 

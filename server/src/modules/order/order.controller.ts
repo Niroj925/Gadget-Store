@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, CreateRemarkDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { orderStatus, paymentMethod } from 'src/helper/types/index.type';
+import {
+  orderStatus,
+  paymentMethod,
+  paymentStatus,
+} from 'src/helper/types/index.type';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Controller('order')
 @ApiTags('Order')
@@ -16,21 +31,24 @@ export class OrderController {
 
   @Post(':customerId')
   @ApiOperation({ summary: 'create order' })
-  @ApiQuery({name:'paymentMethod',enum:paymentMethod})
-  create(@Query('paymentMethod') paymentMethod:paymentMethod, @Param('customerId',ParseUUIDPipe) customerId:string, @Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(customerId,paymentMethod,createOrderDto);
+  @ApiQuery({ name: 'paymentMethod', enum: paymentMethod })
+  create(
+    @Query('paymentMethod') paymentMethod: paymentMethod,
+    @Param('customerId', ParseUUIDPipe) customerId: string,
+    @Body() createOrderDto: CreateOrderDto,
+  ) {
+    return this.orderService.create(customerId, paymentMethod, createOrderDto);
   }
 
   @Get('customer/:customerId')
-  findAll(@Param('customerId',ParseUUIDPipe) customerId:string) {
+  findAll(@Param('customerId', ParseUUIDPipe) customerId: string) {
     return this.orderService.findAll(customerId);
   }
 
-
   @Get('status')
   @ApiQuery({ name: 'status', enum: orderStatus })
-  findByStatus( @Query() query: { status: orderStatus },) {
-    return this.orderService.findByStatus(query.status);
+  findByStatus(@Query() query: { status: orderStatus }, @Query() paginationDto?: PaginationDto,) {
+    return this.orderService.findByStatus(query.status,paginationDto);
   }
 
   @Get(':id')
@@ -38,10 +56,23 @@ export class OrderController {
     return this.orderService.findOne(id);
   }
 
+  @Patch('payment-status/:paymentId')
+  @ApiQuery({ name: 'status', enum: paymentStatus })
+  updatePaymentStatus(
+    @Param('paymentId', ParseUUIDPipe) paymentId: string,
+    @Query() query: { status: paymentStatus },
+    @Body() body:CreateRemarkDto
+  ) {
+    return this.orderService.updatePaymentStatus(paymentId, query.status,body);
+  }
+
   @Patch('status/:orderId')
   @ApiQuery({ name: 'status', enum: orderStatus })
-  updateStatus(@Param('orderId', ParseUUIDPipe) orderId: string, @Query() query: { status: orderStatus },) {
-    return this.orderService.updateOrderStatus(orderId,query.status);
+  updateStatus(
+    @Param('orderId', ParseUUIDPipe) orderId: string,
+    @Query() query: { status: orderStatus },
+  ) {
+    return this.orderService.updateOrderStatus(orderId, query.status);
   }
 
   @Patch(':id')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
@@ -7,6 +7,7 @@ import { Roles } from 'src/middlewares/authorisation/roles.decorator';
 import { AtGuard } from 'src/middlewares/access_token/at.guard';
 import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 import { roleType } from 'src/helper/types/index.type';
+import { PaginationDto } from 'src/helper/utils/pagination.dto';
 
 @Controller('delivery')
 @ApiTags('Delivery')
@@ -32,8 +33,8 @@ export class DeliveryController {
   }
 
   @Get('my-orders')
-  myDelivery(){
-    return this.deliveryService.myDelivery()
+  myDelivery( @Query() paginationDto?: PaginationDto){
+    return this.deliveryService.myDelivery(paginationDto)
   }
 
   @Get(':id')
