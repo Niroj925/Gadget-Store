@@ -2,11 +2,29 @@ import React, { useState } from 'react'
 import {Flex,Paper,Text,Box,Group,Button,Table,Divider, Pagination, Anchor, Menu} from "@mantine/core" 
 import { IconClock2, IconClockHour3, IconFilter, IconPlus, IconRuler, IconRulerMeasure } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom';
+import { shippedOrder } from '../../../api/order/order';
+import { axiosPublicInstance } from '../../../api';
+import { useQuery } from '@tanstack/react-query';
 function Shipping() {
 
    const navigate=useNavigate();
    const [activePage, setPage] = useState(1);
   console.log(activePage);
+
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: ["shippedOrder", activePage],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(
+        `${shippedOrder}?page=${activePage}&pageSize=10`
+      );
+      return response.data;
+    },
+  });
+  console.log(data);
 
 
   const orders = [
@@ -45,21 +63,33 @@ function Shipping() {
     },
     // Add more orders as needed
   ];
+
+  const handleOrder=(id)=>{
+    navigate(`/dashboard/order-info?id=${id}`)
+  }
+
+  const formatToLocalDateTime = (isoDate) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const day = String(date.getDate()).padStart(2, "0"); 
+    return `${year}/${month}/${day}`;
+  };
   
 
-    const rows = orders.map((element) => (
-        <Table.Tr key={element.orderId}>
-           <Table.Td>{element.orderId}</Table.Td>
-          <Table.Td>{element.customerName}</Table.Td>
-          <Table.Td>{element.address}</Table.Td>
-          <Table.Td>{element.contact}</Table.Td>
-          <Table.Td>{element.orderDate}</Table.Td>
-          <Table.Td>{element.productName}</Table.Td>
-          <Table.Td>{element.totalPrice}</Table.Td>
-          <Table.Td>{element.distance}</Table.Td>
-          {/* <Table.Td>{element.}</Table.Td> */}
+    const rows = data?.map((order) => (
+        <Table.Tr key={order.id}>
+           <Table.Td onClick={()=>handleOrder(order.id)} style={{cursor:'pointer'}}>{order.id}</Table.Td>
+          <Table.Td>{order.customer.name}</Table.Td>
+          <Table.Td>{order.customer.location.location}</Table.Td>
+          <Table.Td>9800898008</Table.Td>
+          <Table.Td>{order.payment.paymentMethod}</Table.Td>
+          <Table.Td>{order.payment.amount}</Table.Td>
+          <Table.Td>{(order.distance).toFixed(3)} Km</Table.Td>
+          <Table.Td>{formatToLocalDateTime(order.createdAt)}</Table.Td>
+          {/* <Table.Td>{order.}</Table.Td> */}
           
-          {/* <Table.Td><Anchor onClick={()=>navigate('/dashboard/order-info')}>{element.action}</Anchor></Table.Td> */}
+          {/* <Table.Td><Anchor onClick={()=>navigate('/dashboard/order-info')}>{order.action}</Anchor></Table.Td> */}
         </Table.Tr>
       ));
   return (
@@ -89,12 +119,12 @@ function Shipping() {
         <Table.Tr>
           <Table.Th>OrderId </Table.Th>
           <Table.Th>customerName</Table.Th>
-          <Table.Th>Date</Table.Th>
-          <Table.Th>Address</Table.Th>
+          <Table.Th>Location</Table.Th>
           <Table.Th>Contact</Table.Th>
-          <Table.Th>OrderDate</Table.Th>
-          <Table.Th>Total Price </Table.Th>
+          <Table.Th>paymentMethod</Table.Th>
+          <Table.Th>TotalAmount </Table.Th>
           <Table.Th>Distance</Table.Th>
+          <Table.Th>OrderDate</Table.Th>
 
         </Table.Tr>
       </Table.Thead>

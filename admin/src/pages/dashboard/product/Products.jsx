@@ -13,20 +13,31 @@ import {
   Modal,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconDotsVertical, IconFilter, IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import {
+  IconDotsVertical,
+  IconFilter,
+  IconHeart,
+  IconHeartFilled,
+} from "@tabler/icons-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPublicInstance } from "../../../api";
 import { product } from "../../../api/product/product";
 import { useQuery } from "@tanstack/react-query";
+import useAuthStore from "../../../providers/useAuthStore";
 
 function Products() {
   const navigate = useNavigate();
-  const [favIndex, setFavIndex] = useState({ name: null });
+  const [favproduct, setFavproduct] = useState({ name: null });
   const [clickedItem, setClickedItem] = useState({ name: null });
   const [activePage, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [productStatus, setPaymentStatus] = useState("allProduct");
   const [opened, { open: deleteModelOpen, close }] = useDisclosure(false);
+  const setSearchProduct = useAuthStore((state) => state.setSearchProduct);
+  const { searchProduct } = useAuthStore();
+  console.log(searchProduct);
+  const pageSize = 10;
   console.log(activePage);
   const namesArray = [
     { name: "Alice" },
@@ -39,11 +50,14 @@ function Products() {
     data,
     error: errorToGet,
   } = useQuery({
-    queryKey: ['product'],
+    queryKey: [searchProduct],
     queryFn: async () => {
-      const response = await axiosPublicInstance.get(`${product}?page=${activePage}&pageSize=10`);
+      const response = await axiosPublicInstance.get(
+        `${product}/search?search=${searchProduct}&page=${activePage}&pageSize=${pageSize}`
+      );
       // setMainImage(response.data.image[0]);
-
+      // setSearchProduct('')
+      setTotalPage(Math.ceil(response.data.productCount / pageSize));
       return response.data;
     },
   });
@@ -52,9 +66,12 @@ function Products() {
   return (
     <Flex direction={"column"}>
       <Flex justify={"space-between"} p={10}>
-        <Flex direction={'column'}>
+        <Flex direction={"column"}>
           <Text size="25px" fw="bold">
-            Products<span style={{fontSize:'15px',fontWeight:500}}>({productStatus})</span>
+            Products
+            <span style={{ fontSize: "15px", fontWeight: 500 }}>
+              ({productStatus})
+            </span>
           </Text>
         </Flex>
         <Group>
@@ -90,40 +107,63 @@ function Products() {
       </Flex>
       <Divider />
       <Flex gap={20} wrap={"wrap"}>
-        {namesArray &&
-          namesArray.map((index) => {
-            return (
-              <Flex direction={"column"}>
-                <Paper withBorder mt={10} radius={10} bg={"#EEEEFF"} maw={200}>
-                  <Group
-                    justify="center"               
-                    onClick={() => navigate(`/dashboard/product?id=${index.id}`)}
-                  >
-                    <Image radius={10} src="/image/img.jpeg" w={150} h={150} />
-                  </Group>
-                </Paper>
-                <Flex direction={"column"} gap={5}>
-                  <Text p={5} fw={"bold"} maw={200}>
-                    {index.name}
-                  </Text>
-                  {/* <Text>Best gadget for ever</Text> */}
-                  <Rating value={3.5} fractions={2} readOnly />
-                  {/* <Button
-                    variant="transparent"
-                    onClick={() => navigate("/dashboard/product")}
-                  >
-                    View more...
-                  </Button> */}
-                </Flex>
+        {data?.products.map((product) => {
+          return (
+            <Flex direction="column" align="center">
+              <Paper
+                withBorder
+                mt={10}
+                radius={10}
+                bg="#EEEEFF"
+                maw={150}
+                mih={150} // Set minimum height to ensure consistent dimensions
+                w={150} // Ensure the Paper has a fixed width
+                h={150} // Ensure the Paper has a fixed height
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }} // Center content
+                onClick={() => navigate(`/dashboard/product?id=${product.id}`)}
+              >
+                <Image
+                  radius={10}
+                  src={product.image}
+                  fit="contain" // Ensures the image fits within the bounds
+                  width="100%" // Image takes full width of the Paper
+                  height="100%" // Image takes full height of the Paper
+                />
+              </Paper>
+              <Flex direction="column" gap={5} align="center">
+                <Text
+                  p={5}
+                  fw="bold"
+                  maw={150}
+                  // align="center"
+                  style={{
+                    fontSize:'15px',
+                    display: "block", // Ensures it's treated as a block-level element
+                    overflow: "hidden", // Hides text that overflows the container
+                    textOverflow: "ellipsis", // Adds the "..." for overflowing text
+                    WebkitLineClamp: 2, // Limits the text to 2 lines
+                    WebkitBoxOrient: "vertical", // Required for line clamping in WebKit browsers
+                    display: "-webkit-box", // Defines a box for the multi-line truncation
+                  }}
+                  title={product.name} // Tooltip to show full name on hover
+                >
+                  {product.name}
+                </Text>
+                <Rating value={3.5} fractions={2} readOnly />
               </Flex>
-            );
-          })}
+            </Flex>
+          );
+        })}
       </Flex>
       <Group justify="center" mt={20}>
         <Pagination
           value={activePage}
           onChange={setPage}
-          total={10}
+          total={totalPage}
           color="#414B80"
         />
       </Group>

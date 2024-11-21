@@ -9,7 +9,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconSearch,
   IconBell,
@@ -28,32 +28,65 @@ import useAuthStore from "../../providers/useAuthStore";
 function Header() {
   const navigate=useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-  const removeOrder = useAuthStore((state) => state.removeOrder); 
-  // const orders = useOrderStore((state) => state.orders);
+  const [search,setSearch]=useState('');
+  const clearAccessToken = useAuthStore((state) => state.clearAccessToken); 
+  const setSearchProduct=useAuthStore((state)=>state.setSearchProduct)
+  const {searchProduct}=useAuthStore()  // const orders = useOrderStore((state) => state.orders);
   // const favouriteList = useOrderStore((state) => state.favouriteList);
   // const addFavourite = useOrderStore((state) => state.addFavourite);
   const handleLogout=()=>{
-
+    clearAccessToken();
     navigate('/')
   }
+
+  useEffect(() => {
+    // Clear the searchProduct when the page is refreshed
+    const handleBeforeUnload = () => {
+      setSearchProduct('');
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [searchProduct]);
+
+
+  const handleSearch=()=>{
+      setSearchOpen(!searchOpen);
+      setSearchProduct(search)
+      navigate('/dashboard/products');
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+
   return (
     <Flex justify={"flex-end"} p={15} gap={10} direction={"row"}>
       <Group h={35}>
-        {searchOpen ? (
+        {/* {searchOpen ? ( */}
           <TextInput
             rightSection={
-              <IconSearch onClick={() => setSearchOpen(!searchOpen)} />
+              <IconSearch onClick={handleSearch} />
             }
             radius={20}
             placeholder="Search Product..."
+            onChange={(e)=>{
+              setSearch(e.target.value)
+            }}
+            onKeyDown={handleKeyDown}
           ></TextInput>
-        ) : (
+        {/* ) : (
           <IconSearch
             onClick={() => setSearchOpen(!searchOpen)}
             style={{ color: "grey" }}
             size={30}
           />
-        )}
+        )} */}
       </Group>
       <Group gap={0} onClick={()=>navigate('/dashboard/orders')}>
         <IconBell size={30} color="grey" />

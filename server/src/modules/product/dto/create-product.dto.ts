@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -87,4 +87,27 @@ export class createBulkProductDto{
   //   typeof value === 'string' ? value.split(',') : value,
   // )
   productIds?: string[];
+}
+
+
+export class searchProductDto {
+  
+  @IsOptional()
+  @IsString()
+  @ApiProperty({required:false})
+  search?: string;
+
+
+  @Transform(({ value }) => parseInt(value))
+  @ApiProperty()
+  @IsInt()
+  @Min(1)
+  page: number;
+
+
+  @Transform(({ value }) => parseInt(value))
+  @ApiProperty()
+  @IsInt()
+  @Min(1)
+  pageSize: number;
 }

@@ -104,7 +104,7 @@ export class OrderService {
       where: { status},
       skip: (page - 1) * pageSize,
       take: pageSize,
-      relations: ['customer.location','orderProduct.product'],
+      relations: ['customer.location','orderProduct.product','payment'],
       order:{
         createdAt:'DESC'
       },

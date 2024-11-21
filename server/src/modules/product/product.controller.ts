@@ -13,7 +13,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { createBulkProductDto, CreateProductDto, productImageDto } from './dto/create-product.dto';
+import { createBulkProductDto, CreateProductDto, productImageDto, searchProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import {
   ApiBearerAuth,
@@ -94,6 +94,12 @@ export class ProductController {
   findAll(@Query() paginationDto?: PaginationDto) {
     return this.productService.findAll(paginationDto);
   }
+
+  @Get('search')
+  findAllProducts( @Query() searchDto?: searchProductDto) {
+    return this.productService.findAllProducts(searchDto);
+  }
+
 
   @Get('filter')
   findProduct(
