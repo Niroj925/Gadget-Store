@@ -102,11 +102,12 @@ export class ProductController {
 
 
   @Get('filter')
+  @ApiQuery({name:'filterType',enum:filterProductType})
   findProduct(
-    @Query() paginationDto?: PaginationDto,
-    @Query('query') query?: filterProductType,
+    @Query()  searchDto?: searchProductDto,
+    @Query() query?:{filterType:filterProductType},
   ) {
-    return this.productService.findProduct(query,paginationDto);
+    return this.productService.findProduct(query.filterType, searchDto);
   }
 
   @Get('new-arrival')

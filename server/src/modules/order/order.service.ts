@@ -21,6 +21,9 @@ export class OrderService {
     @InjectRepository(paymentEntity)
     private readonly paymentRepository: Repository<paymentEntity>,
 
+    @InjectRepository(productEntity)
+    private readonly productRepository: Repository<productEntity>,
+
     private readonly dataSource: DataSource,
 
     private readonly productService:ProductService
@@ -166,8 +169,27 @@ export class OrderService {
   }
 
  async updateOrderStatus(id:string,status:orderStatus){
-    await this.orderRepository.update({id},{status});
-    return true;
+  if(status!=orderStatus.delivered){
+  await this.orderRepository.update({id},{status});
+  return true;
+  }else {
+  const orders=await this.orderRepository.findOne({
+    where:{id},
+    relations:['orderProduct.product']
+  });
+
+  orders.orderProduct.forEach(async(order) => {
+    if(orders.status!==orderStatus.delivered){
+      await this.productRepository.increment(
+        { id: order.product.id }, 
+        'soldQuantity',                
+        order.quantity                          
+      );
+    }
+  });
+  await this.orderRepository.update({id},{status});
+  return true;
+  }
   }
 
   async updatePaymentStatus(id:string,status:paymentStatus,createRemarkDto:CreateRemarkDto){

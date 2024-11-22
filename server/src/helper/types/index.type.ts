@@ -64,8 +64,8 @@ export enum ProductStatus {
 
 export enum filterProductType {
   highSell = 'highSell',
-  hightRating = 'highRating',
+  highRating = 'highRating',
   lowRating = 'lowRating',
-  highReturn = 'highReturn',
-  lowReturn = 'lowReturn',
+  highPrice = 'highPrice',
+  lowPrice = 'lowPrice',
 }

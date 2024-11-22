@@ -36,6 +36,9 @@ export class productEntity extends parentEntity {
   @Column({default:null})
   brand: string;
 
+  @Column({default:0})
+  soldQuantity:number;
+
   @Column({ default: ProductStatus.available })
   status: ProductStatus;
 

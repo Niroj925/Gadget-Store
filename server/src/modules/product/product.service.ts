@@ -21,6 +21,7 @@ import {
 } from 'src/helper/types/index.type';
 import { paginationToken } from 'aws-sdk/clients/supportapp';
 import { retry } from 'rxjs';
+import { orderProductEntity } from 'src/model/orderProduct.entity';
 
 @Injectable()
 export class ProductService {
@@ -39,6 +40,9 @@ export class ProductService {
 
     @InjectRepository(newArrivalEntity)
     private readonly newArrivalRepository: Repository<newArrivalEntity>,
+
+    @InjectRepository(orderProductEntity)
+    private readonly orderProductRepository: Repository<orderProductEntity>,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -153,12 +157,11 @@ export class ProductService {
   }
 
   async findAllProducts(searchDto: searchProductDto) {
-    const {search, page, pageSize } = searchDto;
-    const [products,productCount] = await this.productRepository.findAndCount({
+    const { search, page, pageSize } = searchDto;
+    const [products, productCount] = await this.productRepository.findAndCount({
       where: {
         status: ProductStatus.available,
-        name: ILike(`%${search??''}%`),
-
+        name: ILike(`%${search ?? ''}%`),
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -177,19 +180,23 @@ export class ProductService {
       },
     });
     // return products
-    const fp = products.map((product) => {
-      const totalRatings = product.review.reduce((sum, review) => sum + (review.rating || 0), 0);
-      const averageRating = product.review.length > 0 ? totalRatings / product.review.length : null;
-    
+    const filterProduct = products.map((product) => {
+      const totalRatings = product.review.reduce(
+        (sum, review) => sum + (review.rating || 0),
+        0,
+      );
+      const averageRating =
+        product.review.length > 0 ? totalRatings / product.review.length : null;
+
       return {
         id: product.id,
         name: product.name,
         image: product.image?.[0]?.image || null,
-        averageRating: averageRating ? averageRating.toFixed(2) : null, 
+        soldQuantity: product.soldQuantity,
+        averageRating: averageRating ? averageRating.toFixed(2) : null,
       };
     });
-    return { products: fp, productCount };
-    
+    return { products: filterProduct, productCount };
   }
 
   async findArrival() {
@@ -221,25 +228,32 @@ export class ProductService {
     return product;
   }
 
-  async findProduct(query: filterProductType, paginationDto: PaginationDto) {
-    const product = await this.productRepository.find({
-      relations: ['review', 'order.orderProduct'],
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        review: {
-          id: true,
-          rating: true,
-          review: true,
-        },
-        order: {
-          id: true,
-        },
-      },
-    });
+  async findProduct(
+    filterType: filterProductType,
+    paginationDto: searchProductDto,
+  ) {
+    const [products, productCount] = await this.filterProduct(
+      filterType,
+      paginationDto,
+    );
+    const filterProduct = products.map((product) => {
+      const totalRatings = product.review.reduce(
+        (sum, review) => sum + (review.rating || 0),
+        0,
+      );
+      const averageRating =
+        product.review.length > 0 ? totalRatings / product.review.length : null;
 
-    return product;
+      return {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image?.[0]?.image || null,
+        soldQuantity: product.soldQuantity,
+        averageRating: averageRating ? averageRating.toFixed(2) : null,
+      };
+    });
+    return { products: filterProduct, productCount };
   }
 
   async update(id: string, fileUrls: any, updateProductDto: UpdateProductDto) {
@@ -312,5 +326,112 @@ export class ProductService {
   async removeNewArrival(id: string) {
     await this.newArrivalRepository.delete({ id });
     return true;
+  }
+
+  async filterProduct(
+    type: filterProductType,
+    paginationDto: searchProductDto,
+  ) {
+    const { search, page, pageSize } = paginationDto;
+    let order;
+    switch (type) {
+      case filterProductType.highSell:
+        order = await this.productRepository.findAndCount({
+          where: {
+            // status: ProductStatus.available,
+            name: ILike(`%${search ?? ''}%`),
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          relations: ['review', 'image'],
+          order: {
+            soldQuantity: 'DESC',
+          },
+        });
+        break;
+      case filterProductType.highPrice:
+        order = await this.productRepository.findAndCount({
+          where: {
+            // status: ProductStatus.available,
+            name: ILike(`%${search ?? ''}%`),
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          relations: ['review', 'image'],
+          order: {
+            price: 'DESC',
+          },
+        });
+        break;
+      case filterProductType.lowPrice:
+        order = await this.productRepository.findAndCount({
+          where: {
+            // status: ProductStatus.available,
+            name: ILike(`%${search ?? ''}%`),
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          relations: ['review', 'image'],
+          order: {
+            price: 'ASC',
+          },
+        });
+        break;
+      case filterProductType.highRating:
+        order = async () => {
+          const [products, totalCount] =
+            await this.productRepository.findAndCount({
+              skip: (page - 1) * pageSize,
+              take: pageSize,
+              relations: ['review', 'image'],
+              loadEagerRelations: true,
+            });
+
+          // Calculate review metrics
+          const productsWithMetrics = products.map((product) => {
+            const reviews = product.review || [];
+            const totalReviews = reviews.length;
+            const totalRating = reviews.reduce(
+              (sum, review) => sum + review.rating,
+              0,
+            );
+            const averageRating =
+              totalReviews > 0 ? totalRating / totalReviews : 0;
+
+            return {
+              ...product,
+              averageRating,
+              totalReviews,
+            };
+          });
+
+          // Sort products
+          const sortedProducts = productsWithMetrics.sort((a, b) => {
+            // Primary sort: total number of reviews (descending)
+            if (b.totalReviews !== a.totalReviews) {
+              return b.totalReviews - a.totalReviews;
+            }
+            // Secondary sort: average rating (descending)
+            return b.averageRating - a.averageRating;
+          });
+
+          return {
+            products: sortedProducts, // Changed from 'products'
+            productCount: totalCount,
+          };
+        };
+        break;
+      default:
+        order = await this.productRepository.findAndCount({
+          where: {
+            // status: ProductStatus.available,
+            name: ILike(`%${search ?? ''}%`),
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          relations: ['review', 'image']
+        });
+    }
+    return order;
   }
 }

@@ -9,11 +9,22 @@ import { UploadService } from 'src/helper/utils/files_upload';
 import { productImageEntity } from 'src/model/productImage.entity';
 import { newArrivalEntity } from 'src/model/newArrival.entity';
 import { orderEntity } from 'src/model/order.entity';
+import { orderProductEntity } from 'src/model/orderProduct.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([productEntity,productSpecEntity,productImageEntity, productColorEntity,newArrivalEntity,orderEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      productEntity,
+      productSpecEntity,
+      productImageEntity,
+      productColorEntity,
+      newArrivalEntity,
+      orderEntity,
+      orderProductEntity,
+    ]),
+  ],
   controllers: [ProductController],
-  providers: [ProductService,UploadService],
-  exports:[ProductService]
+  providers: [ProductService, UploadService],
+  exports: [ProductService],
 })
 export class ProductModule {}
