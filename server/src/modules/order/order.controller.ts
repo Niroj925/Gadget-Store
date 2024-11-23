@@ -68,11 +68,12 @@ export class OrderController {
 
   @Patch('status/:orderId')
   @ApiQuery({ name: 'status', enum: orderStatus })
+  @ApiQuery({ name: 'remarks', required:false})
   updateStatus(
     @Param('orderId', ParseUUIDPipe) orderId: string,
-    @Query() query: { status: orderStatus },
+    @Query() query: { remarks:string,status: orderStatus },
   ) {
-    return this.orderService.updateOrderStatus(orderId, query.status);
+    return this.orderService.updateOrderStatus(orderId, query);
   }
 
   @Patch(':id')

@@ -48,7 +48,7 @@ export default function Login() {
           },
         }
       );
-      const { accessToken, refreshToken } = res.data;
+      const { role, accessToken, refreshToken } = res.data;
       console.log(res);
       if (res?.status === 201) {
         setAccessToken(accessToken);
@@ -57,8 +57,11 @@ export default function Login() {
         } else {
           sessionStorage.setItem("rToken", refreshToken);
         }
-        toast.success("Login Successfully");
-        navigate("/dashboard");
+        if (role == "admin") {
+          navigate("/dashboard");
+        } else if (role == "delivery") {
+          navigate("/delivery");
+        }
       }
     } catch (error) {
       if (error instanceof AxiosError) {

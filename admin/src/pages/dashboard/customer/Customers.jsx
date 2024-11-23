@@ -28,13 +28,14 @@ function Customers() {
     const rows = data?.map((customer) => (
         <Table.Tr key={customer.id}>
            <Table.Td>
-            {/* <img src={customer.profile}/> */}
+           {/* <img src={customer?.profile} referrerPolicy="no-referrer" /> */}
               <Image
               src={customer?.profile}
               h={50}
               w={50}
               radius="50%"
               alt={customer.id}
+              referrerPolicy="no-referrer"
               />
            </Table.Td>
           <Table.Td>{customer.name}</Table.Td>

@@ -13,6 +13,9 @@ export class orderEntity extends parentEntity{
     @Column()
     status:orderStatus;
 
+    @Column({default:null})
+    remarks:string;
+
     @OneToMany(()=>orderProductEntity,(product)=>product.order)
     orderProduct:orderProductEntity[];
 

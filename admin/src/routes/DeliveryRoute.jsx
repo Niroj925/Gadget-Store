@@ -1,4 +1,5 @@
 
+import OrderMap from "../pages/dashboard/order/OrderMap";
 import Delivery from "../pages/delivery/Delivery";
 import DeliveryInfo from "../pages/delivery/DeliveryInfo";
 
@@ -14,6 +15,10 @@ const DeliveryRoutes = {
       {
         path: "order-info",
         element: <DeliveryInfo/>
+      },
+      {
+        path: "order-map",
+        element: <OrderMap/>
       },
     ]
 }

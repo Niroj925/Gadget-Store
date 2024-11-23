@@ -62,7 +62,6 @@ export class DeliveryService {
   async myDelivery( paginationDto: PaginationDto,){
    const orders=await this.orderService.findByStatus(orderStatus.shipped,paginationDto);
    const store=await this.storeRepository.find();
-
    orders.forEach((order: any) => {
     let {latitude,longitude}=order.customer.location;
     let distance = this.haversine(store[0].latitude, store[0].longitude, latitude,longitude);

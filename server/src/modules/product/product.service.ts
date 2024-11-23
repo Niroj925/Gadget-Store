@@ -346,6 +346,9 @@ export class ProductService {
           relations: ['review', 'image'],
           order: {
             soldQuantity: 'DESC',
+            // image:{
+            //   createdAt:'DESC'
+            // }
           },
         });
         break;

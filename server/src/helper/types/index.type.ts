@@ -12,6 +12,7 @@ export enum orderStatus {
   accepted = 'accepted',
   shipped = 'shipped',
   delivered = 'delivered',
+  unavailabe='unavailable',
   cancel = 'cancel',
 }
 

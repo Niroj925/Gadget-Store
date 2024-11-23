@@ -28,41 +28,34 @@ import useAuthStore from "../../../providers/useAuthStore";
 
 function Products() {
   const navigate = useNavigate();
-  const [favproduct, setFavproduct] = useState({ name: null });
-  const [clickedItem, setClickedItem] = useState({ name: null });
   const [activePage, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [productStatus, setPaymentStatus] = useState("allProduct");
+  const [filterType, setFilterType] = useState("allProduct");
   const [opened, { open: deleteModelOpen, close }] = useDisclosure(false);
-  const setSearchProduct = useAuthStore((state) => state.setSearchProduct);
   const { searchProduct } = useAuthStore();
-  console.log(searchProduct);
+  const filterProductType = {
+    highSell: "highSell",
+    highRating: "highRating",
+    lowRating: "lowRating",
+    highPrice: "highPrice",
+    lowPrice: "lowPrice",
+  };
   const pageSize = 10;
-  console.log(activePage);
-  const namesArray = [
-    { name: "Alice" },
-    { name: "Bob" },
-    { name: "Charlie" },
-    { name: "Diana" },
-  ];
   const {
     isLoading,
     data,
     error: errorToGet,
   } = useQuery({
-    queryKey: [searchProduct],
+    queryKey: [`${searchProduct}${filterType}`],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
-        `${product}/search?search=${searchProduct}&page=${activePage}&pageSize=${pageSize}`
+        `${product}/filter?search=${searchProduct}&page=${activePage}&pageSize=${pageSize}&filterType=${filterType}`
       );
-      // setMainImage(response.data.image[0]);
-      // setSearchProduct('')
       setTotalPage(Math.ceil(response.data.productCount / pageSize));
       return response.data;
     },
   });
 
-  console.log(data);
   return (
     <Flex direction={"column"}>
       <Flex justify={"space-between"} p={10}>
@@ -70,7 +63,7 @@ function Products() {
           <Text size="25px" fw="bold">
             Products
             <span style={{ fontSize: "15px", fontWeight: 500 }}>
-              ({productStatus})
+              ({filterType})
             </span>
           </Text>
         </Flex>
@@ -83,23 +76,36 @@ function Products() {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item onClick={() => setPaymentStatus("allProduct")}>
+              <Menu.Item onClick={() => setFilterType("allProduct")}>
                 All Products
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("topSales")}>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highSell)}
+              >
                 Top Sales
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("highReview")}>
+              {/* <Menu.Item onClick={() => setFilterType(filterProductType.highRating)}>
                 High Review
+              </Menu.Item> */}
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highPrice)}
+              >
+                High Price
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("highRating")}>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.lowPrice)}
+              >
+                Low Price
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highRating)}
+              >
                 High Rating
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("lowRating")}>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.lowRating)}
+              >
                 Low Rating
-              </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("highReturn")}>
-                High Return
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -116,9 +122,9 @@ function Products() {
                 radius={10}
                 bg="#EEEEFF"
                 maw={150}
-                mih={150} // Set minimum height to ensure consistent dimensions
-                w={150} // Ensure the Paper has a fixed width
-                h={150} // Ensure the Paper has a fixed height
+                mih={150}
+                w={150}
+                h={150}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -129,9 +135,9 @@ function Products() {
                 <Image
                   radius={10}
                   src={product.image}
-                  fit="contain" // Ensures the image fits within the bounds
-                  width="100%" // Image takes full width of the Paper
-                  height="100%" // Image takes full height of the Paper
+                  fit="contain"
+                  width="100%"
+                  height="100%"
                 />
               </Paper>
               <Flex direction="column" gap={5} align="center">
@@ -141,15 +147,15 @@ function Products() {
                   maw={150}
                   // align="center"
                   style={{
-                    fontSize:'15px',
-                    display: "block", // Ensures it's treated as a block-level element
-                    overflow: "hidden", // Hides text that overflows the container
-                    textOverflow: "ellipsis", // Adds the "..." for overflowing text
-                    WebkitLineClamp: 2, // Limits the text to 2 lines
-                    WebkitBoxOrient: "vertical", // Required for line clamping in WebKit browsers
-                    display: "-webkit-box", // Defines a box for the multi-line truncation
+                    fontSize: "15px",
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    display: "-webkit-box",
                   }}
-                  title={product.name} // Tooltip to show full name on hover
+                  title={product.name}
                 >
                   {product.name}
                 </Text>

@@ -61,10 +61,11 @@ export class ProductController {
   ) {
     const fileUrls = [];
     for (const file of files) {
-      const fileUrl = await this.uploadService.upload(
-        file.originalname,
-        file.buffer,
-      );
+      // const fileUrl = await this.uploadService.upload(
+      //   file.originalname,
+      //   file.buffer,
+      // );
+      const fileUrl =createProductDto.photo?createProductDto.photo: await this.uploadService.upload(file);
       fileUrls.push(fileUrl);
     }
     return this.productService.create(categoryId, createProductDto, fileUrls);
@@ -78,10 +79,12 @@ export class ProductController {
     @Body() productImageDto: productImageDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const s3response = await this.uploadService.upload(
-      file.originalname,
-      file.buffer,
-    );
+    // const s3response = await this.uploadService.upload(
+    //   file.originalname,
+    //   file.buffer,
+    // );
+    const s3response =await this.uploadService.upload(file);
+   
     return this.productService.uploadImage(productId, s3response);
   }
 
@@ -157,10 +160,11 @@ export class ProductController {
 ) {
   const fileUrls = [];
   for (const file of files) {
-    const fileUrl = await this.uploadService.upload(
-      file.originalname,
-      file.buffer,
-    );
+    // const fileUrl = await this.uploadService.upload(
+    //   file.originalname,
+    //   file.buffer,
+    // );
+    const fileUrl = await this.uploadService.upload(file);
     fileUrls.push(fileUrl);
   }
   // return updateProductDto;

@@ -168,9 +168,10 @@ export class OrderService {
     return customerOrder;
   }
 
- async updateOrderStatus(id:string,status:orderStatus){
+ async updateOrderStatus(id:string,query:any){
+  const {status,remarks}=query;
   if(status!=orderStatus.delivered){
-  await this.orderRepository.update({id},{status});
+  await this.orderRepository.update({id},{status,remarks:remarks??null});
   return true;
   }else {
   const orders=await this.orderRepository.findOne({
@@ -187,7 +188,7 @@ export class OrderService {
       );
     }
   });
-  await this.orderRepository.update({id},{status});
+  await this.orderRepository.update({id},{status,remarks:remarks??null});
   return true;
   }
   }
