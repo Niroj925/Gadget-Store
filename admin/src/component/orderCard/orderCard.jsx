@@ -77,7 +77,7 @@ function OrderCard({ order }) {
         // refetchType: "active",
         // exact: true,
       });
-      updateModelClose()
+      updateModelClose();
       toast.success("Order status updated successfully");
     },
     onError: (error) => {
@@ -172,19 +172,19 @@ function OrderCard({ order }) {
             </Text>
             <Flex justify="space-between">
               <Text size="sm">
-                <strong>Name:</strong> {order.customer.name}
+                Name: <strong>{order.customer.name}</strong>
               </Text>
               <Text size="sm">
-                <strong>Contact:</strong> 98008980087
+                Contact:<strong> 98008980087</strong>
               </Text>
             </Flex>
-            <Flex justify="space-between">
-              <strong>Payment:</strong>{" "}
-              <Badge color="green" ml={-70} size="sm">
+            <Flex justify="space-between" align={"center"}>
+              <Text size="sm">Payment: </Text>
+              <Badge color="green" ml={-60} size="sm">
                 {order.payment.paymentMethod}
               </Badge>
               <Text size="sm">
-                <strong>Amount:</strong> Rs.{order.payment.amount}
+                Amount: <strong> Rs.{order.payment.amount}</strong>
               </Text>
             </Flex>
           </Flex>
@@ -192,15 +192,13 @@ function OrderCard({ order }) {
 
         <Text mt={10} maw={400} ta="center" size="sm">
           The action of update cannot be undone. Are you sure you want to
-          proceed update to these order?
+          proceed update to this order?
         </Text>
         <Paper withBorder p={10} mt={10} radius="md" shadow="xs" mb="md">
           <Radio.Group
             value={selectedValue}
             onChange={handleRadioChange}
             name="status"
-            //   label="Select your order status"
-            //   description="This is anonymous"
             ml={10}
             withAsterisk
           >
@@ -234,10 +232,7 @@ function OrderCard({ order }) {
           <Button variant="default" onClick={() => updateModelClose()}>
             Cancel
           </Button>
-          <Button
-            loading={isPending}
-            onClick={mutateUpdateProduct}
-          >
+          <Button loading={isPending} onClick={mutateUpdateProduct}>
             Update
           </Button>
         </Group>

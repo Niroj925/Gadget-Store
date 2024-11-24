@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "../providers/useAuthStore";
+// import useAuthStore from "../providers/useAuthStore";
 
 const baseURL = "http://localhost:4000/api/v1";
 // const baseURL = "http://192.168.242.176:4000/api/v1";
@@ -55,8 +55,8 @@ axiosPrivateInstance.interceptors.response.use(
         );
         const accessToken = response.data;
         console.log(accessToken);
-        const setAcessToken = useAuthStore.getState().setAccessToken;
-        setAcessToken(accessToken);
+        // const setAcessToken = useAuthStore.getState().setAccessToken;
+        // setAcessToken(accessToken);
         axiosPrivateInstance.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${accessToken}`;

@@ -45,7 +45,7 @@ export class productEntity extends parentEntity {
   @OneToMany(() => orderProductEntity, (order) => order.product)
   order: orderProductEntity[];
 
-  @ManyToOne(() => categoryEntity, (category) => category.product)
+  @ManyToOne(() => categoryEntity, (category) => category.product,{onDelete:'SET NULL'})
   category: categoryEntity;
 
   @OneToMany(() => productImageEntity, (image) => image.product)

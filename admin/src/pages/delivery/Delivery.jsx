@@ -28,10 +28,6 @@ function Delivery() {
     },
   });
 
-  
-
-  console.log(data);
-
   useEffect(()=>{
     let filteredOrders = data?.filter((order) => {
       const customerName = order.customer.name.toLowerCase();
@@ -56,9 +52,9 @@ function Delivery() {
         <Paper withBorder p={10} mt={10}>
           <Flex justify={"space-between"} w={"100%"} gap={10}>
               <TextInput
-                rightSection={<IconSearch />}
+                // rightSection={<IconSearch />}
                 radius={20}
-                placeholder="Search Contact..."
+                placeholder="Search name or contact..."
                 w={'100%'}
                 onChange={(event) => setSearch(event.currentTarget.value)}
               ></TextInput>

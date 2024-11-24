@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   UploadedFile,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { createBulkProductDto, CreateProductDto, productImageDto, searchProductDto } from './dto/create-product.dto';
@@ -121,6 +122,11 @@ export class ProductController {
   @Get('find-price/:id')
   findPrice(@Param('id') id: string){
     return this.productService.findPrice(id);
+  }
+
+  @Get('similar-product/:id')
+  findSimilarProduct(@Param('id',ParseUUIDPipe) id: string) {
+    return this.productService.findSimilarProduct(id);
   }
 
   @Get(':id')

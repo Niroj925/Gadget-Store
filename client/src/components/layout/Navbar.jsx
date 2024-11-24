@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Flex,
   Anchor,
@@ -9,6 +9,7 @@ import {
   Menu,
   Image,
   Drawer,
+  Paper,
 } from "@mantine/core";
 import {
   IconSearch,
@@ -18,40 +19,65 @@ import {
 } from "@tabler/icons-react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import useOrderStore from "../../store/store";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { NavbarNested } from "./SideBar";
+import { useQuery } from "@tanstack/react-query";
+import { axiosPublicInstance } from "../../api";
+import { category } from "../../api/category/category";
 // import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   // const navigate=useNavigate();
   const [search, setSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState(""); // Search for categories
   const orderCount = useOrderStore((state) => state.noOfOrder);
   const favCount = useOrderStore((state) => state.noOfFavourite);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activePage, setPage] = useState(1);
+  const [debounced] = useDebouncedValue(categorySearch, 200);
+  const [filteredCategories,setFilterCategories]=useState(null)
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 767px)");
 
-  const categories = [
-    {
-      id: "dghjwriey",
-      name: "Mobile",
-    },
-    {
-      id: "dghjwriey",
-      name: "Headphone",
-    },
-    {
-      id: "dghjwriey",
-      name: "Earphone",
-    },
-  ];
+  const {
+   isLoading,
+   data,
+   error: errorToGet,
+ } = useQuery({
+   queryKey: ["category"],
+   queryFn: async () => {
+     const response = await axiosPublicInstance.get(
+       category
+     );
+     return response.data;
+   },
+ });
+
+//  console.log('categories:',data);
+
+ const productCategory=(element)=>{
+   navigate(`/dashboard/category-product?id=${element.id}`)
+ }
+
+
   const handleSearch = () => {
     if (search.trim()) {
       window.location.href = `/products?search=${search}`;
     }
   };
+ 
+  
+  useEffect(()=>{
+    let filteredOrders = data?.filter((order) => { return (
+        order.name.toLowerCase().includes(categorySearch.toLowerCase())
+      );
+    });
+    setFilterCategories(categorySearch!=''?filteredOrders:data);
+  },[debounced,data])
+
+
   return (
     <Flex
       bg="#E7E7FF"
@@ -76,28 +102,54 @@ const Navbar = () => {
           </Box>
 
           <Group gap={25}>
-            <Menu shadow="md" width={200}>
+            <Menu shadow="md" width={250}>
               <Menu.Target>
                 <Anchor fw={500} rightSection={<IconChevronDown />} c="black">
                   Category
                 </Anchor>
               </Menu.Target>
-              <Menu.Dropdown>
-                {/* <Menu.Item >Mobile</Menu.Item>
-            <Menu.Item>Headphone</Menu.Item>
-            <Menu.Item>Earphone</Menu.Item> */}
-                {categories.map((item) => {
-                  return (
-                    <Menu.Item
-                      key={item.id}
-                      onClick={() =>
-                        (window.location.href = `/category?search=${item.name}`)
-                      }
-                    >
-                      {item.name}
-                    </Menu.Item>
-                  );
-                })}
+              {/* <Menu.Dropdown style={{ maxHeight: 300, overflowY: 'auto' }}>  */}
+
+              <Menu.Dropdown
+                style={{
+                  zIndex: 1100,
+                }}
+              >
+                {/* Scrollable Dropdown */}
+                {/* Search Input */}
+                <TextInput
+                  placeholder="Search categories..."
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  mb={10}
+                  // icon={<IconSearch size={16} />}
+                  size="sm"
+                />
+                {/* Display filtered categories */}
+                <Paper
+                  withBorder
+                  style={{
+                    maxHeight: 200,
+                    overflowY: "auto",
+                  }}
+                >
+                  {data?.length > 0 ? (
+                    filteredCategories?.map((item) => (
+                      <Menu.Item
+                        key={item.id}
+                        onClick={() =>
+                          (window.location.href = `/category?id=${item.id}`)
+                        }
+                      >
+                        {item.name}
+                      </Menu.Item>
+                    ))
+                  ) : (
+                    <Text size="sm" align="center" color="dimmed">
+                      No categories found
+                    </Text>
+                  )}
+                </Paper>
               </Menu.Dropdown>
             </Menu>
             <Anchor href="/deals" c="black" fw={500}>
@@ -137,32 +189,6 @@ const Navbar = () => {
             overlayOpacity={0.3}
           >
             <NavbarNested />
-            {/* <Box>
-            <Anchor href="/" c="black" fw={500} mb={10} block>
-              Home
-            </Anchor>
-            {categories.map((item) => (
-              <Anchor
-                key={item.id}
-                href={`/category?search=${item.name}`}
-                c="black"
-                fw={500}
-                mb={10}
-                block
-              >
-                {item.name}
-              </Anchor>
-            ))}
-            <Anchor href="/deals" c="black" fw={500} mb={10} block>
-              Deals
-            </Anchor>
-            <Anchor href="/new" c="black" fw={500} mb={10} block>
-              What's New
-            </Anchor>
-            <Anchor href="/delivery" c="black" fw={500} mb={10} block>
-              Delivery
-            </Anchor>
-          </Box> */}
           </Drawer>
         </>
       )}

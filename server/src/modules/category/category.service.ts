@@ -38,6 +38,7 @@ export class CategoryService {
     }));
   }
 
+
   async findOne(id: string) {
     return await this.categoryRepository.findOne({ where: { id } });
   }

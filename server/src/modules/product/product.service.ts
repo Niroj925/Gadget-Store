@@ -228,6 +228,31 @@ export class ProductService {
     return product;
   }
 
+  async findSimilarProduct(id:string){
+    const products = await this.productRepository.find({
+      where:{category:{id}},
+      relations:['image'],
+      order:{
+        soldQuantity:'DESC'
+     },
+      select: {
+          id:true,
+          name:true,
+          price:true,
+          soldQuantity:true,
+          image:true
+      },
+      take:10
+    });
+   return products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image && product.image.length > 0 ? product.image[0].image : null, // Assuming `url` is the image field
+    }));
+  
+  }
+
   async findProduct(
     filterType: filterProductType,
     paginationDto: searchProductDto,

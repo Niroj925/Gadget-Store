@@ -22,47 +22,58 @@ import { TbTruckReturn } from "react-icons/tb";
 import SimilarItem from "../similarItem/SimilarItem";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { BsGoogle } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import useOrderStore from "../../store/store";
+import { useQuery } from "@tanstack/react-query";
+import { product } from "../../api/product/product";
+import { axiosPublicInstance } from "../../api";
 
 function Product() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const [count, setCount] = useState(1);
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [contact, setContact] = useState(null);
   const [error, setError] = useState("");
   const [validContact, setValidContact] = useState(false);
   const setCustomerContact = useOrderStore((state) => state.setCustomerContact);
+  const [mainImage, setMainImage] = useState({});
 
-  const [specs] = useState([
-    "ipX4 Water and Sweat Resistant",
-    "Punchy Heavy Bass",
-    "Immersive Sound Quality",
-    "TPE Strong and Flexible Wire",
-    "Oxidation Resistant Tip",
-    "Anti Winding Wire",
-    "Can Pick And Cut Calls",
-    "Pin: 3.5mm",
-    "Driver: 11mm",
-    "Speaker Impedance: 16 ohms",
-    "Frequency Response: 20Hz-20kHz",
-    "Water Resistance: ipx4",
-    "HD Stereo Sound",
-    "Super Tough Wire",
-    "Support High Quality Clear Call",
-  ]);
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: [id],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${product}/${id}`);
+      setMainImage(response.data.image[0]);
+
+      return response.data;
+    },
+  });
+
+console.log(data);
+
+const specs = data?.spec.map((spec) => spec.specification) || [];
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
-
-  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
+  
+  const columns = isDesktop ? 2 : 1;
 
   const chunkedSpecs = [];
-  for (let i = 0; i < specs.length; i += 5) {
-    chunkedSpecs.push(specs.slice(i, i + 5));
+  const itemsPerColumn =
+    columns === 2 ? Math.ceil(specs.length / 2) : specs.length;
+
+  for (let i = 0; i < specs.length; i += itemsPerColumn) {
+    chunkedSpecs.push(specs.slice(i, i + itemsPerColumn));
   }
+
+  const displayedSpecs = chunkedSpecs;
 
   const tabletSpecs = [];
   if (columns === 2) {
@@ -70,9 +81,6 @@ function Product() {
     tabletSpecs.push(specs.slice(0, half));
     tabletSpecs.push(specs.slice(half));
   }
-
-  const displayedSpecs =
-    columns === 1 ? [specs] : columns === 2 ? tabletSpecs : chunkedSpecs;
 
   const increment = () => {
     count <= 10 && setCount(count + 1);
@@ -97,50 +105,50 @@ function Product() {
   return (
     <Box>
       <Flex direction={isMobile?"column":"row"} gap={50} p={25}>
-        <Box padding="md" shadow="xs" style={{ width:isMobile?"100%":"50%" }}>
-          <Group position="center">
-            {/* Large image */}
-            <Image
-              src="./image/img.jpeg"
-              alt="Large"
-              style={{ width: "100%" }}
-              radius={"md"}
-            />
-          </Group>
-          <Group position="center" mt="lg">
-            {/* Row of small images */}
-            <Flex direction="row" gap={9}>
-              <Image
-                src="./image/img.jpeg"
-                alt="Small"
-                w={"24%"}
-                radius={"md"}
+      <Flex direction={isMobile?'column':'row-reverse'} gap={isMobile?5:50} padding="md" shadow="xs" w={isMobile?"100%":'65%'} justify={isMobile?'center':'flex-end'}>
+            <Group position="center" justify={isMobile?"center":'flex-start'} mt={!isMobile&&-60}>
+              <img
+                src={mainImage.image}
+                style={{
+                  width:isMobile?"400px":"500px",
+                  height:isMobile?"400px":"500px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                }}
               />
-              <Image
-                src="./image/img.jpeg"
-                alt="Small"
-                w={"24%"}
-                radius={"md"}
-              />
-              <Image
-                src="./image/img.jpeg"
-                alt="Small"
-                w={"24%"}
-                radius={"md"}
-              />
-              <Image
-                src="./image/img.jpeg"
-                alt="Small"
-                w={"24%"}
-                radius={"md"}
-              />
-            </Flex>
-          </Group>
-        </Box>
+            </Group>
+              {/* Row of small images */}
+              <Flex direction={isMobile?"row":'column'} justify={'flex-start'} gap={9} mt={20}>
+                {data?.image.map((item) => (
+                  <Image
+                    key={item.image} // Add a unique key
+                    src={item.image}
+                    alt="Small"
+                    style={{
+                      width: isMobile?"80px":"120px",
+                      height: isMobile?"80px":"120px", 
+                      objectFit: "cover", 
+                      cursor: "pointer",
+                      border: "2px solid transparent", 
+                      borderRadius: "8px", 
+                      transition: "border 0.3s ease", 
+                    }}
+                    radius="md"
+                    onClick={() => setMainImage(item)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.border = "2px solid #007BFF"; 
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.border = "2px solid transparent"; 
+                    }}
+                  />
+                ))}
+              </Flex>
+          </Flex>
         <Flex direction={"column"} justify={"flex-start"} gap={15}>
           <Flex direction={"column"} gap={7}>
-            <Text size="35px" fw={"bold"} c={"dark"}>
-              Airpods pro
+            <Text size="25px"  c={"dark"}>
+              {data?.name}
             </Text>
             <Text>This is one of the offordable gadget hai</Text>
             <Flex direction={"row"}>
@@ -150,7 +158,7 @@ function Product() {
           </Flex>
           <Divider />
           <Text size="24px" fw={"bold"} c={"dark"}>
-            Rs.9900
+            Rs.{data?.price}
           </Text>
           <Text>best price for ever hai gaich</Text>
           <Divider />
@@ -158,15 +166,13 @@ function Product() {
             <Text fw={"bold"}>Select Color</Text>
             <Radio.Group name="color">
               <Group mt="xs">
-                <Radio color="red" value="red" label="Red" />
-                <Radio color="black" value="black" label="Black" />
-                <Radio color="silver" value="silver" label="Silver" />
-                <Radio
-                  color="white"
-                  iconColor="black"
-                  value="white"
-                  label="White"
-                />
+                {
+                  data?.color?.map((color)=>{
+                    return(
+                    <Radio color={color.color.toLowerCase()=='white'?'blue':color.color.toLowerCase()} value={color.id} label={color.color} />
+                    )
+                  })
+                }
               </Group>
             </Radio.Group>
           </Flex>
@@ -264,7 +270,7 @@ function Product() {
           Airpods Pro Max Full Specifications
         </Text>
         <Flex direction={"row"} gap={20} w={"100%"} mt={20}>
-          <Paper withBorder p={10}>
+          {/* <Paper withBorder p={10}>
             <Text pb={5} fw={500}>
               Product Details
             </Text>
@@ -291,10 +297,33 @@ function Product() {
               numquam alias? Alias quia non sunt ullam fugit totam minima veniam
               cumque optio similique?
             </Group>
-          </Paper>
+          </Paper> */}
+           <Paper withBorder p={10}>
+          <Text pb={5} fw={500}>
+            Features and Specifications
+          </Text>
+          <Divider />
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${columns}, 1fr)`,
+              gap: "20px",
+            }}
+          >
+            {displayedSpecs.map((chunk, index) => (
+              <List key={index} listStyleType="disc" p={10}>
+                {chunk.map((item, idx) => (
+                  <List.Item key={idx}>{item}</List.Item>
+                ))}
+              </List>
+            ))}
+          </div>
+          <Group>{data?.description}</Group>
+        </Paper>
         </Flex>
         <Group mt={45}>
-          <SimilarItem />
+          <SimilarItem id={data?.category?.id} exludeId={data?.id}/>
         </Group>
       </Flex>
       {opened && (
