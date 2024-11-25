@@ -12,19 +12,31 @@ import {
 
 } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import React,{useRef} from "react";
+import { axiosPublicInstance } from "../../api";
+import { newArrival } from "../../api/product/product";
+import {useNavigate} from "react-router-dom"
+
 function NewProduct() {
+  const navigate=useNavigate();
   const { hovered, ref: btnRef } = useHover();
  const scrollRef = useRef(null);
-  const namesArray = [
-    { name: "Alice" },
-    { name: "Bob" },
-    { name: "Charlie" },
-    { name: "Diana" },
-    { name: "Bob" },
-    { name: "Charlie" }
-  ];
-
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: [`newArrival`],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(
+        `${newArrival}`
+      );
+      // setTotalPage(Math.ceil(response.data.productCount / pageSize));
+      return response.data;
+    },
+  });
+// console.log('new arrival data:',data);
   return (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
       <Text size="xl" fw={500}>
@@ -37,20 +49,20 @@ function NewProduct() {
           viewportRef={scrollRef}
         >
       <Flex gap={20} wrap={"nowrap"} w={"100%"} >
-        {namesArray &&
-          namesArray.map((item) => {
-            const { hovered, ref } = useHover();
+        {
+          data?.map((product) => {
             return (
               <Paper
                 mt={10}
                 radius={10}
                 gap={10}
-                ref={ref}
+                ref={btnRef}
                 // withBorder={hovered ? true : false}
                 bg={hovered?'#E7E7FF':'white'}
+                onClick={()=>navigate(`/product?id=${product.id}`)}
               >
                 <Image
-                  src="/image/img.jpeg"
+                  src={product.image}
                   w={250}
                   height={250}
                   style={{
@@ -62,7 +74,24 @@ function NewProduct() {
                 />
 
                 <Flex direction={"column"} mb={10}>
-                  <Text ta={"center"}>{item.name}</Text>
+                <Text
+                  p={5}
+                  fw="bold"
+                  maw={150}
+                  // align="center"
+                  style={{
+                    fontSize: "15px",
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    display: "-webkit-box",
+                  }}
+                  title={product.name}
+                >
+                  {product.name}
+                </Text>
                   <Text c={"dimmed"} ta={"center"}>
                     item model name
                   </Text>

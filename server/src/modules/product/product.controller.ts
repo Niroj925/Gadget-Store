@@ -119,6 +119,17 @@ export class ProductController {
     return this.productService.findArrival();
   }
 
+  @Get('new')
+  findNewArrival(){
+    return this.productService.findNewArrival();
+  }
+
+  @Get('popular')
+  findPopular(){
+    return this.productService.findPopular();
+  }
+
+
   @Get('find-price/:id')
   findPrice(@Param('id') id: string){
     return this.productService.findPrice(id);

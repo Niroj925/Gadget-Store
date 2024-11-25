@@ -7,15 +7,19 @@ import { FaCheckCircle} from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useOrderStore from "../../store/store";
 import CartList from "../cart/CartList";
+import { axiosPublicInstance } from "../../api";
+import { customer } from "../../api/customer/customer";
 
 function PurchaseItem() {
   const locationState=useLocation();
   const navigate=useNavigate();
-  const params=useSearchParams();
-  console.log(params);
+  const [params]=useSearchParams();
+  const customerId=params.get('customerId');
+  const {hovered,ref}=useHover();
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [paymentMethod,setPaymentMethod]=useState("esewa");
-  const custmerContact=useOrderStore((state)=>state.custmerContact);
+  const customerDetail=useOrderStore((state)=>state.customerDetail);
+  const setCustomerDetail = useOrderStore((state) => state.setCustomerDetail); 
   const [purchaseDetail, setPurchaseDetail] = useState({
     Price: "Rs. 654",
     Quantity: "1",
@@ -24,6 +28,7 @@ function PurchaseItem() {
   });
   const [openMap,setOpenMap]=useState(false);
   const [location,setLocation]=useState(null);
+
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -71,9 +76,25 @@ function PurchaseItem() {
     });
   };
 
-  const {hovered,ref}=useHover();
-console.log(custmerContact)
-console.log(locationState.state)
+  const handleUpdateContact=async()=>{
+    const body={
+      contact:customerDetail.contact
+    }
+    const respose=await axiosPublicInstance.patch(`${customer}/${customerId}`,body,{});
+    if(respose.data){
+      setCustomerDetail({contact:customerDetail.contact,customerId})
+    }
+    console.log(respose.data);
+    return respose.data
+  }
+
+  if(customerId && !customerDetail.customerId){
+    console.log('contact update');
+    handleUpdateContact();
+  }
+
+  console.log(customerDetail);
+
   return (
     <Box>
       <Flex p={20} direction={"column"}>

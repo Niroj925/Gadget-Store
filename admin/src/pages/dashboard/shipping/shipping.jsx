@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { shippedOrder } from '../../../api/order/order';
 import { axiosPublicInstance } from '../../../api';
 import { useQuery } from '@tanstack/react-query';
+
 function Shipping() {
 
    const navigate=useNavigate();
@@ -25,44 +26,6 @@ function Shipping() {
     },
   });
   console.log(data);
-
-
-  const orders = [
-    {
-      orderId: 'ORD001',
-      customerName: 'John Doe',
-      address: '123 Main St, Springfield',
-      contact: '123-456-7890',
-      orderDate: '2024-08-19',
-      productName: 'Apple iPhone 13',
-      totalPrice: '999',
-      distance: '5 miles',
-      action: 'Details',
-    },
-    {
-      orderId: 'ORD002',
-      customerName: 'Jane Smith',
-      address: '456 Elm St, Metropolis',
-      contact: '987-654-3210',
-      orderDate: '2024-08-18',
-      productName: 'Samsung Galaxy S21',
-      totalPrice: '799',
-      distance: '10 miles',
-      action: 'Shipped - PayPal',
-    },
-    {
-      orderId: 'ORD003',
-      customerName: 'Alice Johnson',
-      address: '789 Oak St, Gotham',
-      contact: '555-666-7777',
-      orderDate: '2024-08-17',
-      productName: 'Google Pixel 6',
-      totalPrice: '699',
-      distance: '3 miles',
-    //   action: 'Details',
-    },
-    // Add more orders as needed
-  ];
 
   const handleOrder=(id)=>{
     navigate(`/dashboard/order-info?id=${id}`)
@@ -132,7 +95,7 @@ function Shipping() {
     </Table>
     <Divider/>
       <Group justify='center' align='center' p={10}>
-      <Pagination  total={orders.length} value={activePage} onChange={setPage} mt="sm"/>
+      <Pagination  total={data?.length} value={activePage} onChange={setPage} mt="sm"/>
       </Group>
      </Box>
     </Paper>

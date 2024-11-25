@@ -188,7 +188,7 @@ const Navbar = () => {
             size="75%"
             overlayOpacity={0.3}
           >
-            <NavbarNested />
+            <NavbarNested categories={data}/>
           </Drawer>
         </>
       )}
@@ -204,6 +204,7 @@ const Navbar = () => {
           }}
           rightSection={<IconSearch onClick={handleSearch} />}
           w={220}
+          radius={20}
         />
 
         <Group pr={10}>

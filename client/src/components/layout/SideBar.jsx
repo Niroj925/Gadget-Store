@@ -1,45 +1,12 @@
 import React, { useState } from 'react';
-import { Group, Code, ScrollArea, Box, Text, Avatar, Button, rem, NavLink, Collapse } from '@mantine/core';
+import { Group, ScrollArea, Box, Text, Avatar, NavLink, Collapse, Flex } from '@mantine/core';
 import {
   IconNotes,
-  IconCalendarStats,
-  IconGauge,
   IconPresentationAnalytics,
   IconFileAnalytics,
   IconAdjustments,
-  IconLock,
   IconChevronDown,
 } from '@tabler/icons-react';
-
-// Mock data for navigation links
-const mockdata = [
-  {
-    label: 'Category',
-    icon: IconNotes,
-    initiallyOpened: true,
-    links: [
-      { label: 'Mobile', link: '/category?search=mobile' },
-      { label: 'Earphone', link: '/category?search=earphone' },
-      { label: 'HeadPhone', link: '/category?search=headphone' },
-      { label: 'Laptop', link: '/category?search=laptop' },
-    ],
-  },
-  { label: 'Deals', icon: IconPresentationAnalytics },
-  { label: "What's New", icon: IconFileAnalytics },
-  { label: 'Delivery', icon: IconAdjustments },
-
-];
-
-// UserButton component
-const UserButton = () => (
-  <Group>
-    <Avatar src="https://i.pravatar.cc/40" radius="xl" />
-    <Box>
-      <Text fw={500}>John Doe</Text>
-      <Text size="xs" color="dimmed">johndoe@example.com</Text>
-    </Box>
-  </Group>
-);
 
 // LinksGroup component for navigation items with optional dropdown links
 const LinksGroup = ({ icon: Icon, label, links }) => {
@@ -49,7 +16,7 @@ const LinksGroup = ({ icon: Icon, label, links }) => {
     <>
       <NavLink
         label={label}
-        // leftSection={<Icon size={20} />}
+        leftSection={Icon ? <Icon size={20} /> : null}
         rightSection={links ? <IconChevronDown size={16} /> : null}
         onClick={() => setOpened((o) => !o)}
         variant="filled"
@@ -70,8 +37,29 @@ const LinksGroup = ({ icon: Icon, label, links }) => {
   );
 };
 
-export function NavbarNested() {
-  const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
+// NavbarNested component
+export function NavbarNested({ categories }) {  // Pass categories dynamically
+  // Define static sections
+  const staticData = [
+    { label: 'Deals', icon: IconPresentationAnalytics },
+    { label: "What's New", icon: IconFileAnalytics },
+    { label: 'Delivery', icon: IconAdjustments },
+  ];
+
+  // Combine static and dynamic data
+  const dynamicCategorySection = {
+    label: 'Category',
+    icon: IconNotes,
+    initiallyOpened: true,
+    links: categories.map((category) => ({
+      label: category.name,
+      link: `/category?id=${category.id}`,
+    })),
+  };
+
+  const allLinks = [dynamicCategorySection, ...staticData];
+
+  const links = allLinks.map((item) => <LinksGroup {...item} key={item.label} />);
 
   return (
     <Box
@@ -85,8 +73,6 @@ export function NavbarNested() {
       })}
     >
       <Box>
-
-        {/* Scrollable area for the navigation links */}
         <ScrollArea type="auto" style={{ flexGrow: 1 }}>
           {links}
         </ScrollArea>

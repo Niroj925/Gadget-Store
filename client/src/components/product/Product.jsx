@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Divider,
   Flex,
   Grid,
@@ -22,7 +23,7 @@ import { TbTruckReturn } from "react-icons/tb";
 import SimilarItem from "../similarItem/SimilarItem";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { BsGoogle } from "react-icons/bs";
-import { useNavigate,useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import useOrderStore from "../../store/store";
 import { useQuery } from "@tanstack/react-query";
@@ -31,15 +32,24 @@ import { axiosPublicInstance } from "../../api";
 
 function Product() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const [params] = useSearchParams();
+  const id = params.get("id");
+  const location = useLocation();
+  const { productDetail } = location.state || {};
+  const addOrder = useOrderStore((state) => state.addOrder);
+  const customerDetail = useOrderStore((state) => state.customerDetail);
+  const orders = useOrderStore((state) => state.orders);
   const [count, setCount] = useState(1);
   const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [contact, setContact] = useState(null);
   const [error, setError] = useState("");
   const [validContact, setValidContact] = useState(false);
-  const setCustomerContact = useOrderStore((state) => state.setCustomerContact);
+  const setCustomerDetail = useOrderStore((state) => state.setCustomerDetail);
   const [mainImage, setMainImage] = useState({});
+  const [checked, setChecked] = useState(
+    customerDetail.contact.length == 10 ? true : false
+  );
+  console.log(productDetail);
 
   const {
     isLoading,
@@ -55,14 +65,14 @@ function Product() {
     },
   });
 
-console.log(data);
+  console.log(data);
 
-const specs = data?.spec.map((spec) => spec.specification) || [];
+  const specs = data?.spec.map((spec) => spec.specification) || [];
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
-  
+
   const columns = isDesktop ? 2 : 1;
 
   const chunkedSpecs = [];
@@ -102,52 +112,86 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
     }
   };
 
+  const handleAddOrder = () => {
+    addOrder(productDetail);
+  };
+
+  const handleGoogleLogin = async () => {
+    handleAddOrder();
+    setCustomerDetail({ contact: contact });
+    window.location.href = "http://localhost:4000/api/v1/auth/google/login";
+  };
+
+  const handleContinue=()=>{
+    handleAddOrder();
+    navigate('/purchase')
+  }
+
+  console.log(customerDetail);
+  console.log(customerDetail.contact.length);
+
   return (
     <Box>
-      <Flex direction={isMobile?"column":"row"} gap={50} p={25}>
-      <Flex direction={isMobile?'column':'row-reverse'} gap={isMobile?5:50} padding="md" shadow="xs" w={isMobile?"100%":'65%'} justify={isMobile?'center':'flex-end'}>
-            <Group position="center" justify={isMobile?"center":'flex-start'} mt={!isMobile&&-60}>
-              <img
-                src={mainImage.image}
+      <Flex direction={isMobile ? "column" : "row"} gap={50} p={25}>
+        <Flex
+          direction={isMobile ? "column" : "row-reverse"}
+          gap={isMobile ? 5 : 50}
+          padding="md"
+          shadow="xs"
+          w={isMobile ? "100%" : "65%"}
+          justify={isMobile ? "center" : "flex-end"}
+        >
+          <Group
+            position="center"
+            justify={isMobile ? "center" : "flex-start"}
+            mt={!isMobile && -60}
+          >
+            <img
+              src={mainImage.image}
+              style={{
+                width: isMobile ? "400px" : "500px",
+                height: isMobile ? "400px" : "500px",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+            />
+          </Group>
+          {/* Row of small images */}
+          <Flex
+            direction={isMobile ? "row" : "column"}
+            justify={"flex-start"}
+            gap={9}
+            mt={20}
+          >
+            {data?.image.map((item) => (
+              <Image
+                key={item.image} // Add a unique key
+                src={item.image}
+                alt="Small"
                 style={{
-                  width:isMobile?"400px":"500px",
-                  height:isMobile?"400px":"500px",
+                  width: isMobile ? "80px" : "120px",
+                  height: isMobile ? "80px" : "120px",
                   objectFit: "cover",
-                  borderRadius: "10px",
+                  cursor: "pointer",
+                  border: "2px solid transparent",
+                  borderRadius: "8px",
+                  transition: "border 0.3s ease",
+                }}
+                radius="md"
+                onClick={() => setMainImage(item)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.border = "2px solid #007BFF";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.border = "2px solid transparent";
                 }}
               />
-            </Group>
-              {/* Row of small images */}
-              <Flex direction={isMobile?"row":'column'} justify={'flex-start'} gap={9} mt={20}>
-                {data?.image.map((item) => (
-                  <Image
-                    key={item.image} // Add a unique key
-                    src={item.image}
-                    alt="Small"
-                    style={{
-                      width: isMobile?"80px":"120px",
-                      height: isMobile?"80px":"120px", 
-                      objectFit: "cover", 
-                      cursor: "pointer",
-                      border: "2px solid transparent", 
-                      borderRadius: "8px", 
-                      transition: "border 0.3s ease", 
-                    }}
-                    radius="md"
-                    onClick={() => setMainImage(item)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.border = "2px solid #007BFF"; 
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.border = "2px solid transparent"; 
-                    }}
-                  />
-                ))}
-              </Flex>
+            ))}
           </Flex>
+        </Flex>
         <Flex direction={"column"} justify={"flex-start"} gap={15}>
           <Flex direction={"column"} gap={7}>
-            <Text size="25px"  c={"dark"}>
+            <Text size="25px" c={"dark"}>
               {data?.name}
             </Text>
             <Text>This is one of the offordable gadget hai</Text>
@@ -166,13 +210,19 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
             <Text fw={"bold"}>Select Color</Text>
             <Radio.Group name="color">
               <Group mt="xs">
-                {
-                  data?.color?.map((color)=>{
-                    return(
-                    <Radio color={color.color.toLowerCase()=='white'?'blue':color.color.toLowerCase()} value={color.id} label={color.color} />
-                    )
-                  })
-                }
+                {data?.color?.map((color) => {
+                  return (
+                    <Radio
+                      color={
+                        color.color.toLowerCase() == "white"
+                          ? "blue"
+                          : color.color.toLowerCase()
+                      }
+                      value={color.id}
+                      label={color.color}
+                    />
+                  );
+                })}
               </Group>
             </Radio.Group>
           </Flex>
@@ -233,11 +283,13 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
               variant="outline"
               c={"dark"}
               radius={"75"}
+              onClick={handleAddOrder}
               styles={(theme) => ({
                 root: {
                   borderColor: "#414B80",
                 },
               })}
+              disabled={orders.some((item) => item.id == productDetail.id)}
             >
               Add To Cart
             </Button>
@@ -298,32 +350,32 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
               cumque optio similique?
             </Group>
           </Paper> */}
-           <Paper withBorder p={10}>
-          <Text pb={5} fw={500}>
-            Features and Specifications
-          </Text>
-          <Divider />
+          <Paper withBorder p={10}>
+            <Text pb={5} fw={500}>
+              Features and Specifications
+            </Text>
+            <Divider />
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${columns}, 1fr)`,
-              gap: "20px",
-            }}
-          >
-            {displayedSpecs.map((chunk, index) => (
-              <List key={index} listStyleType="disc" p={10}>
-                {chunk.map((item, idx) => (
-                  <List.Item key={idx}>{item}</List.Item>
-                ))}
-              </List>
-            ))}
-          </div>
-          <Group>{data?.description}</Group>
-        </Paper>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                gap: "20px",
+              }}
+            >
+              {displayedSpecs.map((chunk, index) => (
+                <List key={index} listStyleType="disc" p={10}>
+                  {chunk.map((item, idx) => (
+                    <List.Item key={idx}>{item}</List.Item>
+                  ))}
+                </List>
+              ))}
+            </div>
+            <Group>{data?.description}</Group>
+          </Paper>
         </Flex>
         <Group mt={45}>
-          <SimilarItem id={data?.category?.id} exludeId={data?.id}/>
+          <SimilarItem id={data?.category?.id} exludeId={data?.id} />
         </Group>
       </Flex>
       {opened && (
@@ -331,8 +383,8 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
           opened={opened}
           onClose={close}
           withCloseButton={false}
-          centered={!isMobile?true:false}
-        zIndex={2500}
+          centered={!isMobile ? true : false}
+          zIndex={2500}
           radius="md"
         >
           <Flex direction="column" spacing="md">
@@ -345,32 +397,53 @@ const specs = data?.spec.map((spec) => spec.specification) || [];
             </Text>
             <TextInput
               label="Contact Number"
-              value={contact}
+              value={checked ? customerDetail.contact : contact}
               type="number"
               placeholder="Enter Your Contact Number..."
               onChange={handleContactChange}
               error={error}
             />
-            {validContact && (
-              <Group justify="center" align="center">
-                <Button
-                  leftSection={<BsGoogle size={20} />}
-                  color="red"
-                  radius="xl"
-                  size="md"
-                  mt={20}
-                  w={"75%"}
-                  onClick={() => {
-                    setCustomerContact(contact);
-                     navigate(`/purchase`);
-                  }}
-                >
-                  <Text fw="bold" c="white">
-                    Continue with Google
-                  </Text>
-                </Button>
-              </Group>
+            {customerDetail.contact.length == 10 ? (
+              <Checkbox
+                mt={10}
+                checked={checked}
+                label="Use previous contact"
+                onChange={(event) => setChecked(event.currentTarget.checked)}
+              />
+            ) : (
+              <></>
             )}
+          
+              <Group justify="center" align="center">
+                {checked ? (
+                  <Button
+                    color="#414B80"
+                    radius="xl"
+                    size="md"
+                    mt={20}
+                    w={"75%"}
+                    onClick={handleContinue}
+                  >
+                  Continue to Proceed
+                  </Button>
+                ) : (
+                  validContact &&(
+                  <Button
+                    leftSection={<BsGoogle size={20} />}
+                    color="red"
+                    radius="xl"
+                    size="md"
+                    mt={20}
+                    w={"75%"}
+                    onClick={handleGoogleLogin}
+                  >
+                    <Text fw="bold" c="white">
+                      Continue with Google
+                    </Text>
+                  </Button>
+                ))}
+              </Group>
+          
             <Text c="dimmed" size="sm" mt={20}>
               By continuing, you agree to our Terms and Conditions.
             </Text>

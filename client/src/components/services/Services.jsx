@@ -6,7 +6,7 @@ import { TbBasketSearch } from "react-icons/tb";
 import { FcCustomerSupport } from "react-icons/fc";
 import { RiDiscountPercentFill } from "react-icons/ri";
 import { TbTruckDelivery } from "react-icons/tb";
-import { useHover } from "@mantine/hooks";
+import { useHover, useMediaQuery } from "@mantine/hooks";
 
 function Services() {
   const namesArray = [
@@ -18,7 +18,9 @@ function Services() {
     { name: 'Discounts & Coupons' },
     { name: 'Reviews & Ratings' },
   ];
-  
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const IconFn=(name)=>{
    switch(name){
@@ -58,7 +60,7 @@ function Services() {
       <Text size="xl" fw={500}>
         Services Help You To Shop
       </Text>
-      <Flex gap={10} wrap={"wrap"}>
+      <Flex gap={10} wrap={"wrap"} justify={isMobile?'center':'flex-start'}>
         {namesArray &&
           namesArray.map((item) => {
             const { hovered, ref } = useHover();

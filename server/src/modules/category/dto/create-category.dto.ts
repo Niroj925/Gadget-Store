@@ -4,5 +4,11 @@ import { IsString } from "class-validator";
 export class CreateCategoryDto {
     @IsString()
     @ApiProperty()
-    name:string
+    name:string;
+
+    @ApiProperty({
+        type: 'string',
+        format: 'binary',
+      })
+      image: Express.Multer.File;
 }

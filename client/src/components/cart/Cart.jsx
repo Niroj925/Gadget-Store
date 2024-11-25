@@ -50,9 +50,17 @@ function Cart() {
     // Redirect to your backend's Google auth endpoint
     window.location.href = 'http://localhost:4000/api/v1/auth/google/login';
   }
+
+  const totalAmount=(orders)=>{
+    let t_amount=0;
+    orders.forEach(order => {
+      t_amount+=order.price
+    });
+    return t_amount
+  }
   const billInfo = {
-    totalAmount: 500,
-    discount: 100,
+    totalAmount: totalAmount(orders),
+    discount: 0,
     deliveryCharge: 50,
     tax: 0,
   };
@@ -97,7 +105,7 @@ function Cart() {
                     <Text w={"65%"}>Total Amount</Text>
                     <Text>
                       :
-                      {billInfo.totalAmount -
+                        {billInfo.totalAmount -
                         billInfo.discount +
                         billInfo.tax +
                         billInfo.deliveryCharge}

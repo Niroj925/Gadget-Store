@@ -8,6 +8,9 @@ export class categoryEntity extends parentEntity{
     @Column()
     name:string;
 
+    @Column({default:null})
+    image:string;
+
     @ManyToOne(()=>adminEntity,(admin)=>admin.category)
     admin:adminEntity;
 

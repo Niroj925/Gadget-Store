@@ -27,6 +27,8 @@ function CartList() {
           updateOrderQuantity(id, -1);
         }
       };
+
+      console.log('orders:',orders);
   return (
     <Flex direction={"column"} gap={20} w={"100%"}>
     {orders.map((order) => {
@@ -34,9 +36,9 @@ function CartList() {
         <Paper p={10} withBorder >
           <Flex direction={isMobile?"column":"row"} justify={"space-between"} w={"100%"}>
             <Flex gap={20}  justify={isMobile?"":"space-between"} w={isMobile?"100%":"50%"}>
-              <Image src="./image/img.jpeg" w={75} h={75} />
+              <Image src={order.image} w={75} h={75} />
               <Flex direction={"column"} gap={5}>
-                <Text>Airpods's Pro</Text>
+                <Text>{order.name}</Text>
                 <Flex gap={20}>
                   <Group>
                     {favouriteList.some(
@@ -83,7 +85,7 @@ function CartList() {
             </Flex>
             <Flex direction={"column"}>
               <Text>Price</Text>
-              <Text>Npr.2000 </Text>
+              <Text>Rs.{order.price}</Text>
             </Flex>
             </Flex>
             </Flex>

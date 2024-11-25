@@ -64,9 +64,27 @@ function Products() {
                   </Group>
                 </Paper>
                 <Flex direction={"column"} gap={5}>
-                  <Text p={5} fw={"bold"} maw={200}>
+                  {/* <Text p={5} fw={"bold"} maw={200}>
                     {item.name}
-                  </Text>
+                  </Text> */}
+                                     <Text
+                  p={5}
+                  fw="bold"
+                  maw={150}
+                  // align="center"
+                  style={{
+                    fontSize: "15px",
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    display: "-webkit-box",
+                  }}
+                  title={item.name}
+                >
+                  {item.name}
+                </Text>
                   {/* <Text>Best gadget for ever</Text> */}
                   <Rating value={3.5} fractions={2} readOnly />
                   <Group mt={10}>

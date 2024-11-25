@@ -4,7 +4,10 @@ import { persist, createJSONStorage, devtools } from "zustand/middleware";
 const orderStore = (set, get) => ({
   orders: [],
   favouriteList: [],
-  custmerContact: 977,
+  customerDetail:{
+    contact:null,
+    customerId:null
+  },
   noOfOrder: 0,
   noOfFavourite: 0,
   addOrder: (order) => {
@@ -42,9 +45,12 @@ const orderStore = (set, get) => ({
     }));
   },
 
-  setCustomerContact: (contact) => {
+  setCustomerDetail: ({contact,customerId}) => {
     set(() => ({
-       custmerContact: contact
+      customerDetail: {
+        contact,
+        customerId
+       }
     }));
   },
   reset: () => {

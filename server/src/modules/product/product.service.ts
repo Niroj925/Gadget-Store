@@ -199,9 +199,47 @@ export class ProductService {
     return { products: filterProduct, productCount };
   }
 
+  async findPopular() {
+    const product = await this.productRepository.find({
+      relations: ['image'],
+      order: {
+        soldQuantity: 'DESC',
+      },
+    });
+
+    return {
+      products: product?.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        status: product.status,
+        image: product.image[0].image,
+      })),
+    };
+  }
+
+  async newArrival() {
+    const product = await this.productRepository.find({
+      relations: ['image', 'newArrival'],
+      order: {
+        soldQuantity: 'DESC',
+      },
+    });
+
+    return {
+      products: product?.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        status: product.status,
+        image: product.image[0].image,
+      })),
+    };
+  }
+
   async findArrival() {
     const newArrivals = await this.newArrivalRepository.find({
-      relations: ['product.image', 'product.spec'],
+      relations: ['product.image'],
       select: {
         id: true,
         product: {
@@ -217,7 +255,40 @@ export class ProductService {
         },
       },
     });
-    return newArrivals;
+    return {
+      products: newArrivals?.map((item) => {
+        id: item.product.id;
+        name: item.product.name;
+        price: item.product.price;
+        image: item.product.image[0].image;
+      }),
+    };
+  }
+
+  async findNewArrival() {
+    const products = await this.productRepository.find({
+      relations: ['image'],
+      order: {
+        createdAt: 'DESC',
+      },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        image: true,
+        createdAt: true,
+      },
+      take: 10,
+    });
+    return products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image:
+        product.image && product.image.length > 0
+          ? product.image[0].image
+          : null, // Assuming `url` is the image field
+    }));
   }
 
   async findOne(id: string) {
@@ -228,29 +299,31 @@ export class ProductService {
     return product;
   }
 
-  async findSimilarProduct(id:string){
+  async findSimilarProduct(id: string) {
     const products = await this.productRepository.find({
-      where:{category:{id}},
-      relations:['image'],
-      order:{
-        soldQuantity:'DESC'
-     },
-      select: {
-          id:true,
-          name:true,
-          price:true,
-          soldQuantity:true,
-          image:true
+      where: { category: { id } },
+      relations: ['image'],
+      order: {
+        soldQuantity: 'DESC',
       },
-      take:10
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        soldQuantity: true,
+        image: true,
+      },
+      take: 10,
     });
-   return products.map((product) => ({
+    return products.map((product) => ({
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image && product.image.length > 0 ? product.image[0].image : null, // Assuming `url` is the image field
+      image:
+        product.image && product.image.length > 0
+          ? product.image[0].image
+          : null, // Assuming `url` is the image field
     }));
-  
   }
 
   async findProduct(
@@ -358,6 +431,10 @@ export class ProductService {
     paginationDto: searchProductDto,
   ) {
     const { search, page, pageSize } = paginationDto;
+    const searchConditions: any = {};
+    if (search && search.trim() !== '' && search !== 'null' && search !== 'undefined') {
+      searchConditions.name = ILike(`%${search}%`);
+    }
     let order;
     switch (type) {
       case filterProductType.highSell:
@@ -451,13 +528,10 @@ export class ProductService {
         break;
       default:
         order = await this.productRepository.findAndCount({
-          where: {
-            // status: ProductStatus.available,
-            name: ILike(`%${search ?? ''}%`),
-          },
+          where: searchConditions,
           skip: (page - 1) * pageSize,
           take: pageSize,
-          relations: ['review', 'image']
+          relations: ['review', 'image'],
         });
     }
     return order;

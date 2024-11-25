@@ -12,11 +12,12 @@ export class CategoryService {
     private readonly categoryRepository: Repository<categoryEntity>,
   ) {}
 
-  async create(id: string, createCategoryDto: CreateCategoryDto) {
+  async create(id: string,s3response:string,createCategoryDto: CreateCategoryDto) {
     console.log(id);
     console.log(createCategoryDto);
     const category = this.categoryRepository.create({
       name: createCategoryDto.name,
+      image:s3response,
       admin: { id },
     });
     this.categoryRepository.save(category);
@@ -26,14 +27,21 @@ export class CategoryService {
   async findAll() {
     const categories = await this.categoryRepository.find({
       relations: ['product'],
+      order:{
+        createdAt:'DESC'
+      },
       select: {
         id: true,
         name: true,
+        image:true,
+        createdAt:true,
+        product:true
       },
     });
     return categories.map((category) => ({
       id: category.id,
       name: category.name,
+      image:category.image,
       productCount: category.product.length,
     }));
   }

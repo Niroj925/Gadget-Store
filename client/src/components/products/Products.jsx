@@ -7,6 +7,7 @@ import {
   Rating,
   Button,
   Image,
+  Menu,
 } from "@mantine/core";
 import React, { useState } from "react";
 import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
@@ -17,6 +18,7 @@ import {useSearchParams} from 'react-router-dom'
 import { useQuery } from "@tanstack/react-query";
 import { axiosPublicInstance } from "../../api";
 import { filterProduct } from "../../api/product/product";
+import { IconFilter } from "@tabler/icons-react";
 
 function Products() {
   const navigate = useNavigate();
@@ -31,16 +33,8 @@ function Products() {
   const removeFavourite = useOrderStore((state) => state.removeFavourite); 
   const favouriteList = useOrderStore((state) => state.favouriteList);
   const [filterType,setFilterType]=useState('');
-console.log(favouriteList)
 const isMobile = useMediaQuery("(max-width: 768px)");
 const isTablet = useMediaQuery("(max-width: 1024px)");
-  const namesArray = [
-    { id: "1ityhjgh", name: "Alice" },
-    { id: "23594yhg", name: "Bob" },
-    { id: "3gh4uith", name: "Charlie" },
-    { id: "440tugi", name: "Diana" },
-  ];
-
   console.log(search);
 
   const filterProductType = {
@@ -48,7 +42,7 @@ const isTablet = useMediaQuery("(max-width: 1024px)");
     highRating: "highRating",
     lowRating: "lowRating",
     highPrice: "highPrice",
-    lowPrice: "lowPrice",
+    lowPrice: "lowPrice"
   };
   const pageSize = 10;
   const {
@@ -56,7 +50,7 @@ const isTablet = useMediaQuery("(max-width: 1024px)");
     data,
     error: errorToGet,
   } = useQuery({
-    queryKey: [`${search}${filterType}`],
+    queryKey: [`${search??'allProduct'}${filterType}`],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
         `${filterProduct}?search=${search}&page=${activePage}&pageSize=${pageSize}&filterType=${filterType}`
@@ -67,14 +61,68 @@ const isTablet = useMediaQuery("(max-width: 1024px)");
   });
 console.log('data:',data);
 
+const handleAllProduct=()=>{
+  navigate('/products?search=')
+  setFilterType('all')
+}
+
+const handleProduct=(product)=>{
+// console.log(product);
+navigate(`/product?id=${product.id}`,{state:{productDetail:product}})
+}
+
+
   return (
     <Flex direction={"column"} p={20} gap={20}>
-      <Group justify="start">
+      <Flex justify="space-between">
         <Text size="20px" fw="bold">
           Gadgets For You
         </Text>
-      </Group>
-      <Flex gap={20} wrap={"wrap"}>
+        <Group>
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <Button variant="outline" leftSection={<IconFilter />}>
+                Filter
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item onClick={handleAllProduct}>
+                All Products
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highSell)}
+              >
+                Top Sales
+              </Menu.Item>
+              {/* <Menu.Item onClick={() => setFilterType(filterProductType.highRating)}>
+                High Review
+              </Menu.Item> */}
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highPrice)}
+              >
+                High Price
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.lowPrice)}
+              >
+                Low Price
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.highRating)}
+              >
+                High Rating
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setFilterType(filterProductType.lowRating)}
+              >
+                Low Rating
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+      </Flex>
+      <Flex gap={20} wrap={"wrap"} >
         {
           data?.products.map((product) => {
             return (
@@ -104,9 +152,10 @@ console.log('data:',data);
                   <Group
                     justify="center"
                     p={10}
-                    onClick={() => navigate(`/product?id=${product.id}`)}
+                    // onClick={() => navigate(`/product?id=${product.id}`,{state:{productDetail}})}
+                    onClick={()=>handleProduct(product)}
                   >
-                    <Image src="/image/imgrm.png" w={isMobile?145:150} />
+                    <Image src={product.image} w={isMobile?145:150} h={150} />
                   </Group>
                 </Paper>
                 <Flex direction={"column"} gap={5}>

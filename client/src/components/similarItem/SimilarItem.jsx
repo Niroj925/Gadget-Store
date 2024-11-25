@@ -64,7 +64,7 @@ function SimilarItem({id,exludeId}) {
                   </Button>
                 </Flex>
                 <Group justify="center" >
-                  <Image src="/image/imgrm.png" w={150} />
+                  <Image src={product.image} w={150} />
                 </Group>
               <Flex direction={"column"} align={"center"} justify={"center"}>
               <Text

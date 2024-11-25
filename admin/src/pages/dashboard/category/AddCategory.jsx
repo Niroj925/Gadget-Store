@@ -11,111 +11,127 @@ import {
   FileInput,
   Image,
 } from "@mantine/core";
-import {
-  IconFile,
-} from "@tabler/icons-react";
+import { IconUpload } from "@tabler/icons-react";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { category } from "../../../api/product/category";
-import { axiosPrivateInstance, axiosPublicInstance } from "../../../api";
+import { axiosPrivateInstance } from "../../../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 function AddCategory() {
   const queryClient = useQueryClient();
-  const navigate=useNavigate();
-  const nameRef=useRef();
+  const navigate = useNavigate();
+  const nameRef = useRef();
   const descriptionRef = useRef();
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(""); 
+  const [imagePreview, setImagePreview] = useState("");
 
-  const handleImageChange = (file) => {
-    setImage(file); 
+  const handleImageChange = (files) => {
+    const file = files[0]; // Ensure only one file is handled
+    setImage(file);
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); 
+        setImagePreview(reader.result);
       };
-      reader.readAsDataURL(file); 
+      reader.readAsDataURL(file);
     } else {
-      setImagePreview(""); 
+      setImagePreview("");
     }
   };
 
-
   const handleSubmit = async () => {
-    const body = {
-      name: nameRef.current.value,
-    };
-
-    if (
-      !body.name 
-    ) {
-      toast.error("Insufficient payload");
+    if (!nameRef.current.value || !image) {
+      toast.error("Please fill in all fields and upload an image.");
+      return;
     }
+
+    const formData = new FormData();
+    formData.append("name", nameRef.current.value);
+    formData.append("image", image);
+    formData.append("description", descriptionRef.current.value || "");
+
     try {
-      console.log(body);
-      const resp = await axiosPrivateInstance.post(category, body, {});
-      console.log("resp:", resp.data);
+      const resp = await axiosPrivateInstance.post(category, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return resp.data;
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to create category.");
       throw error;
     }
   };
 
-  const { isPending, mutate: mutateCreateCategory } = useMutation({
+  const { mutate: mutateCreateCategory, isPending } = useMutation({
     mutationFn: handleSubmit,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["category"],
-        // refetchType: "active",
-        // exact: true,
-      });
-      toast.success("Created category successfully");
+      queryClient.invalidateQueries({ queryKey: ["category"] });
+      toast.success("Category created successfully!");
       navigate("/dashboard/all-categories");
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || "Error creating category.");
     },
   });
 
   return (
-    <Paper withBorder>
-      <Flex p={10} gap={10} direction={"column"}>
+    <Paper withBorder shadow="sm" radius="md" p="lg">
+      <Flex p={10} gap={10} direction="column">
         <Group>
-          <Text>Add Category</Text>
+          <Text size="lg" weight={500}>Add Category</Text>
         </Group>
         <Divider />
-        <TextInput ref={nameRef} placeholder="Enter product name.." />
+        <TextInput ref={nameRef} placeholder="Enter category name..." required />
         <Paper>
-          <FileInput
-            accept="image/png,image/jpeg"
-            label="Upload Image"
-            placeholder="Upload Image"
-            value={image}
-            onChange={handleImageChange}
-            icon={<IconFile />}
-            disabled={true}
-          />
+          <Dropzone
+            onDrop={handleImageChange}
+            accept={IMAGE_MIME_TYPE}
+            multiple={false}  // Only one image
+            maxFiles={1}
+            styles={{
+              root: {
+                padding: "20px",
+                border: "2px dashed #ced4da",
+                borderRadius: "8px",
+                minHeight: "150px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              },
+            }}
+          >
+            <Center>
+              <Flex direction="column" justify="center" align="center">
+                <IconUpload size={50} color="gray" />
+                <Text>Drag image here or click to select file</Text>
+              </Flex>
+            </Center>
+          </Dropzone>
           {imagePreview && (
-            <Image
-              src={imagePreview}
-              alt="Selected Image"
-              w={150}
-              height={"auto"}
-              mt="md"
-            />
+            <Center mt="md">
+              <Image
+                src={imagePreview}
+                alt="Selected Image"
+                width={150}
+                height={150}
+                fit="cover"
+              />
+            </Center>
           )}
         </Paper>
         <Textarea
-          placeholder="Write or Paste description here..."
+          placeholder="Write or paste description here..."
           rows={5}
           ref={descriptionRef}
           disabled
         />
         <Center>
-          <Button onClick={mutateCreateCategory}>Confirm</Button>
+          <Button onClick={() => mutateCreateCategory()} loading={isPending}>
+            Confirm
+          </Button>
         </Center>
       </Flex>
     </Paper>
