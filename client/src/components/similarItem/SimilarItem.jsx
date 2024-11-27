@@ -4,8 +4,10 @@ import { MdFavorite, MdOutlineFavoriteBorder } from 'react-icons/md';
 import { similarProduct } from '../../api/product/product';
 import { axiosPublicInstance } from '../../api';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 function SimilarItem({id,exludeId}) {
+  const navigate=useNavigate();
     const [favIndex, setFavIndex] = useState({ name: null });
     const scrollRef=useRef();
   console.log(('category id:',id));
@@ -19,11 +21,15 @@ function SimilarItem({id,exludeId}) {
         const response = await axiosPublicInstance.get(
           `${similarProduct}/${id}`
         );
-        // setTotalPage(Math.ceil(response.data.productCount / pageSize));
         return response.data;
       },
     });
   console.log('data:',data);
+
+  const handleProduct=(product)=>{
+    // console.log(product);
+    navigate(`/product?id=${product.id}`,{state:{productDetail:product}})
+    }
 
   return (
     <Flex direction={"column"} w={"100%"}>
@@ -33,7 +39,7 @@ function SimilarItem({id,exludeId}) {
   <ScrollArea
           style={{ width: '100%' }}
           scrollbarSize={6}
-          type="never" // Hides the scrollbar
+          type="never" 
           viewportRef={scrollRef}
         >
     <Flex gap={20} wrap={"nowrap"} w={"100%"}>
@@ -63,7 +69,7 @@ function SimilarItem({id,exludeId}) {
                     )}
                   </Button>
                 </Flex>
-                <Group justify="center" >
+                <Group justify="center" onClick={()=>handleProduct(product)} >
                   <Image src={product.image} w={150} />
                 </Group>
               <Flex direction={"column"} align={"center"} justify={"center"}>

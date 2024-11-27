@@ -15,7 +15,7 @@ function Home() {
       <NewProduct/>
       <Popular/>
       <Services/>
-     <FooterLinks/>
+     {/* <FooterLinks/> */}
     </Box>
   )
 }

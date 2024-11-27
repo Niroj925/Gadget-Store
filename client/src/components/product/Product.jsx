@@ -124,7 +124,7 @@ function Product() {
 
   const handleContinue=()=>{
     handleAddOrder();
-    navigate('/purchase')
+    navigate(`/purchase?customerId=${customerDetail.customerId}`)
   }
 
   console.log(customerDetail);
@@ -289,7 +289,7 @@ function Product() {
                   borderColor: "#414B80",
                 },
               })}
-              disabled={orders.some((item) => item.id == productDetail.id)}
+              disabled={orders.some((item) => item.id == id)}
             >
               Add To Cart
             </Button>

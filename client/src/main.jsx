@@ -7,6 +7,7 @@ import { MantineProvider } from '@mantine/core';
 import "./global.style.css"
 import theme from './theme/theme.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import FooterLinks from './components/layout/Footer.jsx';
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
         <Navbar/>
         <App />
+        <FooterLinks/>
       </QueryClientProvider>
     </MantineProvider>
   </React.StrictMode>
