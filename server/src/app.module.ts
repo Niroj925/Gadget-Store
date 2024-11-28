@@ -12,6 +12,7 @@ import { CustomerModule } from './modules/customer/customer.module';
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { DeliveryModule } from './modules/delivery/delivery.module';
     CustomerModule,
     OrderModule,
     ReviewModule,
-    DeliveryModule
+    DeliveryModule,
+    PaymentModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,6 +11,6 @@ export class orderDeliverEntity extends parentEntity{
     @Column()
     status:orderStatus;
 
-    @ManyToOne(()=>orderEntity,(order)=>order.deliver)
+    @ManyToOne(()=>orderEntity,(order)=>order.deliver,{onDelete:'CASCADE'})
     order:orderEntity;
 }

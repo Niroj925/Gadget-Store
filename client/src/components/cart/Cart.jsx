@@ -33,7 +33,7 @@ function Cart() {
   const setCustomerDetail=useOrderStore((state)=>state.setCustomerDetail);
   const customerDetail=useOrderStore((state)=>state.customerDetail);
   const [checked, setChecked] = useState(
-    customerDetail.contact.length == 10 ? true : false
+    customerDetail?.contact?.length == 10 ? true : false
   );
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
@@ -179,7 +179,7 @@ function Cart() {
               onChange={handleContactChange}
               error={error}
             />
-            {customerDetail.contact.length == 10 ? (
+            {customerDetail?.contact?.length == 10 ? (
               <Checkbox
                 mt={10}
                 checked={checked}

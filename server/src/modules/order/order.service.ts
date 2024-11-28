@@ -11,6 +11,7 @@ import { productEntity } from 'src/model/product.entity';
 import { paymentEntity } from 'src/model/payment.entity';
 import { ProductService } from '../product/product.service';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
+import { PaymentService } from '../payment/payment.service';
 
 @Injectable()
 export class OrderService {
@@ -26,10 +27,12 @@ export class OrderService {
 
     private readonly dataSource: DataSource,
 
-    private readonly productService:ProductService
+    private readonly productService:ProductService,
+
+    private readonly paymentService:PaymentService
   ) {}
 
-  async create(id: string,paymentMethod:paymentMethod,createOrderDto: CreateOrderDto) {
+  async create(id: string,createOrderDto: CreateOrderDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -51,18 +54,17 @@ export class OrderService {
       });
     
       await queryRunner.manager.save(orderProducts); 
-    
-      const payment = new paymentEntity();
-      payment.amount = await this.totalAmount(orderInfo) ;
-      payment.deliveryCharge= deliveryCharge ?? 0;
-      payment.paymentMethod = paymentMethod;
-      payment.status = paymentStatus.pending;
-      payment.order = order;
-    
-      await queryRunner.manager.save(payment); 
+
+      const total_amount=await this.totalAmount(orderInfo) ;
     
       await queryRunner.commitTransaction();
-      return true;
+      return {
+        success: true,
+        order: {
+          id:order.id,
+          amount:total_amount
+        },
+      };
     } catch (error) {
       console.error(error);
       await queryRunner.rollbackTransaction();

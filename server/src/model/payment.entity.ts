@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { parentEntity } from ".";
 import { paymentMethod, paymentStatus } from "src/helper/types/index.type";
 import { orderEntity } from "./order.entity";
@@ -14,13 +14,12 @@ export class paymentEntity extends parentEntity{
     @Column()
     paymentMethod:paymentMethod;
 
-    @Column()
+    @Column({default:paymentStatus.pending})
     status:paymentStatus;
 
     @Column({default:null})
     remarks:string;
 
-    @OneToOne(()=>orderEntity,(order)=>order.payment)
-    @JoinColumn({name:'orderId'})
+    @ManyToOne(()=>orderEntity,(order)=>order.payment,{onDelete:'CASCADE'})
     order:orderEntity
 }

@@ -25,6 +25,6 @@ export class orderEntity extends parentEntity{
     @ManyToOne(()=>customerEntity,(customer)=>customer.order)
     customer:customerEntity;
 
-    @OneToOne(()=>paymentEntity,(payment)=>payment.order)
-    payment:paymentEntity;
+    @OneToMany(()=>paymentEntity,(payment)=>payment.order)
+    payment:paymentEntity[];
 }

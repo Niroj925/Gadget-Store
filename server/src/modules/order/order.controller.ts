@@ -31,13 +31,11 @@ export class OrderController {
 
   @Post(':customerId')
   @ApiOperation({ summary: 'create order' })
-  @ApiQuery({ name: 'paymentMethod', enum: paymentMethod })
   create(
-    @Query('paymentMethod') paymentMethod: paymentMethod,
     @Param('customerId', ParseUUIDPipe) customerId: string,
     @Body() createOrderDto: CreateOrderDto,
   ) {
-    return this.orderService.create(customerId, paymentMethod, createOrderDto);
+    return this.orderService.create(customerId, createOrderDto);
   }
 
   @Get('customer/:customerId')

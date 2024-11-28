@@ -2,18 +2,12 @@ import {
   Flex,
   Pagination,
   Group,
-  Paper,
   Text,
-  Rating,
   Button,
-  Image,
   Menu,
 } from "@mantine/core";
 import React, { useState } from "react";
-import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import useOrderStore from "../../store/store";
-import { useMediaQuery } from "@mantine/hooks";
 import {useSearchParams} from 'react-router-dom'
 import { useQuery } from "@tanstack/react-query";
 import { axiosPublicInstance } from "../../api";
@@ -23,21 +17,12 @@ import ProductsCard from "../card/ProductsCard";
 
 function Products() {
   const navigate = useNavigate();
-
   const [searchParams] = useSearchParams();
   const search = searchParams.get("search");
-  const [favitem, setFavitem] = useState({ name: null });
   const [activePage, setPage] = useState(1);
-  const addOrder = useOrderStore((state) => state.addOrder); 
-  const orders = useOrderStore((state) => state.orders); 
-  const addFavourite = useOrderStore((state) => state.addFavourite); 
-  const removeFavourite = useOrderStore((state) => state.removeFavourite); 
-  const favouriteList = useOrderStore((state) => state.favouriteList);
   const [filterType,setFilterType]=useState('');
-const isMobile = useMediaQuery("(max-width: 768px)");
-const isTablet = useMediaQuery("(max-width: 1024px)");
-  console.log(search);
 
+  console.log(search);
   const filterProductType = {
     highSell: "highSell",
     highRating: "highRating",
@@ -66,12 +51,6 @@ const handleAllProduct=()=>{
   navigate('/products?search=')
   setFilterType('all')
 }
-
-const handleProduct=(product)=>{
-// console.log(product);
-navigate(`/product?id=${product.id}`,{state:{productDetail:product}})
-}
-
 
   return (
     <Flex direction={"column"} p={20} gap={20}>
