@@ -17,13 +17,11 @@ import Map from "../map/Map";
 import { FaCheckCircle } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useOrderStore from "../../store/store";
-import CartList from "../cart/CartList";
 import { axiosPublicInstance } from "../../api";
 import { customer } from "../../api/customer/customer";
 import OrderInfo from "../orderInfo/OrderInfo";
 import { order } from "../../api/order/order";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
 function PurchaseItem() {
   const locationState = useLocation();
@@ -137,24 +135,6 @@ function PurchaseItem() {
     cod:'cod'
   }
  
-  // const handlePaymentInit = async () => {
-  //   const orderData={
-  //     orderId:orderInfo.order.id,
-  //     totalAmount: orderInfo.order.amount,
-  //   }
-  // //  console.log(orderData);
-  //   try {
-  //     const response = await axios.post(`http://localhost:4000/api/v1/payment/initialize-esewa?paymentMethod=${paymentType}`, orderData);
-  //     console.log(response.data);
-  //     if (response.data.success) {
-  //       setPaymentData(response.data); // Store payment data (signature, etc.)
-  //     } else {
-  //       alert('Payment initialization failed.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error initializing purchase:', error);
-  //   }
-  // };
   const handleEsewa = () => {
     if (!orderResponse) {
       alert('Please initialize the purchase first!');
@@ -170,7 +150,7 @@ function PurchaseItem() {
       product_code: 'EPAYTEST',
       product_service_charge: '0',
       product_delivery_charge: '0',
-      success_url: 'http://localhost:4000/api/v1/payment/complete-payment',
+      success_url: 'http://localhost:5173/order/success',
       failure_url: 'http://localhost:5173',
       signed_field_names: orderResponse?.payment.signed_field_names,
       signature: orderResponse?.payment.signature, 
@@ -350,52 +330,6 @@ function PurchaseItem() {
           </Paper>
         </Flex>
       </Flex>
-      {opened && (
-        <Modal
-          opened={opened}
-          onClose={close}
-          withCloseButton={false}
-          centered
-          radius="md"
-          size={"auto"}
-          closeOnClickOutside={false}
-        >
-          {console.log(paymentMethod)}
-          <Flex direction="column" spacing="md">
-            <Group justify="center" align="center" pt={25} pb={25}>
-              <FaCheckCircle size={45} color="green" />
-            </Group>
-            <Group justify="center" mb={10}>
-              <Text
-                align="center"
-                size="xl"
-                weight={500}
-                c="dark"
-                fw={"bold"}
-                w={"75%"}
-              >
-                Your Order has been Accepted
-              </Text>
-            </Group>
-            <Divider />
-            <Text c="dimmed" size="sm" pt={10} pb={10} align="center">
-              Transaction ID:65412145
-            </Text>
-            <Divider />
-            <Group justify="center" align="center" mt={15}>
-              <Button
-                variant="fill"
-                radius={20}
-                w={"175px"}
-                bg={"#414B80"}
-                onClick={() => navigate(`/`)}
-              >
-                Continue Shopping
-              </Button>
-            </Group>
-          </Flex>
-        </Modal>
-      )}
     </Box>
   );
 }
