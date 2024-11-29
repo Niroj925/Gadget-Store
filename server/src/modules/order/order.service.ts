@@ -32,7 +32,7 @@ export class OrderService {
     private readonly paymentService:PaymentService
   ) {}
 
-  async create(id: string,createOrderDto: CreateOrderDto) {
+  async create(id: string,paymentMethod:paymentMethod,createOrderDto: CreateOrderDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -53,18 +53,31 @@ export class OrderService {
         return orderProduct;
       });
     
-      await queryRunner.manager.save(orderProducts); 
-
-      const total_amount=await this.totalAmount(orderInfo) ;
+      await queryRunner.manager.save(orderProducts);
+      
+      const totalAmount= await this.totalAmount(orderInfo) ;
+    
+      const payment = new paymentEntity();
+      payment.amount =totalAmount;
+      payment.deliveryCharge= deliveryCharge ?? 0;
+      payment.paymentMethod = paymentMethod;
+      payment.status = paymentStatus.pending;
+      payment.order = order;
+    
+      await queryRunner.manager.save(payment); 
+      const paymentInitate = await this.paymentService.getEsewaPaymentHash({
+        amount: totalAmount,
+        transaction_uuid: payment.id,
+      });
     
       await queryRunner.commitTransaction();
+
       return {
         success: true,
-        order: {
-          id:order.id,
-          amount:total_amount
-        },
+        payment: paymentInitate,
+        order: payment,
       };
+      return true;
     } catch (error) {
       console.error(error);
       await queryRunner.rollbackTransaction();

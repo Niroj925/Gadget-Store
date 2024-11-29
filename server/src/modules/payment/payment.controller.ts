@@ -24,8 +24,8 @@ export class PaymentController {
   }
 
   @Get('complete-payment')
-  findAll(@Query() query:{data:any}) {
-    return this.paymentService.findAll(query.data);
+  verifyPayment(@Query() query:{data:any}) {
+    return this.paymentService.verifyPayment(query.data);
   }
 
   @Get(':id')

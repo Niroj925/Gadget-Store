@@ -49,15 +49,15 @@ export class PaymentService {
     };
   }
 
-  async findAll(data: any) {
+  async verifyPayment(data: any) {
     try {
       const paymentInfo = await this.verifyEsewaPayment(data);
       const purchasedItemData = await this.paymentRepository.findOne({
         where: { id: paymentInfo.response.transaction_uuid },
       });
       
-      console.log('paymentInfo:',paymentInfo);
-      console.log(purchasedItemData);
+      // console.log('paymentInfo:',paymentInfo);
+      // console.log(purchasedItemData);
       if (!purchasedItemData) {
         return {
           success: false,
@@ -124,22 +124,25 @@ async verifyEsewaPayment(encodedData: string): Promise<{ response: any; decodedD
     const decodedString = Buffer.from(encodedData, 'base64').toString('utf-8');
     const decodedData: EsewaDecodedData = JSON.parse(decodedString) as EsewaDecodedData;
 
+    const totalAmountWithoutComma = decodedData.total_amount.replace(/,/g, '');
+
+
     // For verification, use a different data string that includes more fields
-    const data = `transaction_code=${decodedData.transaction_code},status=${decodedData.status},total_amount=${decodedData.total_amount},transaction_uuid=${decodedData.transaction_uuid},product_code=${process.env.ESEWA_PRODUCT_CODE},signed_field_names=${decodedData.signed_field_names}`;
+    const data = `transaction_code=${decodedData.transaction_code},status=${decodedData.status},total_amount=${totalAmountWithoutComma},transaction_uuid=${decodedData.transaction_uuid},product_code=${process.env.ESEWA_PRODUCT_CODE},signed_field_names=${decodedData.signed_field_names}`;
     
     const secretKey = process.env.ESEWA_SECRET_KEY;
     if (!secretKey) {
       throw new Error("Esewa secret key is not configured.");
     }
-    console.log(decodedData);
+    // console.log(decodedData);
     // Generate hash
     const hash = crypto
       .createHmac("sha256", secretKey)
       .update(data)
       .digest("base64");
 
-    console.log("Generated Hash:", hash);
-    console.log("Received Signature:", decodedData.signature);
+    // console.log("Generated Hash:", hash);
+    // console.log("Received Signature:", decodedData.signature);
 
     // Signature verification
     if (hash !== decodedData.signature) {
@@ -148,7 +151,7 @@ async verifyEsewaPayment(encodedData: string): Promise<{ response: any; decodedD
 
     // Verify transaction status with Esewa API
     const reqOptions = {
-      url: `${process.env.ESEWA_GATEWAY_URL}/api/epay/transaction/status/?product_code=${process.env.ESEWA_PRODUCT_CODE}&total_amount=${decodedData.total_amount}&transaction_uuid=${decodedData.transaction_uuid}`,
+      url: `${process.env.ESEWA_GATEWAY_URL}/api/epay/transaction/status/?product_code=${process.env.ESEWA_PRODUCT_CODE}&total_amount=${totalAmountWithoutComma}&transaction_uuid=${decodedData.transaction_uuid}`,
       method: "GET",
       headers: {
         Accept: "application/json",

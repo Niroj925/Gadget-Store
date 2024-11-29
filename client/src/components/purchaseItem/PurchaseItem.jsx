@@ -38,9 +38,6 @@ function PurchaseItem() {
   const setCustomerDetail = useOrderStore((state) => state.setCustomerDetail);
   const [openMap, setOpenMap] = useState(false);
   const [location, setLocation] = useState(null);
-  const [orderInfo,setOrderInfo]=useState(null);
-  const [paymentData, setPaymentData] = useState(null); // Holds payment details
-
   const [orderResponse,setOrderResponse]=useState(null);
 
 
@@ -60,44 +57,6 @@ function PurchaseItem() {
       .catch((error) => console.error("Error:", error));
   };
 
-  // Add the post function for eSewa payment
-  const post = (path, params) => {
-    const form = document.createElement("form");
-    form.setAttribute("method", "POST");
-    form.setAttribute("action", path);
-
-    for (const key in params) {
-      const hiddenField = document.createElement("input");
-      hiddenField.setAttribute("type", "hidden");
-      hiddenField.setAttribute("name", key);
-      hiddenField.setAttribute("value", params[key]);
-      form.appendChild(hiddenField);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-  };
-
-  // const handlePayment = () => {
-  //   post("https://rc-epay.esewa.com.np/api/epay/main/v2/form",
-  //    {
-  //         amount: orderResponse?.transaction?.amount,
-  //         failure_url: "http://localhost:5173",
-  //         product_delivery_charge: "0",
-  //         product_service_charge: "0",
-  //         product_code: "EPAYTEST",
-  //         signature: orderResponse?.payment.signature,
-  //         signed_field_names: orderResponse?.payment.signed_field_names,
-  //         success_url: "http://localhost:4000/api/v1/payment/complete-payment",
-  //         tax_amount: "0",
-  //         total_amount: orderResponse?.transaction?.amount,
-  //         transaction_uuid: orderResponse?.transaction?.id
-  //       } 
-  //     );
- 
-  // };
-
-
   const handleSubmit = async () => {
     const body = {
       deliveryCharge: 0, 
@@ -109,9 +68,9 @@ function PurchaseItem() {
     console.log(body);
     try {
       const resp = await axiosPublicInstance.post(`${order}/${customerId}?paymentMethod=${paymentType}`, body, {});
-      console.log('orderInfo:',resp.data);
-      setOrderInfo(resp.data);
-      // setOrderResponse(resp.data)
+      console.log('orderReponse:',resp.data);
+      // setOrderInfo(resp.data);
+      setOrderResponse(resp.data)
       return resp.data;
     } catch (error) {
       toast.error("Failed to create category.");
@@ -178,43 +137,43 @@ function PurchaseItem() {
     cod:'cod'
   }
  
-  const handlePaymentInit = async () => {
-    const orderData={
-      orderId:orderInfo.order.id,
-      totalAmount: orderInfo.order.amount,
-    }
-  //  console.log(orderData);
-    try {
-      const response = await axios.post(`http://localhost:4000/api/v1/payment/initialize-esewa?paymentMethod=${paymentType}`, orderData);
-      console.log(response.data);
-      if (response.data.success) {
-        setPaymentData(response.data); // Store payment data (signature, etc.)
-      } else {
-        alert('Payment initialization failed.');
-      }
-    } catch (error) {
-      console.error('Error initializing purchase:', error);
-    }
-  };
+  // const handlePaymentInit = async () => {
+  //   const orderData={
+  //     orderId:orderInfo.order.id,
+  //     totalAmount: orderInfo.order.amount,
+  //   }
+  // //  console.log(orderData);
+  //   try {
+  //     const response = await axios.post(`http://localhost:4000/api/v1/payment/initialize-esewa?paymentMethod=${paymentType}`, orderData);
+  //     console.log(response.data);
+  //     if (response.data.success) {
+  //       setPaymentData(response.data); // Store payment data (signature, etc.)
+  //     } else {
+  //       alert('Payment initialization failed.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error initializing purchase:', error);
+  //   }
+  // };
   const handleEsewa = () => {
-    if (!paymentData) {
+    if (!orderResponse) {
       alert('Please initialize the purchase first!');
       return;
     }
-   console.log(paymentData);
+   console.log(orderResponse);
     // Construct eSewa form data using API response
     const esewaData = {
-      amount: paymentData.order.amount,
+      amount: orderResponse?.order.amount,
       tax_amount: '0',
-      total_amount: paymentData.order.amount,
-      transaction_uuid: paymentData.order.id, // Use item ID as transaction UUID
+      total_amount: orderResponse?.order.amount,
+      transaction_uuid: orderResponse?.order.id,
       product_code: 'EPAYTEST',
       product_service_charge: '0',
       product_delivery_charge: '0',
       success_url: 'http://localhost:4000/api/v1/payment/complete-payment',
       failure_url: 'http://localhost:5173',
-      signed_field_names: paymentData.payment.signed_field_names,
-      signature: paymentData.payment.signature, // Use signature from API
+      signed_field_names: orderResponse?.payment.signed_field_names,
+      signature: orderResponse?.payment.signature, 
     };
 
     // Create and submit form programmatically
@@ -294,27 +253,10 @@ function PurchaseItem() {
                         billInfo.deliveryCharge}
                     </Text>
                   </Flex>
-                  <Group justify="center" mt={10} mb={10}>
-                    {
-                      location &&(
-                     <Button
-                        variant="fill"
-                        radius={20}
-                        w={"125px"}
-                        bg={"#414B80"}
-                        onClick={mutateCreateOrder}
-                        disabled={orderInfo?.success?true:false}
-                      >
-                        Place Order
-                      </Button>
-                        )
-                      }
-                  </Group>
-                 
                 </Flex>
               </Paper>
 
-              {orderInfo && (
+              {location && (
                 <Paper
                   withBorder
                   p={10}
@@ -353,7 +295,7 @@ function PurchaseItem() {
                   <Group mt={10} justify="center" align="center">
                     
                     {
-                      paymentData?.order?.paymentMethod==paymentMethod.esewa ?(
+                      orderResponse?.order?.paymentMethod==paymentMethod.esewa ?(
                         <Button
                         variant="fill"
                         radius={20}
@@ -369,7 +311,7 @@ function PurchaseItem() {
                         radius={20}
                         w={"125px"}
                         bg={"#414B80"}
-                        onClick={handlePaymentInit}
+                        onClick={mutateCreateOrder}
                       >
                         Continue
                       </Button>

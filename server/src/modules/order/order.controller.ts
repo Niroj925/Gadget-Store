@@ -12,7 +12,7 @@ import {
 import { OrderService } from './order.service';
 import { CreateOrderDto, CreateRemarkDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   orderStatus,
   paymentMethod,
@@ -31,11 +31,13 @@ export class OrderController {
 
   @Post(':customerId')
   @ApiOperation({ summary: 'create order' })
+  @ApiQuery({ name: 'paymentMethod', enum: paymentMethod })
   create(
+    @Query('paymentMethod') paymentMethod: paymentMethod,
     @Param('customerId', ParseUUIDPipe) customerId: string,
     @Body() createOrderDto: CreateOrderDto,
   ) {
-    return this.orderService.create(customerId, createOrderDto);
+    return this.orderService.create(customerId,paymentMethod,createOrderDto);
   }
 
   @Get('customer/:customerId')
