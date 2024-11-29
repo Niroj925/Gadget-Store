@@ -17,7 +17,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { axiosPublicInstance } from "../../api";
-import useAuthStore from "../../providers/useAuthStore";
+import useAuthStore from "../../store/useAuthStore";
 
 export default function Login() {
   const navigate = useNavigate();

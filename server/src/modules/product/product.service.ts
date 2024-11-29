@@ -294,7 +294,45 @@ export class ProductService {
   async findOne(id: string) {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['spec', 'image', 'color', 'review', 'category'],
+      relations: ['spec', 'image', 'color', 'review.customer', 'category'],
+      select:{
+        id:true,
+        name:true,
+        brand:true,
+        price:true,
+        description:true,
+        discount:true,
+        createdAt:true,
+        spec:{
+          id:true,
+          specification:true
+        },
+        image:true,
+        color:{
+          id:true,
+          color:true
+        },
+        review:{
+          id:true,
+          rating:true,
+          review:true,
+          updatedAt:true,
+          customer:{
+            id:true,
+            name:true,
+            profile:true
+          }
+        },
+        category:{
+          id:true,
+          name:true
+        }
+      },
+      order:{
+        review:{
+          updatedAt:'DESC'
+        }
+      }
     });
     return product;
   }

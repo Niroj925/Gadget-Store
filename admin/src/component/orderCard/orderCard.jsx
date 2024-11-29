@@ -39,7 +39,7 @@ function OrderCard({ order }) {
 
   const handleRadioChange = (value) => {
     setSelectedValue(value);
-    console.log("Selected value:", value); // Verify the selected value
+    console.log("Selected value:", value); 
   };
 
   const formatToLocalDateTime = (isoDate) => {
@@ -116,10 +116,10 @@ function OrderCard({ order }) {
           {/* Right Section */}
           <Flex direction="column" align="flex-end" gap="xs">
             <Badge color="blue" variant="light" size="sm">
-              {order.payment.paymentMethod}
+              {order.payment[0].paymentMethod}
             </Badge>
             <Text size="sm" color="green" weight={600}>
-              Rs.{order.payment.amount}
+              Rs.{order.payment[0].amount}
             </Text>
             <Text size="xs" color="gray">
               ~{order.distance.toFixed(3)} km
@@ -159,7 +159,7 @@ function OrderCard({ order }) {
         </Flex>
       </Card>
 
-      <Modal opened={updateModel} onClose={updateModelClose}>
+      <Modal opened={updateModel} onClose={updateModelClose} withCloseButton={false}>
         <Text mt={10} fw={600} ta="center">
           {/* Are you sure you want to update ? */}
           Select the order status to be update
@@ -181,10 +181,10 @@ function OrderCard({ order }) {
             <Flex justify="space-between" align={"center"}>
               <Text size="sm">Payment: </Text>
               <Badge color="green" ml={-60} size="sm">
-                {order.payment.paymentMethod}
+                {order.payment[0].paymentMethod}
               </Badge>
               <Text size="sm">
-                Amount: <strong> Rs.{order.payment.amount}</strong>
+                Amount: <strong> Rs.{order.payment[0].amount}</strong>
               </Text>
             </Flex>
           </Flex>

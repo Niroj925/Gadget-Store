@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosPublicInstance } from "../../../api";
 import { product } from "../../../api/product/product";
 import { useQuery } from "@tanstack/react-query";
-import useAuthStore from "../../../providers/useAuthStore";
+import useAuthStore from "../../../store/useAuthStore";
 
 function Products() {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "../providers/useAuthStore";
+import useAuthStore from "../store/useAuthStore";
 
 const baseURL = "http://localhost:4000/api/v1";
 // const baseURL = "http://192.168.242.176:4000/api/v1";

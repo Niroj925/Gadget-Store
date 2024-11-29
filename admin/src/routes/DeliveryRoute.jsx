@@ -2,15 +2,18 @@
 import OrderMap from "../pages/dashboard/order/OrderMap";
 import Delivery from "../pages/delivery/Delivery";
 import DeliveryInfo from "../pages/delivery/DeliveryInfo";
-
-
+import ProtectedDeliveryRoute from "./ProtectedDeliveryRoute";
 
 const DeliveryRoutes = {
     path: "delivery",
     children: [
       {
         path: "",
-        element: <Delivery/>,
+        element: (
+          <ProtectedDeliveryRoute>
+            <Delivery/>
+          </ProtectedDeliveryRoute>
+        ),
       },
       {
         path: "order-info",

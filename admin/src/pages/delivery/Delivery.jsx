@@ -11,9 +11,8 @@ function Delivery() {
 
   const [search, setSearch] = useState('');
   const [filteredOrders,setFilterOrders]=useState([])
-  const [debounced] = useDebouncedValue(search, 300);//300ms
+  const [debounced] = useDebouncedValue(search, 300);
   
-
   const {
     isLoading,
     data,
@@ -27,6 +26,8 @@ function Delivery() {
       return response.data;
     },
   });
+
+  // console.log(data);
 
   useEffect(()=>{
     let filteredOrders = data?.filter((order) => {

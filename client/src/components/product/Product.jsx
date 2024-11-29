@@ -29,6 +29,7 @@ import useOrderStore from "../../store/store";
 import { useQuery } from "@tanstack/react-query";
 import { product } from "../../api/product/product";
 import { axiosPublicInstance } from "../../api";
+import AllReview from "./AllReview";
 
 function Product() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ function Product() {
   const [checked, setChecked] = useState(
     customerDetail.contact.length == 10 ? true : false
   );
-  console.log(productDetail);
+  console.log("productDetail:", productDetail);
 
   const {
     isLoading,
@@ -65,7 +66,7 @@ function Product() {
     },
   });
 
-  console.log(data);
+  console.log("product:", data);
 
   const specs = data?.spec.map((spec) => spec.specification) || [];
 
@@ -122,10 +123,10 @@ function Product() {
     window.location.href = "http://localhost:4000/api/v1/auth/google/login";
   };
 
-  const handleContinue=()=>{
+  const handleContinue = () => {
     handleAddOrder();
-    navigate(`/purchase?customerId=${customerDetail.customerId}`)
-  }
+    navigate(`/purchase?customerId=${customerDetail.customerId}`);
+  };
 
   console.log(customerDetail);
   console.log(customerDetail.contact.length);
@@ -191,7 +192,7 @@ function Product() {
         </Flex>
         <Flex direction={"column"} justify={"flex-start"} gap={15}>
           <Flex direction={"column"} gap={7}>
-            <Text size="25px" c={"dark"}>
+            <Text size="20px" c={"dark"}>
               {data?.name}
             </Text>
             <Text>This is one of the offordable gadget hai</Text>
@@ -374,6 +375,15 @@ function Product() {
             <Group>{data?.description}</Group>
           </Paper>
         </Flex>
+       
+          <Paper withBorder mt={10}>
+          <Text p={5} fw={500}>
+            Customer Reviews
+          </Text>
+          <Divider/>
+            <AllReview reviews={data?.review} />
+          </Paper>
+     
         <Group mt={45}>
           <SimilarItem id={data?.category?.id} exludeId={data?.id} />
         </Group>
@@ -413,21 +423,21 @@ function Product() {
             ) : (
               <></>
             )}
-          
-              <Group justify="center" align="center">
-                {checked ? (
-                  <Button
-                    color="#414B80"
-                    radius="xl"
-                    size="md"
-                    mt={20}
-                    w={"75%"}
-                    onClick={handleContinue}
-                  >
+
+            <Group justify="center" align="center">
+              {checked ? (
+                <Button
+                  color="#414B80"
+                  radius="xl"
+                  size="md"
+                  mt={20}
+                  w={"75%"}
+                  onClick={handleContinue}
+                >
                   Continue to Proceed
-                  </Button>
-                ) : (
-                  validContact &&(
+                </Button>
+              ) : (
+                validContact && (
                   <Button
                     leftSection={<BsGoogle size={20} />}
                     color="red"
@@ -441,9 +451,10 @@ function Product() {
                       Continue with Google
                     </Text>
                   </Button>
-                ))}
-              </Group>
-          
+                )
+              )}
+            </Group>
+
             <Text c="dimmed" size="sm" mt={20}>
               By continuing, you agree to our Terms and Conditions.
             </Text>

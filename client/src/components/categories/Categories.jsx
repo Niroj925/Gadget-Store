@@ -32,17 +32,17 @@ function Categories() {
           type="never" // Hides the scrollbar
           viewportRef={scrollRef}
         >
-      <Flex gap={25} wrap={'nowrap'} >
+      <Flex gap={45} wrap={'nowrap'} >
       {data?.map((item)=>{
         return(
-          <Paper withBorder mt={10} radius={10} onClick={()=>navigate(`/category?id=${item.id}`)}>
-          <Group justify='center'>
-            <Text>{item.name}</Text>
-            </Group>
-            <Image src={item.image} w={250} height={250}/> 
-            {/* <Group justify='center'>
+          <Paper withBorder mt={10} radius={10} onClick={()=>navigate(`/category?id=${item.id}`)} p={5}>
+          {/* <Group justify='center'>
             <Text>{item.name}</Text>
             </Group> */}
+            <Image src={item.image} w={160} height={150}/> 
+            <Group justify='center' mt={10}>
+            <Text fw={500}>{item.name}</Text>
+            </Group>
             </Paper>
         )
       })}

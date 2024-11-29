@@ -158,9 +158,9 @@ const Navbar = () => {
             <Anchor href="/new" c="black" fw={500}>
               What's new
             </Anchor>
-            <Anchor href="/delivery" c="black" fw={500}>
+            {/* <Anchor href="/delivery" c="black" fw={500}>
               Delivery
-            </Anchor>
+            </Anchor> */}
           </Group>
         </>
       ) : (

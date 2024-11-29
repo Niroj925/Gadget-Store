@@ -8,28 +8,26 @@ import {
   Box,
   Button,
   Radio,
-  Modal,
 } from "@mantine/core";
-import { useDisclosure, useHover, useMediaQuery } from "@mantine/hooks";
+import {  useHover, useMediaQuery } from "@mantine/hooks";
 import React, { useState } from "react";
 import { IoLocation } from "react-icons/io5";
 import Map from "../map/Map";
-import { FaCheckCircle } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useOrderStore from "../../store/store";
 import { axiosPublicInstance } from "../../api";
 import { customer } from "../../api/customer/customer";
 import OrderInfo from "../orderInfo/OrderInfo";
 import { order } from "../../api/order/order";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function PurchaseItem() {
   const locationState = useLocation();
+  const queryClient=useQueryClient();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const customerId = params.get("customerId");
   const { hovered, ref } = useHover();
-  const [opened, { open: modelOpen, close }] = useDisclosure(false);
   const [paymentType, setPaymentType] = useState("esewa");
   const orders = useOrderStore((state) => state.orders);
   const customerDetail = useOrderStore((state) => state.customerDetail);
@@ -43,7 +41,7 @@ function PurchaseItem() {
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
   const handleMarkerPositionChange = (position) => {
-    console.log(position);
+    // console.log(position);
     fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}`
     )
@@ -103,7 +101,7 @@ function PurchaseItem() {
     if (respose.data) {
       setCustomerDetail({ contact: customerDetail.contact, customerId });
     }
-    console.log(respose.data);
+    // console.log(respose.data);
     return respose.data;
   };
 
@@ -112,15 +110,16 @@ function PurchaseItem() {
     handleUpdateContact();
   }
 
-  console.log(customerDetail);
+  // console.log(customerDetail);
 
-  const totalAmount = (orders) => {
-    let t_amount = 0;
-    orders.forEach((order) => {
-      t_amount += order.price;
+  const totalAmount=(orders)=>{
+    let t_amount=0;
+    orders.forEach(order => {
+      t_amount+=(order.quantity*order.price)
     });
-    return t_amount;
-  };
+    return t_amount
+  }
+
   const billInfo = {
     totalAmount: totalAmount(orders),
     discount: 0,
@@ -263,6 +262,7 @@ function PurchaseItem() {
                         color="#414B80"
                         value={paymentMethod.online}
                         label="Bank Transfer"
+                        disabled
                       />
                       <Radio
                         color="#414B80"

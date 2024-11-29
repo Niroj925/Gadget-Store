@@ -23,7 +23,7 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../providers/useAuthStore";
+import useAuthStore from "../../store/useAuthStore";
 
 function Header() {
   const navigate=useNavigate();

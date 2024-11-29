@@ -8,6 +8,7 @@ import Category from "../components/category/Category";
 import Favourite from "../components/favourite/Favourite";
 import Success from "../components/orderInfo/Success";
 import Product from "../components/product/Product";
+import ProductReview from "../components/product/Review";
 import Products from "../components/products/Products";
 import PurchaseItem from "../components/purchaseItem/PurchaseItem";
 import Home from "../pages/home/Home";
@@ -46,6 +47,10 @@ import Home from "../pages/home/Home";
       {
         path: "order/success",
         element: <Success/>,
+      },
+      {
+        path: "product/review",
+        element: <ProductReview/>,
       }
     ],
 

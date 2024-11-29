@@ -8,61 +8,54 @@ import {
   Paper,
   Rating,
   Text,
-  ScrollArea  ,
-
+  ScrollArea,
 } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import React,{useRef} from "react";
+import React, { useRef } from "react";
 import { FcPrevious } from "react-icons/fc";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { axiosPublicInstance } from "../../api";
 import { popularProduct } from "../../api/product/product";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 function Popular() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { hovered, ref: btnRef } = useHover();
- const scrollRef = useRef(null);
+  const scrollRef = useRef(null);
 
- const {
-  isLoading,
-  data,
-  error: errorToGet,
-} = useQuery({
-  queryKey: ["popular"],
-  queryFn: async () => {
-    const response = await axiosPublicInstance.get(
-      popularProduct
-    );
-    return response.data;
-  },
-});
-// console.log('data:',data);
-
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: ["popular"],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(popularProduct);
+      return response.data;
+    },
+  });
+  // console.log('data:',data);
 
   return (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
-      <Flex justify={'space-between'}>
-
-      <Text size="xl" fw={500}>
-        Popular Items
-      </Text>
-      {/* <Flex>
+      <Flex justify={"space-between"}>
+        <Text size="xl" fw={500}>
+          Popular Items
+        </Text>
+        {/* <Flex>
       <MdOutlineNavigateNext size={45} color="#414977" style={{ transform: 'rotate(180deg)' }} />
       <MdOutlineNavigateNext size={45} color="#414977"/>
       </Flex> */}
       </Flex>
       <ScrollArea
-          style={{ width: '100%' }}
-          scrollbarSize={6}
-          type="never" // Hides the scrollbar
-          viewportRef={scrollRef}
-        >
-      <Flex gap={20} wrap={"nowrap"} w={"100%"} >
-        {
-          data?.products.map((product) => {
-           
+        style={{ width: "100%" }}
+        scrollbarSize={6}
+        type="never" // Hides the scrollbar
+        viewportRef={scrollRef}
+      >
+        <Flex gap={45} wrap={"nowrap"} w={"100%"}>
+          {data?.products.map((product) => {
             return (
               <Paper
                 mt={10}
@@ -70,13 +63,13 @@ function Popular() {
                 gap={10}
                 ref={btnRef}
                 // withBorder={hovered ? true : false}
-                bg={hovered?'#E7E7FF':'white'}
-                onClick={()=>navigate(`/product?id=${product.id}`)}
+                bg={hovered ? "#E7E7FF" : "white"}
+                onClick={() =>  navigate(`/product?id=${product.id}`,{state:{productDetail:product}})}  
               >
                 <Image
                   src={product?.image}
-                  w={250}
-                  height={250}
+                  w={170}
+                  height={150}
                   style={{
                     borderBottomLeftRadius: "0px",
                     borderBottomRightRadius: "0px",
@@ -85,26 +78,26 @@ function Popular() {
                   }}
                 />
 
-                <Flex direction={"column"} mb={10} >
+                <Flex direction={"column"} mb={10}>
                   {/* <Text ta={"center"}>{product.name}</Text> */}
                   <Text
-                  p={5}
-                  fw="bold"
-                  maw={150}
-                  // align="center"
-                  style={{
-                    fontSize: "15px",
-                    display: "block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    display: "-webkit-box",
-                  }}
-                  title={product.name}
-                >
-                  {product.name}
-                </Text>
+                    p={5}
+                    fw="bold"
+                    maw={150}
+                    // align="center"
+                    style={{
+                      fontSize: "15px",
+                      display: "block",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      display: "-webkit-box",
+                    }}
+                    title={product.name}
+                  >
+                    {product.name}
+                  </Text>
                   <Text c={"dimmed"} ta={"center"}>
                     product model name
                   </Text>
@@ -128,7 +121,7 @@ function Popular() {
               </Paper>
             );
           })}
-      </Flex>
+        </Flex>
       </ScrollArea>
     </Flex>
   );

@@ -8,20 +8,19 @@ import {
   Paper,
   Rating,
   Text,
-  ScrollArea  ,
-
+  ScrollArea,
 } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import React,{useRef} from "react";
+import React, { useRef } from "react";
 import { axiosPublicInstance } from "../../api";
 import { newArrival } from "../../api/product/product";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function NewProduct() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { hovered, ref: btnRef } = useHover();
- const scrollRef = useRef(null);
+  const scrollRef = useRef(null);
   const {
     isLoading,
     data,
@@ -29,28 +28,25 @@ function NewProduct() {
   } = useQuery({
     queryKey: [`newArrival`],
     queryFn: async () => {
-      const response = await axiosPublicInstance.get(
-        `${newArrival}`
-      );
+      const response = await axiosPublicInstance.get(`${newArrival}`);
       // setTotalPage(Math.ceil(response.data.productCount / pageSize));
       return response.data;
     },
   });
-// console.log('new arrival data:',data);
+  // console.log('new arrival data:',data);
   return (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
       <Text size="xl" fw={500}>
         New Arrivals
       </Text>
       <ScrollArea
-          style={{ width: '100%' }}
-          scrollbarSize={6}
-          type="never" // Hides the scrollbar
-          viewportRef={scrollRef}
-        >
-      <Flex gap={20} wrap={"nowrap"} w={"100%"} >
-        {
-          data?.map((product) => {
+        style={{ width: "100%" }}
+        scrollbarSize={6}
+        type="never" // Hides the scrollbar
+        viewportRef={scrollRef}
+      >
+        <Flex gap={45} wrap={"nowrap"} w={"100%"}>
+          {data?.map((product) => { 
             return (
               <Paper
                 mt={10}
@@ -58,13 +54,13 @@ function NewProduct() {
                 gap={10}
                 ref={btnRef}
                 // withBorder={hovered ? true : false}
-                bg={hovered?'#E7E7FF':'white'}
-                onClick={()=>navigate(`/product?id=${product.id}`)}
+                bg={hovered ? "#E7E7FF" : "white"}
+                onClick={() =>  navigate(`/product?id=${product.id}`,{state:{productDetail:product}})}                
               >
                 <Image
                   src={product.image}
-                  w={250}
-                  height={250}
+                  w={170}
+                  height={150}  
                   style={{
                     borderBottomLeftRadius: "0px",
                     borderBottomRightRadius: "0px",
@@ -74,24 +70,24 @@ function NewProduct() {
                 />
 
                 <Flex direction={"column"} mb={10}>
-                <Text
-                  p={5}
-                  fw="bold"
-                  maw={150}
-                  // align="center"
-                  style={{
-                    fontSize: "15px",
-                    display: "block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    display: "-webkit-box",
-                  }}
-                  title={product.name}
-                >
-                  {product.name}
-                </Text>
+                  <Text
+                    p={5}
+                    fw="bold"
+                    maw={150}
+                    // align="center"
+                    style={{
+                      fontSize: "15px",
+                      display: "block",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      display: "-webkit-box",
+                    }}
+                    title={product.name}
+                  >
+                    {product.name}
+                  </Text>
                   <Text c={"dimmed"} ta={"center"}>
                     item model name
                   </Text>
@@ -115,7 +111,7 @@ function NewProduct() {
               </Paper>
             );
           })}
-      </Flex>
+        </Flex>
       </ScrollArea>
     </Flex>
   );

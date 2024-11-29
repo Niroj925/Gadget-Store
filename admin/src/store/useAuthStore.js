@@ -6,8 +6,7 @@ const authStore = (set) => ({
   searchProduct:null,
   setAccessToken: (token) => set({ accessToken: token }),
   setSearchProduct: (search) => set({ searchProduct: search }),
-  clearAccessToken: () => set({ accessToken: null,searchProduct:null }),
-
+  clearAccessToken: () => set({ accessToken: null,searchProduct:null}),
 });
 
 const useAuthStore = create()(

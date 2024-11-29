@@ -18,6 +18,7 @@ import Shipping from "../pages/dashboard/shipping/shipping";
 import AddStaff from "../pages/dashboard/staff/AddStaff";
 import EditStaff from "../pages/dashboard/staff/EditStaff";
 import Staff from "../pages/dashboard/staff/Staff";
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 
 const DashboardRoutes = {
@@ -27,81 +28,158 @@ const DashboardRoutes = {
     children: [
       {
         path: "",
-        element: <Dashboard />,
+        element: (
+          <ProtectedAdminRoute>
+            <Dashboard/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "add-product",
-        element: <AddProduct />,
+        element:(
+          <ProtectedAdminRoute>
+             <AddProduct />
+          </ProtectedAdminRoute>
+        ),
+        
       },
       {
         path: "all-product",
-        element: <AllProduct />,
+        element:(
+          <ProtectedAdminRoute>
+             <AllProduct />
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "product",
-        element: <Product/>,
+        element:(
+          <ProtectedAdminRoute>
+            <Product/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "products",
-        element: <Products/>,
+        element:(
+          <ProtectedAdminRoute>
+            <Products/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "edit-product",
-        element: <EditProduct />,
+        element:(
+          <ProtectedAdminRoute>
+            <EditProduct />
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "add-category",
-        element: <AddCategory />,
+        element:(
+          <ProtectedAdminRoute>
+            <AddCategory />
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "all-categories",
-        element: < AllCatgory/>,
+        element:(
+          <ProtectedAdminRoute>
+            < AllCatgory/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "category",
-        element: < Category/>,
+        element:(
+          <ProtectedAdminRoute>
+             < Category/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "category-product",
-        element: < CategoryProduct/>,
+        element:(
+          <ProtectedAdminRoute>
+            < CategoryProduct/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "edit-categories",
-        element: < EditCategory/>,
+        element:(
+          <ProtectedAdminRoute>
+            < EditCategory/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "orders",
-        element: < AllOrders/>,
+        element:(
+          <ProtectedAdminRoute>
+            < AllOrders/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "order-info",
-        element: < Order/>,
+        element:(
+          <ProtectedAdminRoute>
+             < Order/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "shipping",
-        element: <Shipping/>,
+        element:(
+          <ProtectedAdminRoute>
+             <Shipping/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "staff",
-        element: <Staff/>,
+        element:(
+          <ProtectedAdminRoute>
+             <Staff/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "add-staff",
-        element: <AddStaff/>,
+        element:(
+          <ProtectedAdminRoute>
+             <AddStaff/>
+          </ProtectedAdminRoute>
+        ),
       },
       {
         path: "edit-staff",
-        element: <EditStaff/>,
+        element:(
+          <ProtectedAdminRoute>
+            <EditStaff/>
+          </ProtectedAdminRoute>
+        ), 
       },
       {
         path: "customers",
-        element: <Customers/>,
+        element:(
+          <ProtectedAdminRoute>
+            <Customers/>
+          </ProtectedAdminRoute>
+        ), 
       },
 
-      {
-        path: "register",
-        // element: <AuthRegister />
-      },
+      // {
+      //   path: "register",
+      //    element:(
+      //     <ProtectedAdminRoute>
+      //     <AuthRegister />
+      //     </ProtectedAdminRoute>
+      //   ), 
+      // },
     ]
 }
 

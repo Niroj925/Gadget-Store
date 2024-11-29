@@ -64,7 +64,7 @@ function Cart() {
   const totalAmount=(orders)=>{
     let t_amount=0;
     orders.forEach(order => {
-      t_amount+=order.price
+      t_amount+=(order.quantity*order.price)
     });
     return t_amount
   }
