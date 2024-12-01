@@ -29,13 +29,13 @@ function Category() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
 
-  console.log(activePage)
+  // console.log(activePage)
   const {
     isLoading,
     data,
     error: errorToGet,
   } = useQuery({
-    queryKey: ["categoryProduct"],
+    queryKey: ["categoryProduct",id],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
         `${categoryProduct}/${id}`
@@ -44,7 +44,7 @@ function Category() {
     },
   });
 
-  console.log(data);
+  // console.log(data);
  
   return (
     <Flex direction={"column"} gap={20} p={20}>

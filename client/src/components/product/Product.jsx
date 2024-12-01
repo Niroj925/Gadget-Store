@@ -48,7 +48,7 @@ function Product() {
   const setCustomerDetail = useOrderStore((state) => state.setCustomerDetail);
   const [mainImage, setMainImage] = useState({});
   const [checked, setChecked] = useState(
-    customerDetail.contact.length == 10 ? true : false
+    customerDetail?.contact?.length == 10 ? true : false
   );
   console.log("productDetail:", productDetail);
 
@@ -128,8 +128,13 @@ function Product() {
     navigate(`/purchase?customerId=${customerDetail.customerId}`);
   };
 
-  console.log(customerDetail);
-  console.log(customerDetail.contact.length);
+  const ratingCalculate=(review)=>{
+ let t_review=0;
+ review?.map((review)=>{
+  t_review+=review.rating;
+ });
+ return t_review/review?.length;
+  }
 
   return (
     <Box>
@@ -195,10 +200,10 @@ function Product() {
             <Text size="20px" c={"dark"}>
               {data?.name}
             </Text>
-            <Text>This is one of the offordable gadget hai</Text>
+            {/* <Text>This is one of the offordable gadget hai</Text> */}
             <Flex direction={"row"}>
-              <Rating value={3.5} fractions={2} readOnly />
-              <Text>(124)</Text>
+              <Rating value={ratingCalculate(data?.review)} fractions={2} readOnly />
+              <Text>({ratingCalculate(data?.review).toFixed(2)})</Text>
             </Flex>
           </Flex>
           <Divider />
@@ -351,7 +356,7 @@ function Product() {
               cumque optio similique?
             </Group>
           </Paper> */}
-          <Paper withBorder p={10}>
+          <Paper withBorder p={10} w={"100%"}>
             <Text pb={5} fw={500}>
               Features and Specifications
             </Text>
@@ -375,15 +380,15 @@ function Product() {
             <Group>{data?.description}</Group>
           </Paper>
         </Flex>
-       
+        {data?.review.length > 0 && (
           <Paper withBorder mt={10}>
-          <Text p={5} fw={500}>
-            Customer Reviews
-          </Text>
-          <Divider/>
+            <Text p={5} fw={500}>
+              Customer Reviews
+            </Text>
+            <Divider />
             <AllReview reviews={data?.review} />
           </Paper>
-     
+        )}
         <Group mt={45}>
           <SimilarItem id={data?.category?.id} exludeId={data?.id} />
         </Group>
@@ -413,7 +418,7 @@ function Product() {
               onChange={handleContactChange}
               error={error}
             />
-            {customerDetail.contact.length == 10 ? (
+            {customerDetail?.contact?.length == 10 ? (
               <Checkbox
                 mt={10}
                 checked={checked}

@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 function AllProduct() {
   const navigate = useNavigate();
   const [activePage, setPage] = useState(1);
+  const pageSize=5;
   console.log(activePage);
   const {
     isLoading,
@@ -28,14 +29,14 @@ function AllProduct() {
     queryKey: ["product", activePage],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
-        `${product}?page=${activePage}&pageSize=5`
+        `${product}?page=${activePage}&pageSize=${pageSize}`
       );
       return response.data;
     },
   });
   console.log(data);
 
-  const rows = data?.map((product) => (
+  const rows = data?.product.map((product) => (
     <Table.Tr key={product.productName}>
       <Table.Td>{product.name}</Table.Td>
       <Table.Td>{product.category?.name}</Table.Td>
@@ -64,6 +65,7 @@ function AllProduct() {
       </Flex>
       <Divider />
       <Box>
+      <Table.ScrollContainer minWidth={500}>
         <Table>
           <Table.Thead>
             <Table.Tr>
@@ -77,10 +79,11 @@ function AllProduct() {
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
         <Divider />
         <Group justify="center" align="center" p={10}>
           <Pagination
-            total={data?.length}
+            total={Math.ceil(data?.productCount/pageSize)}
             value={activePage}
             onChange={setPage}
             mt="sm"

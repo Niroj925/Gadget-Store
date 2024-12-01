@@ -7,10 +7,12 @@ import { paymentEntity } from 'src/model/payment.entity';
 import { ProductModule } from '../product/product.module';
 import { productEntity } from 'src/model/product.entity';
 import { PaymentService } from '../payment/payment.service';
+import { customerEntity } from 'src/model/customer.entity';
+import { locationEntity } from 'src/model/location.entity';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([orderEntity,paymentEntity,productEntity]),
+    TypeOrmModule.forFeature([orderEntity,paymentEntity,productEntity,customerEntity,locationEntity]),
     ProductModule
   ],
   controllers: [OrderController],

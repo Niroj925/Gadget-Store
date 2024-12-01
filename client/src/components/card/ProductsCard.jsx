@@ -24,7 +24,7 @@ function ProductsCard({products}) {
     {
     products?.map((product) => {
         return (
-          <Flex direction={"column"}>
+          <Flex direction={"column"} key={product.id}>
             <Paper withBorder mt={10} radius={10} bg={"#EEEEFF"} maw={200}>
               <Flex justify={"space-around"}>
                 <Group>

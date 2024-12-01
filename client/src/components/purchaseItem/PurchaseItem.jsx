@@ -34,6 +34,10 @@ function PurchaseItem() {
   const setCustomerDetail = useOrderStore((state) => state.setCustomerDetail);
   const [openMap, setOpenMap] = useState(false);
   const [location, setLocation] = useState(null);
+  const [position,setPosition]=useState({
+    latitude:27.36842,
+    longitude:86.12427
+  })
   const [orderResponse,setOrderResponse]=useState(null);
 
 
@@ -42,6 +46,10 @@ function PurchaseItem() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const handleMarkerPositionChange = (position) => {
     // console.log(position);
+    setPosition({
+      latitude:position[0],
+      longitude:position[1]
+    });
     fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position[0]}&lon=${position[1]}`
     )
@@ -55,7 +63,11 @@ function PurchaseItem() {
 
   const handleSubmit = async () => {
     const body = {
-      deliveryCharge: 0, 
+      deliveryCharge: 0,
+      latitude:position.latitude,
+      longitude:position.longitude,
+      location,
+      customerContact:parseInt(customerDetail?.contact), 
       orderInfo: orders.map(order => ({
         product: order.id, 
         quantity: order.quantity 

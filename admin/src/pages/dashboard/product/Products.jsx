@@ -19,7 +19,7 @@ import {
   IconHeart,
   IconHeartFilled,
 } from "@tabler/icons-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPublicInstance } from "../../../api";
 import { product } from "../../../api/product/product";
@@ -29,9 +29,7 @@ import useAuthStore from "../../../store/useAuthStore";
 function Products() {
   const navigate = useNavigate();
   const [activePage, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
   const [filterType, setFilterType] = useState("allProduct");
-  const [opened, { open: deleteModelOpen, close }] = useDisclosure(false);
   const { searchProduct } = useAuthStore();
   const filterProductType = {
     highSell: "highSell",
@@ -40,21 +38,26 @@ function Products() {
     highPrice: "highPrice",
     lowPrice: "lowPrice",
   };
-  const pageSize = 10;
+  const pageSize = 5;
+  console.log(activePage);
   const {
     isLoading,
     data,
     error: errorToGet,
+    refetch
   } = useQuery({
-    queryKey: [`${searchProduct}${filterType}`],
+    queryKey: [`products`],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
         `${product}/filter?search=${searchProduct}&page=${activePage}&pageSize=${pageSize}&filterType=${filterType}`
       );
-      setTotalPage(Math.ceil(response.data.productCount / pageSize));
       return response.data;
     },
   });
+
+  useEffect(()=>{
+    refetch()
+  },[activePage,filterProductType,searchProduct])
 
   return (
     <Flex direction={"column"}>
@@ -169,34 +172,10 @@ function Products() {
         <Pagination
           value={activePage}
           onChange={setPage}
-          total={totalPage}
+          total={Math.ceil(data?.productCount / pageSize)}
           color="#414B80"
         />
       </Group>
-      <Modal opened={opened} onClose={close}>
-        {/* <Center>
-          <CgDanger size={25} color="red" />
-        </Center> */}
-        <Text mt={10} fw={600} ta="center">
-          Are you sure you want to delete?
-        </Text>
-        <Text mt={10} maw={400} ta="center" size="sm">
-          The action of deletion cannot be undone. Are you sure you want to
-          proceed delete to this item?
-        </Text>
-        <Group mt={20} justify="center">
-          <Button variant="default" onClick={() => close()}>
-            Cancel
-          </Button>
-          <Button
-            // loading={isPending}
-            onClick={() => close()}
-            color="red"
-          >
-            Delete
-          </Button>
-        </Group>
-      </Modal>
     </Flex>
   );
 }

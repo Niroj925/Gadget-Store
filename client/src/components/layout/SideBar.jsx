@@ -6,44 +6,18 @@ import {
   IconFileAnalytics,
   IconAdjustments,
   IconChevronDown,
+  IconHome,
 } from '@tabler/icons-react';
-
-// LinksGroup component for navigation items with optional dropdown links
-const LinksGroup = ({ icon: Icon, label, links }) => {
-  const [opened, setOpened] = useState(false);
-
-  return (
-    <>
-      <NavLink
-        label={label}
-        leftSection={Icon ? <Icon size={20} /> : null}
-        rightSection={links ? <IconChevronDown size={16} /> : null}
-        onClick={() => setOpened((o) => !o)}
-        variant="filled"
-      />
-      {links && (
-        <Collapse in={opened}>
-          {links.map((link) => (
-            <NavLink
-              key={link.label}
-              label={link.label}
-              onClick={() => (window.location.href = link.link)}
-              pl={40}
-            />
-          ))}
-        </Collapse>
-      )}
-    </>
-  );
-};
-
-// NavbarNested component
-export function NavbarNested({ categories }) {  // Pass categories dynamically
+import {useNavigate} from 'react-router-dom'
+import useOrderStore from '../../store/store';
+export function NavbarNested({ categories }) { 
+  const navigate=useNavigate();
+  const setIsDrawerOpen=useOrderStore((state)=>state.setDrawerOpen)
   // Define static sections
   const staticData = [
+    { label: 'Home', icon: IconHome ,link:'/'},
     { label: 'Deals', icon: IconPresentationAnalytics },
     { label: "What's New", icon: IconFileAnalytics },
-    { label: 'Delivery', icon: IconAdjustments },
   ];
 
   // Combine static and dynamic data
@@ -55,6 +29,51 @@ export function NavbarNested({ categories }) {  // Pass categories dynamically
       label: category.name,
       link: `/category?id=${category.id}`,
     })),
+  };
+
+  const LinksGroup = ({ icon: Icon, label,link, links }) => {
+   
+    const [opened, setOpened] = useState(false);
+    // console.log('link:',link);
+    return (
+      <>
+        <NavLink
+          label={label}
+          leftSection={Icon ? <Icon size={20} /> : null}
+          rightSection={links ? <IconChevronDown size={16} /> : null}
+          onClick={() =>
+          {
+  
+            setOpened((o) => !o);
+            link&&(navigate(link));
+          }
+            }
+          variant="filled"
+        />
+        {links && (
+          <Collapse in={opened}>
+            {links.map((link) => (
+              <>
+             {/* {console.log(link)} */}
+              <NavLink
+                key={link.label}
+                label={link.label}
+                // onClick={() => (window.location.href = link.link)}
+                onClick={() => {
+                  setIsDrawerOpen(false)
+                  navigate(link.link)
+                }
+                  }
+                // component={Link}  // Use Link here
+                to={link.link} 
+                pl={40}
+              />
+               </>
+            ))}
+          </Collapse>
+        )}
+      </>
+    );
   };
 
   const allLinks = [dynamicCategorySection, ...staticData];

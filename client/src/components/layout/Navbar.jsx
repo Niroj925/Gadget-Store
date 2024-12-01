@@ -25,58 +25,54 @@ import { NavbarNested } from "./SideBar";
 import { useQuery } from "@tanstack/react-query";
 import { axiosPublicInstance } from "../../api";
 import { category } from "../../api/category/category";
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  // const navigate=useNavigate();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const [categorySearch, setCategorySearch] = useState(""); // Search for categories
+  const [categorySearch, setCategorySearch] = useState(""); 
   const orderCount = useOrderStore((state) => state.noOfOrder);
   const favCount = useOrderStore((state) => state.noOfFavourite);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activePage, setPage] = useState(1);
+const isDrawerOpen=useOrderStore((state)=>state.isDrawerOpen);
+  const setIsDrawerOpen=useOrderStore((state)=>state.setDrawerOpen)
   const [debounced] = useDebouncedValue(categorySearch, 200);
-  const [filteredCategories,setFilterCategories]=useState(null)
+  const [filteredCategories, setFilterCategories] = useState(null);
+
+  // console.log('isdraweropen:',isDrawerOpen);
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const {
-   isLoading,
-   data,
-   error: errorToGet,
- } = useQuery({
-   queryKey: ["category"],
-   queryFn: async () => {
-     const response = await axiosPublicInstance.get(
-       category
-     );
-     return response.data;
-   },
- });
+    isLoading,
+    data,
+    error: errorToGet,
+  } = useQuery({
+    queryKey: ["category"],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(category);
+      return response.data;
+    },
+  });
 
-//  console.log('categories:',data);
+  //  console.log('categories:',data);
 
- const productCategory=(element)=>{
-   navigate(`/dashboard/category-product?id=${element.id}`)
- }
-
+  const productCategory = (element) => {
+    navigate(`/dashboard/category-product?id=${element.id}`);
+  };
 
   const handleSearch = () => {
     if (search.trim()) {
       window.location.href = `/products?search=${search}`;
     }
   };
- 
-  
-  useEffect(()=>{
-    let filteredOrders = data?.filter((order) => { return (
-        order.name.toLowerCase().includes(categorySearch.toLowerCase())
-      );
-    });
-    setFilterCategories(categorySearch!=''?filteredOrders:data);
-  },[debounced,data])
 
+  useEffect(() => {
+    let filteredOrders = data?.filter((order) => {
+      return order.name.toLowerCase().includes(categorySearch.toLowerCase());
+    });
+    setFilterCategories(categorySearch != "" ? filteredOrders : data);
+  }, [debounced, data]);
 
   return (
     <Flex
@@ -92,13 +88,13 @@ const Navbar = () => {
         top: 0,
         zIndex: 1000,
       }}
-      pt={15}
-      pb={15}
+      pt={10}
+      pb={10}
     >
       {!isMobile ? (
         <>
-          <Box onClick={() => (window.location.href = `/`)} pl={25}>
-            <Image src="/image/logormimg.png" w={55} h={45} />
+          <Box onClick={() => navigate('/')} pl={25}>
+            <Image src="/image/logo.png" w={55} h={45} />
           </Box>
 
           <Group gap={25}>
@@ -137,9 +133,7 @@ const Navbar = () => {
                     filteredCategories?.map((item) => (
                       <Menu.Item
                         key={item.id}
-                        onClick={() =>
-                          (window.location.href = `/category?id=${item.id}`)
-                        }
+                        onClick={() => navigate(`/category?id=${item.id}`)}
                       >
                         {item.name}
                       </Menu.Item>
@@ -166,29 +160,29 @@ const Navbar = () => {
       ) : (
         // <RxHamburgerMenu size={20} color="#414977"/>
         <>
-          {isSidebarOpen ? (
+          {isDrawerOpen ? (
             <IconX
               size={20}
               color="#414977"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => setIsDrawerOpen(false)}
             />
           ) : (
             <RxHamburgerMenu
               size={20}
               color="#414977"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => setIsDrawerOpen(true)}
             />
           )}
           {/* Sidebar for mobile view */}
           <Drawer
-            opened={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
+            opened={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
             title="Menu"
             padding="md"
             size="75%"
             overlayOpacity={0.3}
           >
-            <NavbarNested categories={data}/>
+            <NavbarNested categories={data} />
           </Drawer>
         </>
       )}

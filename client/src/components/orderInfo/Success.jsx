@@ -93,13 +93,12 @@ function Success() {
             <Group justify="center" mb={10}>
               <Text
                 align="center"
-                size="xl"
-                weight={500}
+                size={'lg'}
                 c="dark"
-                fw={"bold"}
+                fw={400}
                 w={"75%"}
               >
-                Your Order has been Accepted
+                Your Order has been placed successfully.
               </Text>
             </Group>
             <Divider />

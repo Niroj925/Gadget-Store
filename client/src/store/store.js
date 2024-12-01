@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage, devtools } from "zustand/middleware";
 
 const orderStore = (set, get) => ({
+  isDrawerOpen:false,
   orders: [],
   favouriteList: [],
   customerDetail:{
@@ -52,6 +53,11 @@ const orderStore = (set, get) => ({
         customerId
        }
     }));
+  },
+  setDrawerOpen:(state)=>{
+    set(()=>({
+      isDrawerOpen:state
+    }))
   },
   reset: () => {
     set({

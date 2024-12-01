@@ -125,7 +125,7 @@ export class ProductService {
 
   async findAll(pagination: PaginationDto) {
     const { page, pageSize } = pagination;
-    const products = await this.productRepository.find({
+    const [product, productCount] = await this.productRepository.findAndCount({
       // relations:['spec','color','image'],
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -141,7 +141,10 @@ export class ProductService {
         },
       },
     });
-    return products;
+    return {
+      productCount,
+      product
+    };
   }
 
   async findPrice(id: string) {
@@ -201,7 +204,7 @@ export class ProductService {
 
   async findPopular() {
     const product = await this.productRepository.find({
-      relations: ['image'],
+      relations: ['image','review'],
       order: {
         soldQuantity: 'DESC',
       },
@@ -213,6 +216,7 @@ export class ProductService {
         name: product.name,
         price: product.price,
         status: product.status,
+        rating:this.calcRating(product.review),
         image: product.image[0].image,
       })),
     };
@@ -267,7 +271,7 @@ export class ProductService {
 
   async findNewArrival() {
     const products = await this.productRepository.find({
-      relations: ['image'],
+      relations: ['image','review'],
       order: {
         createdAt: 'DESC',
       },
@@ -277,6 +281,10 @@ export class ProductService {
         price: true,
         image: true,
         createdAt: true,
+        review:{
+          id:true,
+          rating:true
+        }
       },
       take: 10,
     });
@@ -284,6 +292,7 @@ export class ProductService {
       id: product.id,
       name: product.name,
       price: product.price,
+      rating:this.calcRating(product.review),
       image:
         product.image && product.image.length > 0
           ? product.image[0].image
@@ -573,5 +582,13 @@ export class ProductService {
         });
     }
     return order;
+  }
+
+   calcRating(review:any){
+    let t_rating=0;
+    review.map((review:any)=>{
+      t_rating+=review.rating;
+    });
+    return (t_rating/review.length).toFixed(2);
   }
 }

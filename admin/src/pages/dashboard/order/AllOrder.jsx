@@ -17,27 +17,39 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { axiosPublicInstance } from "../../../api";
 import { order } from "../../../api/order/order";
+import { useEffect } from "react";
 function AllOrders() {
+  const orderStatus= {
+    pending:'pending',
+    accepted : 'accepted',
+    shipped :'shipped',
+    delivered :'delivered',
+    unavailabe :'unavailable',
+    cancel :'cancel',
+  }
   const navigate = useNavigate();
   const [activePage, setPage] = useState(1);
-  const [paymentStatus, setPaymentStatus] = useState("pending");
-
+  const [paymentStatus, setPaymentStatus] = useState(orderStatus.pending);
+const pageSize=5;
   console.log(activePage);
 
   const {
     isLoading,
     data,
     error: errorToGet,
+    refetch
   } = useQuery({
-    queryKey: ["order", activePage],
+    queryKey: [`orders`],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
-        `${order}/status?order=pending&page=${activePage}&pageSize=10`
+        `${order}/status?page=${activePage}&pageSize=${pageSize}&status=${paymentStatus}`
       );
       return response.data;
     },
   });
-  console.log(data);
+  useEffect(()=>{
+    refetch();
+  },[activePage,paymentStatus])
 
   const formatToLocalDateTime = (isoDate) => {
     const date = new Date(isoDate);
@@ -51,7 +63,7 @@ function AllOrders() {
     return `${year}/${month}/${day} ${hours}:${minutes}${ampm}`;
   };
 
-  const rows = data?.map((order) => (
+  const rows = data?.customerOrder?.map((order) => (
     <Table.Tr key={order.id}>
       <Table.Td>{order.id}</Table.Td>
       <Table.Td>{order.customer?.name}</Table.Td>
@@ -90,19 +102,19 @@ function AllOrders() {
 
             <Menu.Dropdown>
               {/* <Menu.Item>All Orders</Menu.Item> */}
-              <Menu.Item onClick={() => setPaymentStatus("pending")}>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.pending)}>
                 Pending
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("processing")}>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.shipped)}>
                 Processing
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("completed")}>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.accepted)}>
                 Completed
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("returned")}>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.unavailabe)}>
                 Returned
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus("cancelled")}>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.cancel)}>
                 Cancelled
               </Menu.Item>
             </Menu.Dropdown>
@@ -111,6 +123,7 @@ function AllOrders() {
       </Flex>
       <Divider />
       <Box>
+      <Table.ScrollContainer minWidth={500}>
         <Table>
           <Table.Thead>
             <Table.Tr>
@@ -124,10 +137,11 @@ function AllOrders() {
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
         <Divider />
         <Group justify="center" align="center" p={10}>
           <Pagination
-            total={data?.length}
+            total={Math.ceil(data?.orderCount/pageSize)}
             value={activePage}
             onChange={setPage}
             mt="sm"

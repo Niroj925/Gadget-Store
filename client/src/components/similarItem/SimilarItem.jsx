@@ -32,6 +32,11 @@ function SimilarItem({id,exludeId}) {
     }
 
   return (
+    <>
+    {
+      data?.length>1&&(
+
+    
     <Flex direction={"column"} w={"100%"}>
     <Group justify="start">
     <Text size="20px" fw="bold">Similar Items You Might Like</Text>
@@ -102,6 +107,9 @@ function SimilarItem({id,exludeId}) {
     </Flex>
     </ScrollArea>
     </Flex>
+      )
+    }
+    </>
   )
 }
 

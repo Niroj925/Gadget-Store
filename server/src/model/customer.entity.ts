@@ -18,7 +18,7 @@ export class customerEntity extends parentEntity{
     @Column('bigint',{default:null})
     phone:number;
 
-    @OneToOne(()=>locationEntity,(location)=>location.customer)
+    @OneToOne(()=>locationEntity,(location)=>location.customer,{cascade:true})
     location:locationEntity;
 
     @OneToMany(()=>orderEntity,(order)=>order.customer)

@@ -6,6 +6,7 @@
 import Cart from "../components/cart/Cart";
 import Category from "../components/category/Category";
 import Favourite from "../components/favourite/Favourite";
+import Layout from "../components/layout/Layout";
 import Success from "../components/orderInfo/Success";
 import Product from "../components/product/Product";
 import ProductReview from "../components/product/Review";
@@ -14,7 +15,8 @@ import PurchaseItem from "../components/purchaseItem/PurchaseItem";
 import Home from "../pages/home/Home";
   
   const MainRoutes = {
-    path: "/", 
+    path: "", 
+    element:<Layout/>,
     children: [
       {
         path: "/",

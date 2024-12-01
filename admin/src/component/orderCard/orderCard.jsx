@@ -175,7 +175,7 @@ function OrderCard({ order }) {
                 Name: <strong>{order.customer.name}</strong>
               </Text>
               <Text size="sm">
-                Contact:<strong> 98008980087</strong>
+                Contact:<strong>{order.customer.phone??98008980087} </strong>
               </Text>
             </Flex>
             <Flex justify="space-between" align={"center"}>

@@ -145,7 +145,13 @@ function CategoryProduct() {
     updateModelClose();
   }
 
-
+  const handleSwitchChange = (event) => {
+    // Stop the event from propagating and closing the menu
+    event.stopPropagation();
+    
+    // Update the switch state
+    setChecked(event.currentTarget.checked);
+  };
 
 
   // Generate table rows
@@ -180,14 +186,6 @@ function CategoryProduct() {
         <Flex gap={20}>
           {
             selectedProductIds.length>0&&(
-
-         
-          // <Button
-          //   // onClick={() => navigate("/dashboard/add-product")}
-          //   rightSection={<IconPlus />}
-          // >
-          //   Action
-          // </Button>
           <Menu shadow="md" width={200}>
           <Menu.Target>
             <Button variant="outline" >
@@ -196,7 +194,7 @@ function CategoryProduct() {
           </Menu.Target>
 
           <Menu.Dropdown>
-            <Menu.Item onClick={() => setPaymentStatus("allProduct")} 
+          <Menu.Item 
             rightSection={<IconTrash color="red" size={20} onClick={()=>deleteModelOpen()}/>}>
              <Text w={'bold'} c={'red'}>Delete</Text> 
             </Menu.Item>
@@ -237,6 +235,7 @@ function CategoryProduct() {
       </Flex>
       <Divider />
       <Box>
+      <Table.ScrollContainer minWidth={500}>
         <Table>
           <Table.Thead>
             <Table.Tr>
@@ -251,6 +250,7 @@ function CategoryProduct() {
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
         <Divider />
         <Group justify="center" align="center" p={10}>
           <Pagination
@@ -262,7 +262,7 @@ function CategoryProduct() {
         </Group>
       </Box>
 
-      <Modal opened={deleteModel} onClose={deleteModelClose}>
+      <Modal opened={deleteModel} onClose={deleteModelClose} withCloseButton={false}>
         {/* <Center>
           <CgDanger size={25} color="red" />
         </Center> */}
@@ -274,7 +274,7 @@ function CategoryProduct() {
           proceed delete to these item?
         </Text>
         <Group mt={20} justify="center">
-          <Button variant="default" onClick={() => close()}>
+          <Button variant="default" onClick={() => deleteModelClose()}>
             Cancel
           </Button>
           <Button
@@ -287,7 +287,7 @@ function CategoryProduct() {
         </Group>
       </Modal>
 
-      <Modal opened={updateModel} onClose={updateModelClose}>
+      <Modal opened={updateModel} onClose={updateModelClose} withCloseButton={false}>
         {/* <Center>
           <CgDanger size={25} color="red" />
         </Center> */}
@@ -299,7 +299,7 @@ function CategoryProduct() {
           proceed update to these item?
         </Text>
         <Group mt={20} justify="center">
-          <Button variant="default" onClick={() => close()}>
+          <Button variant="default" onClick={() => updateModelClose()}>
             Cancel
           </Button>
           <Button

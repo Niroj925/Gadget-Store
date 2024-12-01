@@ -6,7 +6,7 @@ import {
   Button,
   Menu,
 } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {useSearchParams} from 'react-router-dom'
 import { useQuery } from "@tanstack/react-query";
@@ -30,13 +30,14 @@ function Products() {
     highPrice: "highPrice",
     lowPrice: "lowPrice"
   };
-  const pageSize = 10;
+  const pageSize = 5;
   const {
     isLoading,
     data,
     error: errorToGet,
+    refetch
   } = useQuery({
-    queryKey: [`${search??'allProduct'}${filterType}`],
+    queryKey: ['allProducts'],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
         `${filterProduct}?search=${search}&page=${activePage}&pageSize=${pageSize}&filterType=${filterType}`
@@ -46,6 +47,10 @@ function Products() {
     },
   });
 console.log('data:',data);
+
+useEffect(()=>{
+  refetch();
+},[activePage,search,filterProductType])
 
 const handleAllProduct=()=>{
   navigate('/products?search=')
@@ -109,7 +114,7 @@ const handleAllProduct=()=>{
         <Pagination
           value={activePage}
           onChange={setPage}
-          total={10}
+          total={Math.ceil(data?.productCount/pageSize)}
           color="#414B80"
         />
       </Group>

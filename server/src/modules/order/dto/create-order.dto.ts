@@ -17,7 +17,25 @@ export class CreateOrderDto {
 
     @ApiProperty()
     @IsNumber()
-    deliveryCharge:number
+    deliveryCharge:number;
+
+    @IsOptional()
+    @ApiProperty()
+    @IsNumber()
+    customerContact?:number;
+
+    @ApiProperty({ example: 40.7128 })
+    @IsNumber()
+    latitude: number;
+  
+    @ApiProperty({ example: -74.0060 })
+    @IsNumber()
+    longitude: number;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    location?:string;
 
     @ApiProperty({
         type: [orderProductDto], 

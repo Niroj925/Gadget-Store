@@ -50,6 +50,7 @@ console.log(data);
      </Flex>
      <Divider/>
      <Box>
+     <Table.ScrollContainer minWidth={500}>
      <Table>
       <Table.Thead>
         <Table.Tr>
@@ -61,6 +62,7 @@ console.log(data);
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
     </Table>
+    </Table.ScrollContainer>
     <Divider/>
       <Group justify='center' align='center' p={10}>
       <Pagination  total={data?.length} value={activePage} onChange={setPage} mt="sm"/>

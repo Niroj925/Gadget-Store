@@ -283,7 +283,7 @@ function AddProduct() {
         </Flex>
       </form>
 
-      <Modal opened={opened} onClose={close}>
+      <Modal opened={opened} onClose={close} withCloseButton={false}>
         <Text fw={600} ta="center">
           Select Category
         </Text>
@@ -293,7 +293,7 @@ function AddProduct() {
             <Loader />
           </Center>
         ) : (
-          <Paper withBorder p={20} mah={150} style={{ overflow: "scroll" }}>
+          <Paper withBorder p={20} mah={250} style={{ overflow: "scroll" }}>
             {categoryData?.map((category) => (
               <Paper
                 withBorder
@@ -315,7 +315,7 @@ function AddProduct() {
           </Paper>
         )}
         <Group mt={20} justify="center">
-          <Button variant="default" onClick={handleModelCancle}>
+          <Button variant="default" onClick={()=>close()}>
             Cancel
           </Button>
           <Button onClick={() => close()}>Confirm</Button>

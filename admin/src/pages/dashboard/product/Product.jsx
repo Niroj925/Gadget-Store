@@ -20,6 +20,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { axiosPublicInstance } from "../../../api";
 import { product } from "../../../api/product/product";
+import AllReview from "./AllReview";
 
 function Product() {
   const navigate = useNavigate();
@@ -107,6 +108,18 @@ function Product() {
     chunkedSpecs.push(specs.slice(i, i + itemsPerColumn));
   }
 
+  const ratingCalculate = () => {
+    let t_review = 0;
+    data?.review?.map((review) => {
+      t_review += review.rating;
+    });
+    return t_review / data?.review?.length;
+  };
+
+  const ratingPercenatage = (rating) => {
+    const ratingCount = data?.review?.filter((review) => review.rating==rating)
+    return (ratingCount?.length / data?.review.length) * 100;
+  };
   const displayedSpecs = chunkedSpecs;
   return (
     <Paper withBorder={true} p={10}>
@@ -152,20 +165,20 @@ function Product() {
                     alt="Small"
                     style={{
                       width: "80px",
-                      height: "80px", 
-                      objectFit: "cover", 
+                      height: "80px",
+                      objectFit: "cover",
                       cursor: "pointer",
-                      border: "2px solid transparent", 
-                      borderRadius: "8px", 
-                      transition: "border 0.3s ease", 
+                      border: "2px solid transparent",
+                      borderRadius: "8px",
+                      transition: "border 0.3s ease",
                     }}
                     radius="md"
                     onClick={() => setMainImage(item)}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.border = "2px solid #007BFF"; 
+                      e.currentTarget.style.border = "2px solid #007BFF";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.border = "2px solid transparent"; 
+                      e.currentTarget.style.border = "2px solid transparent";
                     }}
                   />
                 ))}
@@ -215,7 +228,7 @@ function Product() {
           </Flex>
         </Flex>
         <Paper withBorder p={10}>
-          <Text pb={5} fw={500}>
+          <Text>
             Features and Specifications
           </Text>
           <Divider />
@@ -239,7 +252,7 @@ function Product() {
         </Paper>
 
         <Paper withBorder>
-          <Group>
+          <Group p={5}>
             <Text>Review and Rating</Text>
           </Group>
           <Divider />
@@ -251,10 +264,10 @@ function Product() {
             align={"center"}
           >
             <Text size="25px" fw={"bold"}>
-              4.2
+              {ratingCalculate(data?.review).toFixed(2)}
             </Text>
-            <Rating defaultValue={4.2} readOnly />
-            <Text c={"gray"}>based on 21 rating</Text>
+            <Rating defaultValue={ratingCalculate} fractions={5} readOnly />
+            <Text c={"gray"}>based on {data?.review.length} rating</Text>
           </Flex>
           <Divider />
           <Flex direction={"column"} gap={10} mt={20} pl={20} pr={20}>
@@ -279,7 +292,7 @@ function Product() {
                 </span>
               </Flex>
               <Progress
-                value={81}
+                value={ratingPercenatage(5)}
                 color="#4AA54A"
                 label="Processing (24)"
                 w={"100%"}
@@ -301,7 +314,7 @@ function Product() {
                 </span>
               </Flex>
               <Progress
-                value={63}
+                value={ratingPercenatage(4)}
                 color="#A5D631"
                 label="Processing (24)"
                 w={"100%"}
@@ -323,7 +336,7 @@ function Product() {
                 </span>
               </Flex>
               <Progress
-                value={44}
+                value={ratingPercenatage(3)}
                 color="#F7E632"
                 label="Processing (24)"
                 w={"100%"}
@@ -345,7 +358,7 @@ function Product() {
                 </span>
               </Flex>
               <Progress
-                value={4}
+                value={ratingPercenatage(2)}
                 color="#F7A521"
                 label="Processing (24)"
                 w={"100%"}
@@ -367,7 +380,7 @@ function Product() {
                 </span>
               </Flex>
               <Progress
-                value={14}
+                value={ratingPercenatage(1)}
                 color="#EF3A10"
                 label="Processing (24)"
                 w={"100%"}
@@ -376,42 +389,19 @@ function Product() {
           </Flex>
           <Paper>
             <Flex p={10} justify={"flex-end"} gap={5}>
-              <Text>2545 Reviews</Text>
+              <Text>{data?.review.length} Reviews</Text>
               <IconArrowsUpDown size={20} color="gray" />
             </Flex>
             <Divider />
-            <ScrollArea h={250}>
-              {reviews.map((review) => {
-                return (
-                  <Flex direction={"column"} p={20}>
-                    <Flex justify={"space-between"} align={"center"}>
-                      <Flex gap={20}>
-                        <Box w={50} h={50} radius={50}>
-                          <Image src="../image/imgrm.png" />
-                        </Box>
-                        <Flex direction={"column"}>
-                          <Text>Name Thapa</Text>
-                          <Rating value={4} readOnly />
-                        </Flex>
-                      </Flex>
-                      <Flex direction={"column"}>
-                        <Flex justify={"flex-end"}>
-                          <IconDotsVertical />
-                        </Flex>
-                        <Text>2 hr ago</Text>
-                      </Flex>
-                    </Flex>
-                    <Flex>
-                      <Text>
-                        For plaintext Lorem Ipsum, type lorem then press the
-                        Ctrl-Shift-L keyboard shortcut. The default keyboard
-                        shortcut is the same for all supported platforms.
-                      </Text>
-                    </Flex>
-                  </Flex>
-                );
-              })}
-            </ScrollArea>
+            {data?.review.length > 0 && (
+              <Paper withBorder mt={10}>
+                <Text p={5} fw={500}>
+                  Customer Reviews
+                </Text>
+                <Divider />
+                <AllReview reviews={data?.review} />
+              </Paper>
+            )}
           </Paper>
         </Paper>
       </Flex>

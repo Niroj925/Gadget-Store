@@ -82,16 +82,16 @@ function Order() {
   useEffect(() => {
     setProductDetail({
       CustomerName: data?.customer.name,
-      Address: data?.customer.location.location,
+      Address: data?.customer?.location?.location,
       OrderProduct: "",
       Contact: "9832342124",
       OrderStatus: data?.status,
       orderDate: formatToLocalDateTime(data?.createdAt),
-      PaymentMode: data?.payment.paymentMethod,
-      PaymentStatus: data?.payment.status,
-      PaymentAmount: data?.payment.amount,
-      DeliveryCharge: data?.payment.deliveryCharge,
-      TotalAmount: data?.payment.amount + data?.payment.deliveryCharge,
+      PaymentMode: data?.payment[0].paymentMethod,
+      PaymentStatus: data?.payment[0].status,
+      PaymentAmount: data?.payment[0].amount,
+      DeliveryCharge: data?.payment[0].deliveryCharge,
+      TotalAmount: data?.payment[0].amount + data?.payment[0].deliveryCharge,
     });
   }, [data]);
 
@@ -102,7 +102,7 @@ function Order() {
         : {
             name: messageRef.current?.value || "",
           };
-    console.log(paymentStatus);
+    // console.log(paymentStatus);
     try {
       const resp = await axiosPrivateInstance.patch(
         `${updatePayment}/${data?.payment.id}?status=${paymentStatus}`,
@@ -154,8 +154,13 @@ function Order() {
       mutationFn: handleUpdate,
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [`order${id}`],
-          // refetchType: "active",
+          queryKey: ['shippedOrder'],
+          refetchType: "active",
+          // exact: true,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['orders'],
+          refetchType: "active",
           // exact: true,
         });
         toast.success("Created category successfully");
@@ -276,7 +281,7 @@ function Order() {
         ))}
       </Paper>
 
-      <Paper withBorder mt={20}>
+      {/* <Paper withBorder mt={20}>
         <Text p={10}>Payment Details</Text>
         <Divider />
         <Paper>
@@ -302,7 +307,7 @@ function Order() {
             />
           </Center>
         </Paper>
-      </Paper>
+      </Paper> */}
       <Paper withBorder mt={20}>
         <Flex
           p={10}

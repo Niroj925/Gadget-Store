@@ -5,27 +5,32 @@ import { useNavigate } from 'react-router-dom';
 import { shippedOrder } from '../../../api/order/order';
 import { axiosPublicInstance } from '../../../api';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 function Shipping() {
 
    const navigate=useNavigate();
    const [activePage, setPage] = useState(1);
   console.log(activePage);
+  const pageSize=5;
 
   const {
     isLoading,
     data,
     error: errorToGet,
+    refetch
   } = useQuery({
-    queryKey: ["shippedOrder", activePage],
+    queryKey: ["shippedOrder"],
     queryFn: async () => {
       const response = await axiosPublicInstance.get(
-        `${shippedOrder}?page=${activePage}&pageSize=10`
+        `${shippedOrder}?page=${activePage}&pageSize=${pageSize}`
       );
       return response.data;
     },
   });
-  console.log(data);
+  useEffect(()=>{
+    refetch();
+  },[activePage])
 
   const handleOrder=(id)=>{
     navigate(`/dashboard/order-info?id=${id}`)
@@ -40,15 +45,15 @@ function Shipping() {
   };
   
 
-    const rows = data?.map((order) => (
+    const rows = data?.customerOrder?.map((order) => (
         <Table.Tr key={order.id}>
            <Table.Td onClick={()=>handleOrder(order.id)} style={{cursor:'pointer'}}>{order.id}</Table.Td>
           <Table.Td>{order.customer.name}</Table.Td>
-          <Table.Td>{order.customer.location.location}</Table.Td>
+          <Table.Td>{order?.customer?.location?.location}</Table.Td>
           <Table.Td>9800898008</Table.Td>
-          <Table.Td>{order.payment.paymentMethod}</Table.Td>
-          <Table.Td>{order.payment.amount}</Table.Td>
-          <Table.Td>{(order.distance).toFixed(3)} Km</Table.Td>
+          <Table.Td>{order.payment[0].paymentMethod}</Table.Td>
+          <Table.Td>{order.payment[0].amount}</Table.Td>
+          <Table.Td>{order.distance?(order?.distance).toFixed(3):0} Km</Table.Td>
           <Table.Td>{formatToLocalDateTime(order.createdAt)}</Table.Td>
           {/* <Table.Td>{order.}</Table.Td> */}
           
@@ -77,6 +82,7 @@ function Shipping() {
      </Flex>
      <Divider/>
      <Box>
+     <Table.ScrollContainer minWidth={500}>
      <Table >
       <Table.Thead>
         <Table.Tr>
@@ -93,9 +99,10 @@ function Shipping() {
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
     </Table>
+    </Table.ScrollContainer>
     <Divider/>
       <Group justify='center' align='center' p={10}>
-      <Pagination  total={data?.length} value={activePage} onChange={setPage} mt="sm"/>
+      <Pagination  total={Math.ceil(data?.orderCount/pageSize)} value={activePage} onChange={setPage} mt="sm"/>
       </Group>
      </Box>
     </Paper>
