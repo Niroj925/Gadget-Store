@@ -42,7 +42,6 @@ function Products() {
       const response = await axiosPublicInstance.get(
         `${filterProduct}?search=${search}&page=${activePage}&pageSize=${pageSize}&filterType=${filterType}`
       );
-      // setTotalPage(Math.ceil(response.data.productCount / pageSize));
       return response.data;
     },
   });
