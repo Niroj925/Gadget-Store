@@ -128,7 +128,7 @@ function Product() {
     navigate(`/purchase?customerId=${customerDetail.customerId}`);
   };
 
-  const ratingCalculate=(review)=>{
+const ratingCalculate=(review)=>{
  let t_review=0;
  review?.map((review)=>{
   t_review+=review.rating;
@@ -393,7 +393,6 @@ function Product() {
           <SimilarItem id={data?.category?.id} exludeId={data?.id} />
         </Group>
       </Flex>
-      {opened && (
         <Modal
           opened={opened}
           onClose={close}
@@ -465,7 +464,6 @@ function Product() {
             </Text>
           </Flex>
         </Modal>
-      )}
     </Box>
   );
 }

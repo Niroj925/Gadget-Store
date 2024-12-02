@@ -1,9 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Redirect, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, MailDto, PasswordDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GoogleAuthGuard } from 'src/middlewares/guard/google-auth/google-auth.guard';
+import { Roles } from 'src/middlewares/authorisation/roles.decorator';
+import { roleType } from 'src/helper/types/index.type';
+import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
+import { UtGuard } from 'src/middlewares/utils_token/ut.guard';
+import { RtGuard } from 'src/middlewares/refresh_token/rt.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -18,6 +23,20 @@ export class AuthController {
   @ApiOperation({ summary: 'SignIn your Account' })
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
+  }
+
+  @Post('refresh-token')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: "Generate access token" })
+  @UseGuards(RtGuard)
+  async refrshToken(@Req() req:any) {
+    const { user } = req
+    return this.authService.refreshTokenAdmin(user);
+  }
+
+  @Post('forget-password')
+  async forgetPassword(@Body() body: MailDto) {
+      return this.authService.forgetPasswordAdmin(body);
   }
 
   @UseGuards(GoogleAuthGuard)
@@ -43,6 +62,15 @@ export class AuthController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
+  }
+
+  @Patch('reset-password')
+  @Roles(roleType.admin||roleType.delivery)
+  @UseGuards(UtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  resetPassword(@Req() req:any, @Body() passwordDto: PasswordDto) {
+    const userId=req.user.sub;
+    return this.authService.resetPassword(userId, passwordDto);
   }
 
   @Patch(':id')
