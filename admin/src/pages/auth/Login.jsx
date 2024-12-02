@@ -10,6 +10,11 @@ import {
   Image,
   PasswordInput,
   Checkbox,
+  Modal,
+  Divider,
+  CloseIcon,
+  Stack,
+  em,
 } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
@@ -18,11 +23,14 @@ import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { axiosPublicInstance } from "../../api";
 import useAuthStore from "../../store/useAuthStore";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function Login() {
   const navigate = useNavigate();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const [opened, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState(false);
+  const [btnDisable, setBtnDisable] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -35,9 +43,19 @@ export default function Login() {
     },
   });
 
+  const forgotPasswordForm = useForm({
+    initialValues: {
+      email: "",
+    },
+    validate: {
+      email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : "Invalid email"),
+    },
+  });
+
   const handleSubmit = async (values) => {
     setLoading(true);
     const { email, password, rememberMe } = values;
+    console.log(email, password);
     try {
       const res = await axiosPublicInstance.post(
         "/auth/signin",
@@ -73,6 +91,35 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  const handleForgetPassword = async (values) => {
+    const { email } = values;
+    setBtnDisable(true);  // Disable the button at the start
+    console.log("email:", email);
+    
+    try {
+      const res = await axiosPublicInstance.post(
+        "/auth/forget-password",
+        { email },
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+  
+      console.log(res.data);
+      if (res.status === 201) {
+        toast.success("Reset link has been sent to your email");
+        close();
+        navigate('/')
+      }
+    } catch (error) {
+      setBtnDisable(false); 
+      toast.error(error.response?.data?.message || "An error occurred");
+    } 
+  };
+  
 
   return (
     <>
@@ -113,12 +160,13 @@ export default function Login() {
                     {...form.getInputProps("rememberMe", { type: "checkbox" })}
                   />
                   <Link
-                    to="/forget-password"
+                    // to="/forget-password"
                     style={{
                       fontSize: "10px",
                       color: "red",
                       marginTop: "10px",
                     }}
+                    onClick={() => open()}
                   >
                     Forget password
                   </Link>
@@ -132,6 +180,66 @@ export default function Login() {
           </form>
         </Center>
       </Flex>
+      <Modal
+        opened={opened}
+        onClose={close}
+        withCloseButton={false}
+        centered
+        size="sm"
+        radius="md"
+        padding="lg"
+        overlayProps={{
+          blur: 3,
+        }}
+        zIndex={2500}
+      >
+        <Flex direction="column" align="center">
+          <form onSubmit={forgotPasswordForm.onSubmit(handleForgetPassword)}>
+            <Group justify="space-between" w="100%">
+              <Text size="xl" fw={600} c="dark">
+                Forgot Password
+              </Text>
+              <CloseIcon
+                size={24}
+                style={{ cursor: "pointer" }}
+                onClick={close}
+              />
+            </Group>
+            <Divider w="100%" my="sm" />
+            <Text size="sm" c="dimmed" align="center" mb="lg">
+              Enter your email address below. We'll send you a link to reset
+              your password.
+            </Text>
+
+            <Stack spacing="md" w="100%">
+              <TextInput
+                label="Email Address"
+                type="email"
+                placeholder="Enter your email..."
+                {...forgotPasswordForm.getInputProps("email")}
+                required
+                radius="md"
+                size="md"
+              />
+            </Stack>
+
+            <Button
+              disabled={btnDisable}
+              radius="md"
+              size="md"
+              mt="xl"
+              w="100%"
+              type="submit"
+              variant="gradient"
+              gradient={{ from: "teal", to: "blue", deg: 90 }}
+            >
+              <Text fw="bold" c="white">
+                Send Reset Link
+              </Text>
+            </Button>
+          </form>
+        </Flex>
+      </Modal>
     </>
   );
 }

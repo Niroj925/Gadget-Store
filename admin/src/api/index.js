@@ -65,7 +65,7 @@ axiosPrivateInstance.interceptors.response.use(
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
         localStorage.removeItem("rToken");
-        // window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }

@@ -13,6 +13,7 @@ import { GoogleStrategy } from '../../middlewares/google_strategy/google.strateg
 import { ConfigModule } from '@nestjs/config';
 import googleOauthConfig from 'src/config/google-oauth.config';
 import { customerEntity } from 'src/model/customer.entity';
+import { UtStrategy } from 'src/middlewares/utils_token/ut.strategy';
 
 @Module({
   imports:[
@@ -21,6 +22,6 @@ import { customerEntity } from 'src/model/customer.entity';
     ConfigModule.forFeature(googleOauthConfig)
   ],
   controllers: [AuthController],
-  providers: [AuthService,Token,hash,AtStrategy,RtStrategy,JwtService,GoogleStrategy],
+  providers: [AuthService,Token,hash,AtStrategy,RtStrategy,JwtService,GoogleStrategy,UtStrategy],
 })
 export class AuthModule {}

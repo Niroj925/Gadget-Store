@@ -10,3 +10,15 @@ export class CreateAuthDto {
     @ApiProperty()
     password:string
 }
+
+export class MailDto{
+    @IsEmail()
+    @ApiProperty()
+    email:string
+}
+
+export class PasswordDto{
+    @IsString()
+    @ApiProperty()
+    newPassword:string
+}
