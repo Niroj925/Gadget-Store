@@ -35,6 +35,8 @@ function NewProduct() {
   });
   // console.log('new arrival data:',data);
   return (
+    <>
+      {data?.length > 0 && (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
       <Text size="xl" fw={500}>
         New Arrivals
@@ -114,6 +116,8 @@ function NewProduct() {
         </Flex>
       </ScrollArea>
     </Flex>
+      )}
+      </>
   );
 }
 

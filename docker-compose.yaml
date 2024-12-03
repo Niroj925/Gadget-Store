@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server/
+    container_name: server
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./server:/app/server
+      - /app/server/node_modules
+    depends_on:
+      - db
+    env_file:
+      - ./server/.env   
+
+  db:
+    image: postgres
+    container_name: database_container
+    environment:
+      POSTGRES_PASSWORD: thapa123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ecom
+      PGDATA: /var/lib/postgresql/data/pgdata
+  
+    volumes:
+      - ./db:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+
+  admin:
+    build: ./admin/
+    container_name: admin
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./admin:/app/admin
+      - /app/admin/node_modules
+    depends_on:
+      - server
+
+  client:
+    build: ./client/
+    container_name: client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app/client
+      - /app/client/node_modules
+    depends_on:
+      - server

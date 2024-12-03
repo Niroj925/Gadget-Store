@@ -38,6 +38,8 @@ function Popular() {
   // console.log('data:',data);
 
   return (
+    <>
+      {data?.length > 0 && (
     <Flex direction={"column"} mt={20} gap={10} p={20} m={10}>
       <Flex justify={"space-between"}>
         <Text size="xl" fw={500}>
@@ -124,6 +126,8 @@ function Popular() {
         </Flex>
       </ScrollArea>
     </Flex>
+      )}
+      </>
   );
 }
 
