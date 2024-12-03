@@ -25,7 +25,7 @@ export function NavbarNested({ categories }) {
     label: 'Category',
     icon: IconNotes,
     initiallyOpened: true,
-    links: categories.map((category) => ({
+    links: categories?.map((category) => ({
       label: category.name,
       link: `/category?id=${category.id}`,
     })),
