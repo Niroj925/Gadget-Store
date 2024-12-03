@@ -55,7 +55,7 @@ export default function Login() {
   const handleSubmit = async (values) => {
     setLoading(true);
     const { email, password, rememberMe } = values;
-    console.log(email, password);
+    // console.log(email, password);
     try {
       const res = await axiosPublicInstance.post(
         "/auth/signin",
@@ -67,7 +67,7 @@ export default function Login() {
         }
       );
       const { role, accessToken, refreshToken } = res.data;
-      console.log(res);
+      // console.log(res);
       if (res?.status === 201) {
         setAccessToken(accessToken);
         if (rememberMe) {

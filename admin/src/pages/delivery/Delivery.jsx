@@ -13,10 +13,14 @@ import {
 import OrderCard from "../../component/orderCard/orderCard";
 import { axiosPublicInstance } from "../../api";
 import { shippedOrder } from "../../api/order/order";
-import { IconMapPin, IconSearch } from "@tabler/icons-react";
+import { IconLogout, IconLogout2, IconMapPin, IconSearch } from "@tabler/icons-react";
 import { useDebouncedValue } from "@mantine/hooks";
+import useAuthStore from "../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 function Delivery() {
+  const navigate=useNavigate();
+  const clearAccessToken=useAuthStore((state)=>state.clearAccessToken);
   const [search, setSearch] = useState("");
   const [filteredOrders, setFilterOrders] = useState([]);
   const [debounced] = useDebouncedValue(search, 300);
@@ -35,7 +39,7 @@ function Delivery() {
     },
   });
 
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     let filteredOrders = data?.customerOrder?.filter((order) => {
@@ -51,13 +55,24 @@ function Delivery() {
     setFilterOrders(search != "" ? filteredOrders : data?.customerOrder);
   }, [debounced, data]);
 
+  const handleLogout=()=>{
+    clearAccessToken();
+    navigate('/')
+  }
+
   return (
     <Container>
-      <Center mt={10}>
-        <Text fw={700} size="25px">
-          Delivery Order Lists
-        </Text>
-      </Center>
+         <Flex
+      align="center"          
+      justify="space-between" 
+      mt={10}
+    >
+      <div></div>             
+      <Text fw={700} size="25px">
+        Delivery Order Lists
+      </Text>
+      <IconLogout2  size={35} color="#102a43" onClick={handleLogout}/>
+    </Flex>
       {/* <Divider/> */}
       <Paper withBorder p={10} mt={10}>
         <Flex justify={"space-between"} w={"100%"} gap={10}>
