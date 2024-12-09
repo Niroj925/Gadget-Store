@@ -51,7 +51,11 @@
 - [Swagger](https://swagger.io/) - API documentation  
 
 ### **Payment Gateway:**  
-- [eSewa](https://esewa.com.np/) - Online payment processing  
+- [eSewa](https://esewa.com.np/) - Online payment processing
+   Credentials:
+   eSewaId:9806800001/2/3/4/5
+   Password:Nepal@123
+   Token:123456
 
 ---
 
@@ -65,4 +69,8 @@
 
 1. **Clone the repository:**  
    ```bash  
-   git clone https://github.com/Niroj925/Gadget-Store.git  
+   git clone https://github.com/Niroj925/Gadget-Store.git
+
+2. **Open the project and run docker compose**
+      ```bash  
+   sudo docker-compose up --build
