@@ -51,13 +51,13 @@
 - [Swagger](https://swagger.io/) - API documentation  
 
 ### **Payment Gateway:**  
-- [eSewa](https://esewa.com.np/) - Online payment processing
-   Credentials:
-   eSewaId:9806800001/2/3/4/5
-   Password:Nepal@123
-   Token:123456
+- [eSewa](https://esewa.com.np/) - Online payment processing  
 
----
+   **Test Credentials:**  
+   - **eSewa ID:**  
+     - `9806800001/2/3/4`   
+   - **Password:** `Nepal@123`  
+   - **Token:** `123456` 
 
 ## ⚙️ **Getting Started**  
 
