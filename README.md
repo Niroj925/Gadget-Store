@@ -62,8 +62,10 @@
 ## ⚙️ **Getting Started**  
 
 ### **Prerequisites:**  
-- [Node.js](https://nodejs.org/) (>= 18.x)  
+- [Node.js](https://nodejs.org/) (>= 20.x)  
 - [npm](https://www.npmjs.com/) (>= 9.x)  
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)  
+
 
 ### **Installation:**  
 
