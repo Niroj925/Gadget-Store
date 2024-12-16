@@ -1,3 +1,4 @@
 .gitignore
-node_modules
 READMI.md
+node_modules/
+dist/
