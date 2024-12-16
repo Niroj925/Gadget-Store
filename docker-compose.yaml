@@ -7,8 +7,9 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./server:/app/server
-      - /app/server/node_modules
+      - ./server/src:/app/src
+      - ./server/dist:/app/dist
+      - /app/node_modules
     depends_on:
       - db
     env_file:
