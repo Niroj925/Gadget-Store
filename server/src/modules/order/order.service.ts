@@ -56,7 +56,14 @@ export class OrderService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const {latitude,longitude, location,customerContact, deliveryCharge, orderInfo } = createOrderDto;
+      const {
+        latitude,
+        longitude,
+        location,
+        customerContact,
+        deliveryCharge,
+        orderInfo,
+      } = createOrderDto;
 
       const order = new orderEntity();
       order.customer = { id } as customerEntity;
@@ -75,7 +82,10 @@ export class OrderService {
       await queryRunner.manager.save(orderProducts);
 
       await this.customerRepository.update({ id }, { phone: customerContact });
-      await this.locationRepository.update({customer:{id}},{latitude,longitude,location});
+      await this.locationRepository.update(
+        { customer: { id } },
+        { latitude, longitude, location },
+      );
       const totalAmount = await this.totalAmount(orderInfo);
 
       const payment = new paymentEntity();
@@ -155,7 +165,7 @@ export class OrderService {
           customer: {
             id: true,
             name: true,
-            phone:true,
+            phone: true,
             location: {
               id: true,
               location: true,
@@ -176,6 +186,24 @@ export class OrderService {
       },
     );
     return { customerOrder, orderCount };
+  }
+
+  async orderCount() {
+    return {
+      pending: await this.countByStatus(orderStatus.pending),
+      accepted: await this.countByStatus(orderStatus.accepted),
+      processing: await this.countByStatus(orderStatus.shipped),
+      delivered: await this.countByStatus(orderStatus.delivered),
+      cancel: await this.countByStatus(orderStatus.cancel),
+    };
+  }
+
+  async pendingOrder() {
+    return { count: await this.countByStatus(orderStatus.pending) };
+  }
+
+  async countByStatus(status: orderStatus): Promise<Number> {
+    return await this.orderRepository.count({ where: { status } });
   }
 
   async findOne(id: string) {

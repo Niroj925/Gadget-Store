@@ -24,25 +24,42 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
+import { axiosPublicInstance } from "../../api";
+import { order } from "../../api/order/order";
 
 function Header() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [search,setSearch]=useState('');
-  const clearAccessToken = useAuthStore((state) => state.clearAccessToken); 
-  const setSearchProduct=useAuthStore((state)=>state.setSearchProduct)
-  const {searchProduct}=useAuthStore()  // const orders = useOrderStore((state) => state.orders);
+  const [search, setSearch] = useState("");
+  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
+  const setSearchProduct = useAuthStore((state) => state.setSearchProduct);
+  const { searchProduct } = useAuthStore(); // const orders = useOrderStore((state) => state.orders);
   // const favouriteList = useOrderStore((state) => state.favouriteList);
   // const addFavourite = useOrderStore((state) => state.addFavourite);
-  const handleLogout=()=>{
+
+  const {
+    isLoading,
+    data,
+    error: errorToGet,
+    refetch,
+  } = useQuery({
+    queryKey: ['pending'],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${order}/pending`);
+      return response.data;
+    },
+  });
+
+  const handleLogout = () => {
     clearAccessToken();
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   useEffect(() => {
     // Clear the searchProduct when the page is refreshed
     const handleBeforeUnload = () => {
-      setSearchProduct('');
+      setSearchProduct("");
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -52,34 +69,30 @@ function Header() {
     };
   }, [searchProduct]);
 
-
-  const handleSearch=()=>{
-      setSearchOpen(!searchOpen);
-      setSearchProduct(search)
-      navigate('/dashboard/products');
-  }
+  const handleSearch = () => {
+    setSearchOpen(!searchOpen);
+    setSearchProduct(search);
+    navigate("/dashboard/products");
+  };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-
   return (
     <Flex justify={"flex-end"} p={15} gap={10} direction={"row"}>
       <Group h={35}>
         {/* {searchOpen ? ( */}
-          <TextInput
-            rightSection={
-              <IconSearch onClick={handleSearch} />
-            }
-            radius={20}
-            placeholder="Search Product..."
-            onChange={(e)=>{
-              setSearch(e.target.value)
-            }}
-            onKeyDown={handleKeyDown}
-          ></TextInput>
+        <TextInput
+          rightSection={<IconSearch onClick={handleSearch} />}
+          radius={20}
+          placeholder="Search Product..."
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          onKeyDown={handleKeyDown}
+        ></TextInput>
         {/* ) : (
           <IconSearch
             onClick={() => setSearchOpen(!searchOpen)}
@@ -88,22 +101,24 @@ function Header() {
           />
         )} */}
       </Group>
-      <Group gap={0} onClick={()=>navigate('/dashboard/orders')}>
+      <Group gap={0} onClick={() => navigate("/dashboard/orders")}>
         <IconBell size={30} color="grey" />
-        <Flex
-          bg={"red"}
-          ml={-11}
-          mt={-20}
-          w={20}
-          h={20}
-          style={{ borderRadius: "50%" }}
-          justify={"center"}
-          align={"center"}
-        >
-          <Text c={"white"} mt={2}>
-            3
-          </Text>
-        </Flex>
+        {data?.count > 0 && (
+          <Flex
+            bg={"red"}
+            ml={-11}
+            mt={-20}
+            w={20}
+            h={20}
+            style={{ borderRadius: "50%" }}
+            justify={"center"}
+            align={"center"}
+          >
+            <Text c={"white"} mt={2}>
+              {data?.count}
+            </Text>
+          </Flex>
+        )}
       </Group>
       <Group gap={5}>
         <Image
@@ -121,7 +136,10 @@ function Header() {
 
           <Menu.Dropdown>
             <Menu.Item leftSection={<IconUser size={20} />}>Profile</Menu.Item>
-            <Menu.Item leftSection={<IconLogout size={20} />} onClick={handleLogout}>
+            <Menu.Item
+              leftSection={<IconLogout size={20} />}
+              onClick={handleLogout}
+            >
               Log Out
             </Menu.Item>
           </Menu.Dropdown>

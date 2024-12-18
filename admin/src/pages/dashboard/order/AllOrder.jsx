@@ -105,11 +105,14 @@ const pageSize=5;
               <Menu.Item onClick={() => setPaymentStatus(orderStatus.pending)}>
                 Pending
               </Menu.Item>
-              <Menu.Item onClick={() => setPaymentStatus(orderStatus.shipped)}>
-                Processing
-              </Menu.Item>
               <Menu.Item onClick={() => setPaymentStatus(orderStatus.accepted)}>
-                Completed
+                Accepted
+              </Menu.Item>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.shipped)}>
+                Shipped
+              </Menu.Item>
+              <Menu.Item onClick={() => setPaymentStatus(orderStatus.delivered)}>
+                Delivered
               </Menu.Item>
               <Menu.Item onClick={() => setPaymentStatus(orderStatus.unavailabe)}>
                 Returned

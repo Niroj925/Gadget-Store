@@ -163,6 +163,11 @@ function Order() {
           refetchType: "active",
           // exact: true,
         });
+        queryClient.invalidateQueries({
+          queryKey: ['pending'],
+          refetchType: "active",
+          // exact: true,
+        });
         toast.success("Created category successfully");
         navigate("/dashboard/shipping");
       },

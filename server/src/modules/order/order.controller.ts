@@ -51,6 +51,16 @@ export class OrderController {
     return this.orderService.findByStatus(query.status,paginationDto);
   }
 
+  @Get('pending')
+  pendingOrder(){
+    return this.orderService.pendingOrder();
+  }
+
+  @Get('count')
+  orderCount(){
+    return this.orderService.orderCount();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(id);

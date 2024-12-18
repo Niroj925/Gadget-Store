@@ -128,13 +128,13 @@ function Product() {
     navigate(`/purchase?customerId=${customerDetail.customerId}`);
   };
 
-const ratingCalculate=(review)=>{
- let t_review=0;
- review?.map((review)=>{
-  t_review+=review.rating;
- });
- return t_review/review?.length;
-  }
+  const ratingCalculate = (review) => {
+    let t_review = 0;
+    review?.map((review) => {
+      t_review += review.rating;
+    });
+    return t_review / review?.length;
+  };
 
   return (
     <Box>
@@ -149,10 +149,22 @@ const ratingCalculate=(review)=>{
         >
           <Group
             position="center"
-            justify={isMobile ? "center" : "flex-start"}
-            mt={!isMobile && -60}
+            align="center"
+            justify="center"
+            // justify={isMobile ? "center" : "flex-start"}
+            // mt={!isMobile && -60}
           >
-            <img
+            <Image
+              src={mainImage.image}
+              alt="Large"
+              style={{
+                width: isMobile ? "400px" : "500px",
+                height: isMobile ? "400px" : "500px",
+                objectFit: "cover",
+              }}
+              radius={"md"}
+            />
+            {/* <img
               src={mainImage.image}
               style={{
                 width: isMobile ? "400px" : "500px",
@@ -160,7 +172,7 @@ const ratingCalculate=(review)=>{
                 objectFit: "cover",
                 borderRadius: "10px",
               }}
-            />
+            /> */}
           </Group>
           {/* Row of small images */}
           <Flex
@@ -171,7 +183,7 @@ const ratingCalculate=(review)=>{
           >
             {data?.image.map((item) => (
               <Image
-                key={item.image} // Add a unique key
+                key={item.image} 
                 src={item.image}
                 alt="Small"
                 style={{
@@ -201,10 +213,17 @@ const ratingCalculate=(review)=>{
               {data?.name}
             </Text>
             {/* <Text>This is one of the offordable gadget hai</Text> */}
+            {
+              ratingCalculate(data?.review)>0&&(
             <Flex direction={"row"}>
-              <Rating value={ratingCalculate(data?.review)} fractions={2} readOnly />
+              <Rating
+                value={ratingCalculate(data?.review)}
+                fractions={2}
+                readOnly
+              />
               <Text>({ratingCalculate(data?.review).toFixed(2)})</Text>
             </Flex>
+              )}
           </Flex>
           <Divider />
           <Text size="24px" fw={"bold"} c={"dark"}>
@@ -393,77 +412,77 @@ const ratingCalculate=(review)=>{
           <SimilarItem id={data?.category?.id} exludeId={data?.id} />
         </Group>
       </Flex>
-        <Modal
-          opened={opened}
-          onClose={close}
-          withCloseButton={false}
-          centered={!isMobile ? true : false}
-          zIndex={2500}
-          radius="md"
-        >
-          <Flex direction="column" spacing="md">
-            <Flex justify="flex-end " align={"flex-end"}>
-              <RxCross2 size={20} onClick={() => close()} />
-            </Flex>
-            <Text align="center" size="xl" weight={500} c="dark" fw={"bold"}>
-              Sign in to Continue
-              <Divider />
-            </Text>
-            <TextInput
-              label="Contact Number"
-              value={checked ? customerDetail.contact : contact}
-              type="number"
-              placeholder="Enter Your Contact Number..."
-              onChange={handleContactChange}
-              error={error}
+      <Modal
+        opened={opened}
+        onClose={close}
+        withCloseButton={false}
+        centered={!isMobile ? true : false}
+        zIndex={2500}
+        radius="md"
+      >
+        <Flex direction="column" spacing="md">
+          <Flex justify="flex-end " align={"flex-end"}>
+            <RxCross2 size={20} onClick={() => close()} />
+          </Flex>
+          <Text align="center" size="xl" weight={500} c="dark" fw={"bold"}>
+            Sign in to Continue
+            <Divider />
+          </Text>
+          <TextInput
+            label="Contact Number"
+            value={checked ? customerDetail.contact : contact}
+            type="number"
+            placeholder="Enter Your Contact Number..."
+            onChange={handleContactChange}
+            error={error}
+          />
+          {customerDetail?.contact?.length == 10 ? (
+            <Checkbox
+              mt={10}
+              checked={checked}
+              label="Use previous contact"
+              onChange={(event) => setChecked(event.currentTarget.checked)}
             />
-            {customerDetail?.contact?.length == 10 ? (
-              <Checkbox
-                mt={10}
-                checked={checked}
-                label="Use previous contact"
-                onChange={(event) => setChecked(event.currentTarget.checked)}
-              />
-            ) : (
-              <></>
-            )}
+          ) : (
+            <></>
+          )}
 
-            <Group justify="center" align="center">
-              {checked ? (
+          <Group justify="center" align="center">
+            {checked ? (
+              <Button
+                color="#414B80"
+                radius="xl"
+                size="md"
+                mt={20}
+                w={"75%"}
+                onClick={handleContinue}
+              >
+                Continue to Proceed
+              </Button>
+            ) : (
+              validContact && (
                 <Button
-                  color="#414B80"
+                  leftSection={<BsGoogle size={20} />}
+                  color="red"
                   radius="xl"
                   size="md"
                   mt={20}
                   w={"75%"}
-                  onClick={handleContinue}
+                  onClick={handleGoogleLogin}
                 >
-                  Continue to Proceed
+                  <Text fw="bold" c="white">
+                    Continue with Google
+                  </Text>
                 </Button>
-              ) : (
-                validContact && (
-                  <Button
-                    leftSection={<BsGoogle size={20} />}
-                    color="red"
-                    radius="xl"
-                    size="md"
-                    mt={20}
-                    w={"75%"}
-                    onClick={handleGoogleLogin}
-                  >
-                    <Text fw="bold" c="white">
-                      Continue with Google
-                    </Text>
-                  </Button>
-                )
-              )}
-            </Group>
+              )
+            )}
+          </Group>
 
-            <Text c="dimmed" size="sm" mt={20}>
-              By continuing, you agree to our Terms and Conditions.
-            </Text>
-          </Flex>
-        </Modal>
+          <Text c="dimmed" size="sm" mt={20}>
+            By continuing, you agree to our Terms and Conditions.
+          </Text>
+        </Flex>
+      </Modal>
     </Box>
   );
 }

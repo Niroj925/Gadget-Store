@@ -12,8 +12,26 @@ import React from "react";
 import { IconArrowUpTail,IconArrowNarrowUp, IconArrowNarrowDown,IconDotsVertical} from "@tabler/icons-react";
 import { AreaChart, BarChart, DonutChart } from "@mantine/charts";
 import "@mantine/charts/styles.css";
+import { axiosPublicInstance } from "../../../api";
+import { order } from "../../../api/order/order";
+import { useQuery } from "@tanstack/react-query";
 
 function Dashboard() {
+
+
+  const {
+    isLoading,
+    data:orderData,
+    error: errorToGet,
+    refetch,
+  } = useQuery({
+    queryKey: ['orderData'],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${order}/count`);
+      return response.data;
+    },
+  });
+
   const data = [
     { day: "Monday", Smartphones: 200, Laptops: 150, Tablets: 50 },
     { day: "Tuesday", Smartphones: 250, Laptops: 200, Tablets: 70 },
@@ -23,6 +41,8 @@ function Dashboard() {
     { day: "Saturday", Smartphones: 270, Laptops: 190, Tablets: 100 },
     { day: "Sunday", Smartphones: 320, Laptops: 230, Tablets: 110 },
   ];
+
+
 
   const adata = [
     {
@@ -58,6 +78,10 @@ function Dashboard() {
       Apples: 80,
     },
   ];
+
+  const perecentage=(value)=>{
+    return ((value/(Object.values(orderData).reduce((total, value) => total + value, 0)))*100)
+  }
   return (
     <Flex direction={"column"}>
       <Flex  wrap={"wrap"} gap={20}>
@@ -93,7 +117,7 @@ function Dashboard() {
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
             <Text size="25px" fw={700} >
-              354
+              {(Object.values(orderData).reduce((total, value) => total + value, 0))}
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
               <Text  fw={700}>32.4%</Text>
@@ -160,25 +184,25 @@ function Dashboard() {
             </Text>
             <Center>
               <Text size="xl"  fw={700}>
-                21,95,230
+                {Object.values(orderData).reduce((total, value) => total + value, 0)}
               </Text>
             </Center>
             <Flex direction={"column"} gap={20} mt={20}>
               <Paper>
-                <Text >Processing (24)</Text>
-                <Progress value={24} color="blue" label="Processing (24)" />
+                <Text >Processing ({orderData?.processing})</Text>
+                <Progress value={perecentage(orderData?.processing)}  color="blue" label="Processing (24)" />
               </Paper>
               <Paper>
-                <Text >Pending (285)</Text>
-                <Progress value={285} color="gray.5" label="Pending (285)" />
+                <Text >Pending ({orderData?.pending})</Text>
+                <Progress value={perecentage(orderData?.pending)}  color="gray.5" label="Pending (285)" />
               </Paper>
               <Paper>
-                <Text >Completed (865)</Text>
-                <Progress value={865} color="green" label="Completed (865)" />
+                <Text >Completed ({orderData?.delivered})</Text>
+                <Progress value={perecentage(orderData?.delivered)} color="green" label="Completed (865)" />
               </Paper>
               <Paper>
-                <Text >Cancelled (309)</Text>
-                <Progress value={309} color="red" label="Cancelled (309)" />
+                <Text >Cancelled ({orderData?.cancel})</Text>
+                <Progress value={perecentage(orderData?.cancel)}  color="red" label="Cancelled (309)" />
               </Paper>
             </Flex>
           </Box>
@@ -188,18 +212,18 @@ function Dashboard() {
           <Flex mt={45} gap={20}>
             <Flex direction={"column"} gap={20}>
               <RingProgress
-                sections={[{ value: 63, color: "green" }]}
+                sections={[{ value:perecentage(orderData?.delivered), color: "green" }]}
                 translate="yes"
                 label={
                   <Text c="gray" fw={700} ta="center" size="xl">
-                    63%
+                   {perecentage(orderData?.delivered).toFixed(1)}%
                   </Text>
                 }
               />
               <Paper>
                 <Flex justify={"center"} align={"center"} gap={10}>
                   <Paper w={20} h={10} bg={"green"} radius={10} />
-                  <Text>30 Days</Text>
+                  <Text>Total</Text>
                 </Flex>
               </Paper>
             </Flex>
