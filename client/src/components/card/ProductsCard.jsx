@@ -79,7 +79,7 @@ function ProductsCard({products}) {
               {product.name}
             </Text>
               {/* <Text>Best gadget for ever</Text> */}
-              <Rating value={3.5} fractions={2} readOnly />
+              <Rating value={product?.averageRating} fractions={10} readOnly />
               <Group mt={10}>
                 <Button
                   radius={20}

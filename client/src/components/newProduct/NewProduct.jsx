@@ -90,12 +90,12 @@ function NewProduct() {
                   >
                     {product.name}
                   </Text>
-                  <Text c={"dimmed"} ta={"center"}>
+                  {/* <Text c={"dimmed"} ta={"center"}>
                     item model name
-                  </Text>
-                  <Center>
+                  </Text> */}
+                  {/* <Center>
                     <Rating value={3} readOnly />
-                  </Center>
+                  </Center> */}
                 </Flex>
                 <Button
                   w={"100%"}
