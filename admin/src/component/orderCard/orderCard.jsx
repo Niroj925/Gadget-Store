@@ -122,7 +122,7 @@ function OrderCard({ order }) {
               Rs.{order.payment[0].amount}
             </Text>
             <Text size="xs" color="gray">
-              ~{order.distance.toFixed(3)} km
+              ~{order?.distance? order?.distance.toFixed(3):0} km
             </Text>
           </Flex>
         </Flex>
@@ -148,7 +148,7 @@ function OrderCard({ order }) {
               <IconRouteAltRight color="white" />
             </Paper>
             <Text size="xs" c="dimmed" lineClamp={1}>
-              {order.customer.location.location}
+              {order?.customer.location?.location}
             </Text>
           </Group>
           <Group>

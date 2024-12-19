@@ -43,9 +43,9 @@ function Delivery() {
 
   useEffect(() => {
     let filteredOrders = data?.customerOrder?.filter((order) => {
-      const customerName = order.customer.name.toLowerCase();
-      const contact = order.customer.phone || ""; // Adjust if contact data is available
-      const location = order.customer.location.location.toLowerCase();
+      const customerName = order?.customer.name.toLowerCase();
+      const contact = order?.customer.phone || ""; // Adjust if contact data is available
+      const location = order?.customer.location?.location.toLowerCase();
       return (
         customerName.includes(search.toLowerCase()) ||
         contact.includes(search) ||

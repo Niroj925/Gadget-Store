@@ -32,6 +32,19 @@ function Dashboard() {
     },
   });
 
+  const {
+    isLoading:salesLoading,
+    data:salesData,
+    error,
+  } = useQuery({
+    queryKey: ['sales'],
+    queryFn: async () => {
+      const response = await axiosPublicInstance.get(`${order}/sales`);
+      return response.data;
+    },
+  });
+  console.log(salesData);
+
   const data = [
     { day: "Monday", Smartphones: 200, Laptops: 150, Tablets: 50 },
     { day: "Tuesday", Smartphones: 250, Laptops: 200, Tablets: 70 },
@@ -79,25 +92,27 @@ function Dashboard() {
     },
   ];
 
-  const perecentage=(value)=>{
-    return ((value/(Object.values(orderData).reduce((total, value) => total + value, 0)))*100)
-  }
+  const perecentage = (value) => {
+    const total = Object.values(orderData || {}).reduce((sum, val) => sum + val, 0);
+    return total > 0 ? (value / total) * 100 : 0; 
+  };
+  
   return (
     <Flex direction={"column"}>
       <Flex  wrap={"wrap"} gap={20}>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700} >
-              Total Sales
+            <Text size="md" fw={700} >
+              Total Sales Amount
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700} >
-              $75000
+            <Text size="md" fw={700} >
+              Rs.{salesData?.totalSales}
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
               <Text fw={700 } >32.4%</Text>
@@ -110,14 +125,14 @@ function Dashboard() {
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700} >
+            <Text size="md" fw={700} >
               Total Orders
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700} >
-              {(Object.values(orderData).reduce((total, value) => total + value, 0))}
+            <Text size="md" fw={700} >
+              {(Object.values(orderData??0).reduce((total, value) => total + value, 0))}
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
               <Text  fw={700}>32.4%</Text>
@@ -125,19 +140,19 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
           <Paper mt={-10}>
-            <Text size="20px" fw={700} >
+            <Text size="md" fw={700} >
               Total Customers
             </Text>
             <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700} >
-              345
+            <Text size="md" fw={700} >
+              {salesData?.customers}
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
               <Text fw={700} >32.4%</Text>
@@ -145,24 +160,19 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex> 
           <Paper mt={-10}>
-            <Text size="20px" fw={700} >
+            <Text size="md" fw={700} >
               Total Products
             </Text>
-            <Text c={"gray"}>30 days</Text>
           </Paper>
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
-            <Text size="25px" fw={700} >
-              367
+            <Text size="md" fw={700} >
+              {salesData?.product}
             </Text>
-            <Flex justify={"flex-end"} align={"center"}>
-              <Text  fw={700}>32.4%</Text>
-              <IconArrowNarrowDown color="red" />
-            </Flex>
           </Flex>
         </Paper>
       </Flex>
@@ -173,10 +183,10 @@ function Dashboard() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "25px",
+              gap: "md",
             }}
           >
-            <Text size="xl" fw={700}  >
+            <Text size="md" fw={700}  >
               Order Statistics
             </Text>
             <Text size="sm" c="gray.5">
@@ -184,7 +194,7 @@ function Dashboard() {
             </Text>
             <Center>
               <Text size="xl"  fw={700}>
-                {Object.values(orderData).reduce((total, value) => total + value, 0)}
+                {orderData&&Object.values(orderData).reduce((total, value) => total + value, 0)}
               </Text>
             </Center>
             <Flex direction={"column"} gap={20} mt={20}>
@@ -208,7 +218,7 @@ function Dashboard() {
           </Box>
         </Paper>
         <Paper w={"100%"} p={10}>
-          <Text size="20px"  fw={700}>Order Success Rate</Text>
+          <Text size="md"  fw={700}>Order Success Rate</Text>
           <Flex mt={45} gap={20}>
             <Flex direction={"column"} gap={20}>
               <RingProgress
@@ -251,7 +261,7 @@ function Dashboard() {
             <Flex justify={"space-between"} gap={10}>
               <Group>
                 <Paper w={10} h={10} radius={"50%"} bg={"red"} />
-                <Text  fw={700}>One order Delivered</Text>
+                <Text  fw={700} size="md">One order Delivered</Text>
               </Group>
               <Center>
                 <Text size="10px" c={"gray"}>14 mins ago</Text>

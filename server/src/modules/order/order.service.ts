@@ -206,6 +206,38 @@ export class OrderService {
     return await this.orderRepository.count({ where: { status } });
   }
 
+  async totalSales() {
+    const order = await this.orderRepository.find({
+      where: { status: orderStatus.delivered },
+      relations: ['orderProduct.product'],
+      select:{
+        id:true,
+        orderProduct:{
+          id:true,
+          product:{
+            id:true,
+            price:true
+          }
+        }
+      }
+    });
+    const calculateTotalPrice = (orders: typeof order) => {
+      return orders.reduce((total, order) => {
+        const orderTotal = order.orderProduct.reduce((orderSum, orderProduct) => {
+          return orderSum + (orderProduct.product.price || 0); 
+        }, 0);
+    
+        return total + orderTotal;
+      }, 0); 
+    };
+
+    return {
+      totalSales:calculateTotalPrice(order),
+      customers:await this.customerRepository.count(),
+      product:await this.productRepository.count()
+    }
+  }
+
   async findOne(id: string) {
     const customerOrder = await this.orderRepository.findOne({
       where: { id },

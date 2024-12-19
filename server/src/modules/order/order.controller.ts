@@ -61,6 +61,11 @@ export class OrderController {
     return this.orderService.orderCount();
   }
 
+  @Get('sales')
+  totalSales(){
+    return this.orderService.totalSales();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(id);
