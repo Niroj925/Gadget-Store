@@ -21,6 +21,7 @@ import { ProductService } from '../product/product.service';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { PaymentService } from '../payment/payment.service';
 import { locationEntity } from 'src/model/location.entity';
+import { sendMail } from 'src/config/mail.config';
 
 @Injectable()
 export class OrderService {
@@ -268,7 +269,7 @@ export class OrderService {
     } else {
       const orders = await this.orderRepository.findOne({
         where: { id },
-        relations: ['orderProduct.product'],
+        relations: ['orderProduct.product','customer'],
       });
 
       orders.orderProduct.forEach(async (order) => {
@@ -284,6 +285,10 @@ export class OrderService {
         { id },
         { status, remarks: remarks ?? null },
       );
+      if(status==orderStatus.delivered){
+        const url=`${process.env.CUSTOMER_URL}?productId=${orders.orderProduct[0].product.id}&customerId=${orders.customer.id}`
+        sendMail(orders.customer.email,"Order Delivered",this.productReviewTemplate(orders.customer.name,url))
+      }
       return true;
     }
   }
@@ -318,4 +323,75 @@ export class OrderService {
     }
     return t_amount;
   }
+
+  productReviewTemplate(customerName:string, reviewUrl:string) {
+    return `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Review Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            width: 80%;
+            padding: 12px;
+            background-color: #28a745;
+            color: #ffffff;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #218838;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>We Value Your Feedback!</h1>
+         <p>Dear, <strong>${customerName}</strong>,</p>
+        <p>Thank you for purchasing the recent product.</p>
+        <p>We would love to hear your thoughts about the product. Please take a moment to leave a review:</p>
+        <a href="${reviewUrl}" class="button" style="color: white; text-decoration: none;">Leave a Review</a>
+        <p>Your feedback helps us improve and serves other customers like you!</p>
+        <p class="footer">© 2024 Hamro Shop. All rights reserved.</p>
+    </div>
+</body>
+</html>
+    `;
+}
+
 }
