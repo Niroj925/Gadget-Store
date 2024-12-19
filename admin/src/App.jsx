@@ -11,7 +11,7 @@ function App() {
   return (
   <>
    <ToastContainer />
-   <ReactQueryDevtools initialIsOpen={false} />
+   {/* <ReactQueryDevtools initialIsOpen={false} /> */}
    <RouterProvider router={router} />
   </>
   )
