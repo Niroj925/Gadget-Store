@@ -133,19 +133,19 @@ function Product() {
       <Flex direction={"column"} gap={20}>
         <Flex gap={25}>
           <Box padding="md" shadow="xs" w={"100%"}>
-            <Group position="center">
+            <Group position="center" justify="center" align="center">
               {/* Large image */}
-              {/* <Image
+              <Image
                 src={mainImage.image}
                 alt="Large"
                 style={{
-                  width: "100%", 
+                  width: "400px", 
                   height: "400px", 
                   objectFit: "cover",
                 }}
                 radius={"md"}
-              /> */}
-              <img
+              />
+              {/* <img
                 src={mainImage.image}
                 style={{
                   width: "100%",
@@ -153,7 +153,7 @@ function Product() {
                   objectFit: "cover",
                   borderRadius: "10px",
                 }}
-              />
+              /> */}
             </Group>
             <Group position="center" mt="lg">
               {/* Row of small images */}
@@ -266,7 +266,7 @@ function Product() {
             <Text size="25px" fw={"bold"}>
               {ratingCalculate(data?.review).toFixed(2)}
             </Text>
-            <Rating defaultValue={ratingCalculate} fractions={5} readOnly />
+            <Rating defaultValue={0} fractions={5} value={ratingCalculate(data?.review).toFixed(2)} readOnly />
             <Text c={"gray"}>based on {data?.review.length} rating</Text>
           </Flex>
           <Divider />

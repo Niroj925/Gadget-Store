@@ -55,6 +55,8 @@ function Dashboard() {
     { day: "Sunday", Smartphones: 320, Laptops: 230, Tablets: 110 },
   ];
 
+
+
   const adata = [
     {
       date: "Mar 22",
@@ -193,25 +195,24 @@ function Dashboard() {
             <Center>
               <Text size="xl"  fw={700}>
                 {orderData&&Object.values(orderData).reduce((total, value) => total + value, 0)}
-                21,95,230
               </Text>
             </Center>
             <Flex direction={"column"} gap={20} mt={20}>
               <Paper>
-                <Text >Processing (24)</Text>
-                <Progress value={24} color="blue" label="Processing (24)" />
+                <Text >Processing ({orderData?.processing})</Text>
+                <Progress value={perecentage(orderData?.processing)}  color="blue" label="Processing (24)" />
               </Paper>
               <Paper>
-                <Text >Pending (285)</Text>
-                <Progress value={285} color="gray.5" label="Pending (285)" />
+                <Text >Pending ({orderData?.pending})</Text>
+                <Progress value={perecentage(orderData?.pending)}  color="gray.5" label="Pending (285)" />
               </Paper>
               <Paper>
-                <Text >Completed (865)</Text>
-                <Progress value={865} color="green" label="Completed (865)" />
+                <Text >Completed ({orderData?.delivered})</Text>
+                <Progress value={perecentage(orderData?.delivered)} color="green" label="Completed (865)" />
               </Paper>
               <Paper>
-                <Text >Cancelled (309)</Text>
-                <Progress value={309} color="red" label="Cancelled (309)" />
+                <Text >Cancelled ({orderData?.cancel})</Text>
+                <Progress value={perecentage(orderData?.cancel)}  color="red" label="Cancelled (309)" />
               </Paper>
             </Flex>
           </Box>
@@ -221,18 +222,18 @@ function Dashboard() {
           <Flex mt={45} gap={20}>
             <Flex direction={"column"} gap={20}>
               <RingProgress
-                sections={[{ value: 63, color: "green" }]}
+                sections={[{ value:perecentage(orderData?.delivered), color: "green" }]}
                 translate="yes"
                 label={
                   <Text c="gray" fw={700} ta="center" size="xl">
-                    63%
+                   {perecentage(orderData?.delivered).toFixed(1)}%
                   </Text>
                 }
               />
               <Paper>
                 <Flex justify={"center"} align={"center"} gap={10}>
                   <Paper w={20} h={10} bg={"green"} radius={10} />
-                  <Text>30 Days</Text>
+                  <Text>Total</Text>
                 </Flex>
               </Paper>
             </Flex>
