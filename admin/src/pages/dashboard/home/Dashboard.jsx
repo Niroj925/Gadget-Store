@@ -95,7 +95,7 @@ function Dashboard() {
   return (
     <Flex direction={"column"}>
       <Flex  wrap={"wrap"} gap={20}>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -128,8 +128,6 @@ function Dashboard() {
           <Flex direction={"row"} justify={"space-between"} mt={10} gap={30}>
             <Text size="md" fw={700} >
               {(Object.values(orderData??0).reduce((total, value) => total + value, 0))}
-            <Text size="25px" fw={700} >
-              354
             </Text>
             <Flex justify={"flex-end"} align={"center"}>
               <Text  fw={700}>32.4%</Text>
@@ -137,7 +135,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -157,7 +155,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex> 
