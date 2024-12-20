@@ -67,6 +67,7 @@
 1. **Clone the repository:**  
    ```bash  
    git clone https://github.com/Niroj925/Gadget-Store.git  
+   cd Gadget-Store
 
 2. **Run Docker Compose:**
    ```bash
