@@ -12,6 +12,9 @@ import React from "react";
 import { IconArrowUpTail,IconArrowNarrowUp, IconArrowNarrowDown,IconDotsVertical} from "@tabler/icons-react";
 import { AreaChart, BarChart, DonutChart } from "@mantine/charts";
 import "@mantine/charts/styles.css";
+import { axiosPublicInstance } from "../../../api";
+import { order } from "../../../api/order/order";
+import { useQuery } from "@tanstack/react-query";
 
 function Dashboard() {
 
@@ -95,7 +98,7 @@ function Dashboard() {
   return (
     <Flex direction={"column"}>
       <Flex  wrap={"wrap"} gap={20}>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -135,7 +138,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -155,7 +158,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex> 
