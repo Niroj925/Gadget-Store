@@ -60,9 +60,20 @@
 ### **Prerequisites:**  
 - [Node.js](https://nodejs.org/) (>= 18.x)  
 - [npm](https://www.npmjs.com/) (>= 9.x)  
+- [docker](https://docs.docker.com/get-docker/)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
-### **Installation:**  
-
+### **Run the Application:**  
 1. **Clone the repository:**  
    ```bash  
    git clone https://github.com/Niroj925/Gadget-Store.git  
+
+2. **Run Docker Compose:**
+   ```bash
+    docker-compose up
+
+## **Access the Applications**
+
+- **Backend API**: [http://localhost:4000/api](http://localhost:4000/api)
+- **Client**: [http://localhost:5173](http://localhost:5173)
+- **Admin**: [http://localhost:5174](http://localhost:5174)

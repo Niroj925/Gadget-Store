@@ -95,7 +95,7 @@ function Dashboard() {
   return (
     <Flex direction={"column"}>
       <Flex  wrap={"wrap"} gap={20}>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -137,7 +137,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex>
@@ -157,7 +157,7 @@ function Dashboard() {
             </Flex>
           </Flex>
         </Paper>
-        <Paper p={10} style={{ flex: "1 1 calc(25% - md)" }}>
+        <Paper p={10} style={{ flex: "1 1 calc(25% - 20px)" }}>
           <Flex justify={"flex-end"} align={"center"}>
             <IconDotsVertical color="gray"/>
           </Flex> 
