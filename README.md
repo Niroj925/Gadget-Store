@@ -78,3 +78,5 @@
 - **Backend API**: [http://localhost:4000/api](http://localhost:4000/api)
 - **Client**: [http://localhost:5173](http://localhost:5173)
 - **Admin**: [http://localhost:5174](http://localhost:5174)
+
+- **Video Demo**: [Click here](https://drive.google.com/file/d/1MhgTaOLzyj62EhNnsp45HBuRLolzCDw-/view?usp=sharing)
