@@ -79,7 +79,7 @@ To proceed with payments using eSewa, please use the following test credentials:
     ```
 
 2.  **Configure Environment Variables (.env files):**
-    Before starting Docker Compose, you need to create `.env` files for each part of the application (backend, client, and admin).
+    Before starting Docker Compose, you need to create `.env` files for backend.
 
     * In the root directory, create a `.env` file for the **server/backend**. Refer to `server/.env.example` for required variables, including your Google API credentials for OAuth.
 
