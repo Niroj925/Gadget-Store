@@ -50,8 +50,15 @@
 - [PostgreSQL](https://www.postgresql.org/) - Database  
 - [Swagger](https://swagger.io/) - API documentation  
 
-### **Payment Gateway:**  
-- [eSewa](https://esewa.com.np/) - Online payment processing  
+### **Payment Gateway:**
+- [eSewa](https://esewa.com.np/) - Online payment processing
+
+To proceed with payments using eSewa, please use the following test credentials:
+
+**eSewa Test Credentials:**
+- **eSewa ID:** `9806800001` (or `9806800002`, `9806800003`, `9806800004`, `9806800005`)
+- **Password:** `Nepal@123`
+- **Token:** `123456`
 
 ---
 
@@ -63,15 +70,27 @@
 - [docker](https://docs.docker.com/get-docker/)
 - [docker-compose](https://docs.docker.com/compose/install/)
 
-### **Run the Application:**  
-1. **Clone the repository:**  
-   ```bash  
-   git clone https://github.com/Niroj925/Gadget-Store.git  
-   cd Gadget-Store
+### **Run the Application:**
 
-2. **Run Docker Compose:**
-   ```bash
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/Niroj925/Gadget-Store.git](https://github.com/Niroj925/Gadget-Store.git)
+    cd Gadget-Store
+    ```
+
+2.  **Configure Environment Variables (.env files):**
+    Before starting Docker Compose, you need to create `.env` files for each part of the application (backend, client, and admin).
+
+    * In the root directory, create a `.env` file for the **server/backend**. Refer to `server/.env.example` for required variables, including your Google API credentials for OAuth.
+
+    Ensure all necessary credentials and configurations are correctly set in these `.env` files.
+
+3.  **Start Docker Compose:**
+    Once your `.env` files are configured, launch all services using Docker Compose:
+
+    ```bash
     docker-compose up
+    ```
 
 ## **Access the Applications**
 

@@ -141,6 +141,7 @@ function PurchaseItem() {
 
   const paymentMethod={
     esewa:'esewa',
+    speed:'speed',
     khalti:'khalti',
     online:'online',
     cod:'cod'
@@ -270,6 +271,7 @@ function PurchaseItem() {
                   >
                     <Flex mt="xs" direction="column" gap={10}>
                       <Radio color="#414B80" value={paymentMethod.esewa} label="Esewa" />
+                      {/* <Radio color="#414B80" value={paymentMethod.speed} label="Speed" /> */}
                       <Radio
                         color="#414B80"
                         value={paymentMethod.online}

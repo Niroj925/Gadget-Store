@@ -5,6 +5,7 @@ const baseURL = "http://localhost:4000/api/v1";
 // const baseURL = "http://192.168.242.176:4000/api/v1";
 // const baseURL = "http://192.168.16.125:4000/api/v1";
 //  const baseURL = "http://192.168.1.74:4000/api/v1";
+//  const baseURL = "http://192.168.1.94:4000/api/v1";
 
 
 export const axiosPrivateInstance = axios.create({
@@ -24,7 +25,7 @@ export const axiosPublicInstance = axios.create({
 axiosPrivateInstance.interceptors.request.use(
   (request) => {
     const accessToken = useAuthStore.getState().accessToken;
-    console.log(accessToken);
+    // console.log(accessToken);
     if (accessToken) {
       request.headers["Authorization"] = `Bearer ${accessToken}`;
     }
@@ -54,7 +55,7 @@ axiosPrivateInstance.interceptors.response.use(
           }
         );
         const accessToken = response.data;
-        console.log(accessToken);
+        // console.log(accessToken);
         // const setAcessToken = useAuthStore.getState().setAccessToken;
         // setAcessToken(accessToken);
         axiosPrivateInstance.defaults.headers.common[
@@ -62,7 +63,7 @@ axiosPrivateInstance.interceptors.response.use(
         ] = `Bearer ${accessToken}`;
         return axiosPrivateInstance(originalRequest); // Retry the original request with the new access token.
       } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
+        // console.error("Token refresh failed:", refreshError);
         localStorage.removeItem("rToken");
         // window.location.href = "/login";
         return Promise.reject(refreshError);
