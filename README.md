@@ -98,4 +98,4 @@ To proceed with payments using eSewa, please use the following test credentials:
 - **Client**: [http://localhost:5173](http://localhost:5173)
 - **Admin**: [http://localhost:5174](http://localhost:5174)
 
-- **Video Demo**: [Click here](https://drive.google.com/file/d/1MhgTaOLzyj62EhNnsp45HBuRLolzCDw-/view?usp=sharing)
+- **Video Demo**: [Click here](https://drive.google.com/file/d/17NltZcBh0w1hG6DagEUcbzTiEKYzd1fe/view?usp=drive_link)
